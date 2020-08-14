@@ -1,21 +1,71 @@
-import express from "express";
+import bodyParser from "body-parser";
+import cors from "cors";
+import { config } from "dotenv";
+import express, { Response, Router } from "express";
+import helmet from "helmet";
+import morgan from "morgan";
 import next from "next";
 
-const port = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
+// Get environment variables before importing local functions
+config();
+
+import { removeTrailingSlash } from "./middlewares/trailingSlash";
+import { logger } from "./utils/logger";
+import { normalizePort, onError, getDefaultDirectives } from "./utils/server";
+
 const dev = process.env.NODE_ENV !== "production";
-const app = next({ dev, dir: "./src/frontend" });
-const handle = app.getRequestHandler();
+const frontendHandler = next({ dev, dir: "./src/frontend" });
+const handle = frontendHandler.getRequestHandler();
 
 async function startApp() {
-  await app.prepare();
-  const server = express();
-  server.get("*", (req, res) => {
+  // Prepare frontend routes
+  await frontendHandler.prepare();
+
+  const app = express();
+  app.enable("strict routing");
+
+  /* --- Middlewares --- */
+  const directives = getDefaultDirectives();
+  if (dev) {
+    directives["default-src"] = ["'self'", "'unsafe-eval'", "'unsafe-inline'"];
+    directives["script-src"] = ["'self'", "'unsafe-eval'", "'unsafe-inline'"];
+  }
+  app.use(
+    helmet({
+      contentSecurityPolicy: {
+        directives,
+      },
+    }),
+  );
+  app.use(cors());
+  app.use(removeTrailingSlash);
+  app.use(
+    morgan("dev", {
+      skip: function (req) {
+        return req.path.split("/")[1] === "_next";
+      },
+    }),
+  );
+  app.use(bodyParser.json());
+
+  /* --- BACKEND --- */
+  const backRouter = Router();
+  app.use("/api", backRouter);
+  backRouter.get("/", (_, res: Response) => {
+    res.status(200).send("Hello World PLMO1 !");
+  });
+
+  /* --- FRONTEND --- */
+  app.get("*", (req, res) => {
     return handle(req, res);
   });
-  server.listen(port, (err) => {
-    if (err) throw err;
-    // eslint-disable-next-line no-console
-    console.log("> Ready on http://localhost:3000");
+
+  /* --- Starting Server --- */
+  const port = normalizePort(process.env.PORT || "5000");
+  const server = app.listen(port);
+  server.on("error", onError);
+  server.on("listening", () => {
+    logger.info(`App listening on port ${port}!`);
   });
 }
 
