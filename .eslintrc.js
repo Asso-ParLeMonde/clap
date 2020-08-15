@@ -39,8 +39,8 @@ module.exports = {
       },
     ],
     "no-console": ["error", { allow: ["warn", "error"] }],
-    "arca/import-ordering": ["error", ["^\\.\\./", "^\\./"]],
-    "arca/newline-after-import-section": ["error", ["^\\.\\./", "^\\./"]],
+    "arca/import-ordering": ["error", ["^src/", "^\\.\\./", "^\\./"]],
+    "arca/newline-after-import-section": ["error", ["^src/", "^\\.\\./", "^\\./"]],
     "@typescript-eslint/explicit-function-return-type": "off",
     "react-hooks/rules-of-hooks": "error",
     "react-hooks/exhaustive-deps": "warn",
@@ -51,6 +51,7 @@ module.exports = {
       node: {
         extensions: [".js", ".jsx", ".ts", ".tsx"],
       },
+      typescript: {}, // this loads <rootdir>/tsconfig.json to eslint
     },
   },
 };

@@ -1475,6 +1475,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@material-ui/icons@npm:^4.9.1":
+  version: 4.9.1
+  resolution: "@material-ui/icons@npm:4.9.1"
+  dependencies:
+    "@babel/runtime": ^7.4.4
+  peerDependencies:
+    "@material-ui/core": ^4.0.0
+    "@types/react": ^16.8.6
+    react: ^16.8.0
+    react-dom: ^16.8.0
+  peerDependenciesMeta:
+    "@types/react":
+      optional: true
+  checksum: 110bb77f0758d16ad85b6a91f23fe05bac6790b30b6b1889b0578d7d42050c63c76e2764ec4991bdf342073de43e14ebfc171f1c63296a6dd8d523cc6c07d2bb
+  languageName: node
+  linkType: hard
+
 "@material-ui/styles@npm:^4.10.0":
   version: 4.10.0
   resolution: "@material-ui/styles@npm:4.10.0"
@@ -1831,6 +1848,13 @@ __metadata:
   version: 13.13.15
   resolution: "@types/node@npm:13.13.15"
   checksum: 767eefa7024d560b663b2c9ccd0ce0408ba45e7ce75f8010e8f7954ed14eb9fdf97f7ee4392183a4177dcca99fce088706c43b9bbc5d3adac194fa52a9c3f73f
+  languageName: node
+  linkType: hard
+
+"@types/nprogress@npm:^0":
+  version: 0.2.0
+  resolution: "@types/nprogress@npm:0.2.0"
+  checksum: f5831461b6984302ae8f4f7efaf963f9faaf8be1879db96bd2d4d48b32e4701141275fe5908b7b4c65fa817d92a09f3f95dbceed7146c1227017dac8915a6e90
   languageName: node
   linkType: hard
 
@@ -4505,6 +4529,22 @@ __metadata:
     debug: ^2.6.9
     resolve: ^1.13.1
   checksum: 825e34e662c988ece8229e6956a95f12d2fa19265b429e3e3db14e58bfe72e270c999cda0cfc690793ed6e6a3e49ffa8df0e0a8842d668a1f0f7de5ae1aa36f9
+  languageName: node
+  linkType: hard
+
+"eslint-import-resolver-typescript@npm:^2.2.1":
+  version: 2.2.1
+  resolution: "eslint-import-resolver-typescript@npm:2.2.1"
+  dependencies:
+    debug: ^4.1.1
+    glob: ^7.1.6
+    is-glob: ^4.0.1
+    resolve: ^1.17.0
+    tsconfig-paths: ^3.9.0
+  peerDependencies:
+    eslint: "*"
+    eslint-plugin-import: "*"
+  checksum: 323cbfe17531ea7e1c9baa09cb5b951bbfd345235659c76e28e0ed6597964388baac4bbdeeb2b2add552c3e43bd27905a0b86a0aae08b0eb45bea30ad4006175
   languageName: node
   linkType: hard
 
@@ -7323,6 +7363,13 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
+"nprogress@npm:^0.2.0":
+  version: 0.2.0
+  resolution: "nprogress@npm:0.2.0"
+  checksum: 652dfcfea776f9d9a2c3ad1f79b4cbd3056a03e7c6884966eab70fb184e8e70bfca9e0343ba89d11aa1ed95370d648fb638fab91b5dc027bdad54c8d37c96478
+  languageName: node
+  linkType: hard
+
 "number-is-nan@npm:^1.0.0":
   version: 1.0.1
   resolution: "number-is-nan@npm:1.0.1"
@@ -7616,6 +7663,7 @@ fsevents@~2.1.2:
   resolution: "par-le-monde-webapp@workspace:."
   dependencies:
     "@material-ui/core": ^4.11.0
+    "@material-ui/icons": ^4.9.1
     "@types/body-parser": ^1
     "@types/caniuse-lite": ^1
     "@types/cors": ^2
@@ -7625,6 +7673,7 @@ fsevents@~2.1.2:
     "@types/json-stable-stringify": ^1.0.32
     "@types/morgan": ^1
     "@types/node": ^14.0.27
+    "@types/nprogress": ^0
     "@types/prettier": ^2
     "@types/react": ^16.9.46
     "@types/webpack": ^4
@@ -7638,6 +7687,7 @@ fsevents@~2.1.2:
     eslint: ^7.6.0
     eslint-config-prettier: ^6.11.0
     eslint-import-resolver-node: ^0.3.4
+    eslint-import-resolver-typescript: ^2.2.1
     eslint-import-resolver-webpack: ^0.12.2
     eslint-plugin-arca: ^0.9.5
     eslint-plugin-import: ^2.22.0
@@ -7649,6 +7699,7 @@ fsevents@~2.1.2:
     json-stable-stringify: ^1.0.1
     morgan: ^1.10.0
     next: 9.5.2
+    nprogress: ^0.2.0
     prettier: ^2.0.5
     react: 16.13.1
     react-dom: 16.13.1

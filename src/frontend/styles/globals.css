@@ -1,16 +1,72 @@
-html,
-body {
-  padding: 0;
+@font-face {
+  font-family: "littledays";
+  src: local("littledays"), url(./littledays.woff) format("woff");
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+}
+
+p {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  padding: 0;
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
+.plm-logo-title {
+  font-family: "littledays", "Alegreya Sans", sans-serif !important;
+  font-size: 1.8rem !important;
+  font-weight: bold !important;
+  position: absolute;
+  top: 0.25rem;
+  left: 65px;
+}
+.tab-label > svg {
+  margin-left: 0.6rem;
+  margin-bottom: -0.4rem;
+}
+.MuiBottomNavigationAction-label.Mui-selected {
+  font-size: 0.75rem !important;
+}
+.MuiMobileStepper-dots {
+  margin: auto;
 }
 
-* {
-  box-sizing: border-box;
+.shake {
+  animation: shake 0.82s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+.text-center {
+  display: block;
+  width: 100%;
+  text-align: center;
+}
+
+@keyframes shake {
+  10%,
+  90% {
+    transform: translate3d(-1px, 0, 0);
+  }
+
+  20%,
+  80% {
+    transform: translate3d(2px, 0, 0);
+  }
+
+  30%,
+  50%,
+  70% {
+    transform: translate3d(-4px, 0, 0);
+  }
+
+  40%,
+  60% {
+    transform: translate3d(4px, 0, 0);
+  }
+}
+
+#nprogress .bar {
+  z-index: 2000 !important;
+  background-color: #fff !important;
+  height: 1px;
 }
