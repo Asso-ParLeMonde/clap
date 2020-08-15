@@ -59,6 +59,9 @@ async function startApp() {
   app.get("/", (_req, res) => {
     res.redirect("/create");
   });
+  app.get("/creer", (_req, res) => {
+    res.redirect("/create");
+  });
   app.get("*", (req, res) => {
     return handle(req, res);
   });

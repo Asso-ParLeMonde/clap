@@ -1,0 +1,9 @@
+{
+  "short_name": "Par Le monde",
+  "name": "Par Le monde",
+  "icons": [],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#6065fc",
+  "background_color": "#ffffff"
+}
