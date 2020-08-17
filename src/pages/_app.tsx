@@ -6,6 +6,7 @@ import "src/frontend/styles/globals.css";
 
 import { ThemeProvider } from "@material-ui/core/styles";
 import { CssBaseline } from "@material-ui/core";
+import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import type { AppProps, AppInitialProps, AppContext } from "next/app";
 import App from "next/app";
 import Head from "next/head";
@@ -14,23 +15,25 @@ import React from "react";
 
 import { TopNavBar } from "src/frontend/components/TopNavBar";
 import { useTranslationContext } from "src/frontend/i18n/useTranslation";
+import CreateLogo from "src/frontend/svg/create.svg";
+import SettingsLogo from "src/frontend/svg/settings.svg";
 import theme from "src/frontend/util/theme";
 
 const defaultTabs = [
   {
+    icon: <CreateLogo />,
     label: "create",
     path: "/create",
-    // icon: <CreateLogo />,
   },
   {
+    icon: <SettingsLogo />,
     label: "settings",
     path: "/settings",
-    // icon: <SettingsLogo />,
   },
   {
+    icon: <AccountCircleIcon />,
     label: "login",
     path: "/login",
-    // icon: <AccountCircleIcon />,
   },
 ];
 
@@ -94,6 +97,12 @@ MyApp.getInitialProps = async (appContext: AppContext): Promise<AppInitialProps 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const ctxRequest: any = appContext.ctx.req || {};
   const locales = ctxRequest.locales || {};
+  // Fix to 'wait' for useContext to get their values
+  await new Promise((resolve) => {
+    setTimeout(() => {
+      resolve();
+    }, 0);
+  });
   return { ...appProps, language: "fr", locales };
 };
 

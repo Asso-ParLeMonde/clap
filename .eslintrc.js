@@ -52,7 +52,7 @@ module.exports = {
   settings: {
     "import/resolver": {
       node: {
-        extensions: [".js", ".jsx", ".ts", ".tsx"],
+        extensions: [".js", ".jsx", ".ts", ".tsx", ".svg"],
       },
       typescript: {}, // this loads <rootdir>/tsconfig.json to eslint
     },

@@ -33,9 +33,6 @@ class Translator {
     if (options.count !== undefined) {
       pluralSuffix = this.pluralResolver.getPluralSuffix(this.language, options.count);
     }
-    if (this.locales[key + pluralSuffix] === undefined) {
-      console.warn(`Locale (${this.language}) not found for key: ${key + pluralSuffix} !`);
-    }
     let translatedStr = this.locales[key + pluralSuffix] || this.locales[key] || key;
     translatedStr = translatedStr.replace(optionsRegex, (_match: string, group: string) => `${options[group] !== undefined ? options[group] : ""}`);
     return translatedStr;

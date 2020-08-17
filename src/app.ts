@@ -69,7 +69,9 @@ async function startApp() {
   app.get(
     "*",
     handleErrors(async (req, res) => {
-      req.locales = await getLocales("fr");
+      if (req.path === "/create") {
+        req.locales = await getLocales("fr");
+      }
       return handle(req, res).catch((e) => console.error(e));
     }),
   );
