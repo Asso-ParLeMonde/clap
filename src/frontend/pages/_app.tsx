@@ -6,11 +6,11 @@ import { ThemeProvider } from "@material-ui/core/styles";
 import { CssBaseline } from "@material-ui/core";
 import type { AppProps } from "next/app";
 import Head from "next/head";
-import { useRouter } from "next/router";
 import NProgress from "nprogress";
 import React from "react";
 
 import { TopNavBar } from "src/frontend/components/TopNavBar";
+import { useTranslationContext } from "src/frontend/i18n/useTranslation";
 import theme from "src/frontend/util/theme";
 
 const defaultTabs = [
@@ -31,9 +31,13 @@ const defaultTabs = [
   },
 ];
 
-const MyApp: React.FunctionComponent<AppProps> = ({ Component, pageProps }: AppProps) => {
-  const router = useRouter();
-  const [path, setPath] = React.useState<string>("/");
+const MyApp: React.FunctionComponent<AppProps> = ({ Component, pageProps, router }: AppProps) => {
+  const { t, translationContext } = useTranslationContext("en", {
+    steps: "{{count}} step",
+    steps_plural: "{{count}} steps",
+    test: "jean",
+    welcome_message: "Bienvenue {{pseudo}} ! Today's timestamp for {{pseudo}} is: {{timestamp}}",
+  });
 
   const onRouterChangeStart = (): void => {
     NProgress.start();
@@ -42,7 +46,6 @@ const MyApp: React.FunctionComponent<AppProps> = ({ Component, pageProps }: AppP
     setTimeout(() => {
       NProgress.done();
     }, 200);
-    setPath(window.location.pathname);
   };
   React.useEffect(() => {
     // Remove the server-side injected CSS.
@@ -52,7 +55,6 @@ const MyApp: React.FunctionComponent<AppProps> = ({ Component, pageProps }: AppP
     }
 
     // get current route
-    setPath(window.location.pathname);
     router.events.on("routeChangeStart", onRouterChangeStart);
     router.events.on("routeChangeComplete", onRouterChangeComplete);
     router.events.on("routeChangeError", onRouterChangeComplete);
@@ -71,21 +73,13 @@ const MyApp: React.FunctionComponent<AppProps> = ({ Component, pageProps }: AppP
       </Head>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <TopNavBar title={"Par Le monde"} tabs={defaultTabs} homeLink="/create" currentPath={path} />
-        <Component {...pageProps} />
+        <translationContext.Provider value={t}>
+          <TopNavBar title={"Par Le monde"} tabs={defaultTabs} homeLink="/create" currentPath={router.pathname} />
+          <Component {...pageProps} />
+        </translationContext.Provider>
       </ThemeProvider>
     </>
   );
 };
-
-// Only uncomment this method if you have blocking data requirements for
-// every single page in your application. This disables the ability to
-// perform automatic static optimization, causing every page in your app to
-// be server-side rendered.
-// MyApp.getInitialProps = async (appContext: AppContext): Promise<MyAppProps> => {
-//   // calls page's `getInitialProps` and fills `appProps.pageProps`
-//   const appProps = await App.getInitialProps(appContext);
-//   return { ...appProps, route: appContext.router.route } as MyAppProps;
-// };
 
 export default MyApp;

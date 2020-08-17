@@ -8,5 +8,6 @@
     "noEmit": false
   },
   "include": ["src/**/*.ts"],
-  "exclude": ["node_modules", "src/frontend"]
+  "exclude": ["node_modules", "src/frontend"],
+  "files": ["./src/types/express/index.d.ts"]
 }

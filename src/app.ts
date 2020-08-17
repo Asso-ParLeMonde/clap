@@ -6,12 +6,12 @@ import helmet from "helmet";
 import morgan from "morgan";
 import next from "next";
 
-// Get environment variables before importing local functions
-config();
-
 import { removeTrailingSlash } from "./middlewares/trailingSlash";
+import { routes } from "./routes/routes";
 import { logger } from "./utils/logger";
 import { normalizePort, onError, getDefaultDirectives } from "./utils/server";
+
+config();
 
 const dev = process.env.NODE_ENV !== "production";
 const frontendHandler = next({ dev, dir: "./src/frontend" });
@@ -54,6 +54,8 @@ async function startApp() {
   backRouter.get("/", (_, res: Response) => {
     res.status(200).send("Hello World PLMO1 !");
   });
+  /* --- Controllers --- */
+  backRouter.use(routes);
 
   /* --- FRONTEND --- */
   app.get("/", (_req, res) => {
@@ -63,7 +65,7 @@ async function startApp() {
     res.redirect("/create");
   });
   app.get("*", (req, res) => {
-    return handle(req, res);
+    return handle(req, res).catch((e) => console.error(e));
   });
 
   /* --- Starting Server --- */
