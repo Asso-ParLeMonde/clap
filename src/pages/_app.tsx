@@ -1,10 +1,13 @@
 import "nprogress/nprogress.css";
 
-import "../styles/globals.css";
+import "src/frontend/components/create/ThemeCard.css";
+import "src/frontend/styles/create.css";
+import "src/frontend/styles/globals.css";
 
 import { ThemeProvider } from "@material-ui/core/styles";
 import { CssBaseline } from "@material-ui/core";
-import type { AppProps } from "next/app";
+import type { AppProps, AppInitialProps, AppContext } from "next/app";
+import App from "next/app";
 import Head from "next/head";
 import NProgress from "nprogress";
 import React from "react";
@@ -31,13 +34,16 @@ const defaultTabs = [
   },
 ];
 
-const MyApp: React.FunctionComponent<AppProps> = ({ Component, pageProps, router }: AppProps) => {
-  const { t, translationContext } = useTranslationContext("en", {
-    steps: "{{count}} step",
-    steps_plural: "{{count}} steps",
-    test: "jean",
-    welcome_message: "Bienvenue {{pseudo}} ! Today's timestamp for {{pseudo}} is: {{timestamp}}",
-  });
+interface MyAppOwnProps {
+  language: string;
+  locales: { [key: string]: string };
+}
+type MyAppProps = AppProps & MyAppOwnProps;
+
+const MyApp: React.FunctionComponent<AppProps> & {
+  getInitialProps(appContext: AppContext): Promise<AppInitialProps & { locales: { [key: string]: string } }>;
+} = ({ Component, pageProps, router, language, locales }: MyAppProps) => {
+  const { t, translationContext } = useTranslationContext(language, locales);
 
   const onRouterChangeStart = (): void => {
     NProgress.start();
@@ -80,6 +86,15 @@ const MyApp: React.FunctionComponent<AppProps> = ({ Component, pageProps, router
       </ThemeProvider>
     </>
   );
+};
+
+MyApp.getInitialProps = async (appContext: AppContext): Promise<AppInitialProps & MyAppOwnProps> => {
+  // calls page's `getInitialProps` and fills `appProps.pageProps`
+  const appProps = await App.getInitialProps(appContext);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const ctxRequest: any = appContext.ctx.req || {};
+  const locales = ctxRequest.locales || {};
+  return { ...appProps, language: "fr", locales };
 };
 
 export default MyApp;

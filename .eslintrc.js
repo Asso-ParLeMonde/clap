@@ -1,3 +1,5 @@
+const { off } = require("process");
+
 module.exports = {
   root: true,
   parser: "@typescript-eslint/parser",
@@ -24,6 +26,7 @@ module.exports = {
     "plugin:import/typescript",
   ],
   rules: {
+    "@typescript-eslint/no-empty-function": "off",
     "@typescript-eslint/no-inferrable-types": "off",
     "@typescript-eslint/member-delimiter-style": [
       "error",

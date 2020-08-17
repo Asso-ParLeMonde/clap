@@ -2,12 +2,12 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "module": "commonjs",
-    "target": "es2017",
+    "target": "es6",
     "outDir": "dist",
     "isolatedModules": false,
     "noEmit": false
   },
   "include": ["src/**/*.ts"],
-  "exclude": ["node_modules", "src/frontend"],
+  "exclude": ["node_modules", "src/frontend", "src/pages"],
   "files": ["./src/types/express/index.d.ts"]
 }

@@ -3,6 +3,8 @@ import { makeStyles } from "@material-ui/core/styles";
 import { useRouter } from "next/router";
 import React from "react";
 
+import { useTranslation } from "src/frontend/i18n/useTranslation";
+
 // === Styling the NavBarTab ===
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -37,6 +39,7 @@ export interface TabOwnProps {
 const NavBarTab: React.FunctionComponent<NavBarTabProps & TabOwnProps> = ({ label, path, icon = <span />, style = {}, selected = false }: NavBarTabProps & TabOwnProps) => {
   const classes = useStyles();
   const router = useRouter();
+  const { t } = useTranslation();
 
   return (
     <Tab
@@ -48,7 +51,7 @@ const NavBarTab: React.FunctionComponent<NavBarTabProps & TabOwnProps> = ({ labe
       href={path}
       label={
         <span className="tab-label">
-          {label}
+          {t(label)}
           {icon}
         </span>
       }

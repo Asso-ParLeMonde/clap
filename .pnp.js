@@ -50,6 +50,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         "npm:1.0.0"
       ],
       [
+        "@types/classnames",
+        "npm:2.2.10"
+      ],
+      [
         "@types/cors",
         "npm:2.8.7"
       ],
@@ -124,6 +128,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
       [
         "caniuse-lite",
         "npm:1.0.30001114"
+      ],
+      [
+        "classnames",
+        "npm:2.2.6"
       ],
       [
         "cors",
@@ -250,6 +258,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@material-ui/icons", "virtual:784c4e422f69c91b05301a87332b8eb0ab404565bcdd4efa9e62e0ea620a3f41285003e6d1929aee4bc684be2dbe5193048c9e73a2fee3798ad2265eafa364e8#npm:4.9.1"],
             ["@types/body-parser", "npm:1.19.0"],
             ["@types/caniuse-lite", "npm:1.0.0"],
+            ["@types/classnames", "npm:2.2.10"],
             ["@types/cors", "npm:2.8.7"],
             ["@types/eslint", "npm:7.2.0"],
             ["@types/eslint-plugin-prettier", "npm:3.1.0"],
@@ -269,6 +278,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["aws-sdk", "npm:2.734.0"],
             ["body-parser", "npm:1.19.0"],
             ["caniuse-lite", "npm:1.0.30001114"],
+            ["classnames", "npm:2.2.6"],
             ["cors", "npm:2.8.5"],
             ["dotenv", "npm:8.2.0"],
             ["eslint", "npm:7.6.0"],
@@ -2549,6 +2559,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/@types-caniuse-lite-npm-1.0.0-60150c33bb-6f55945bc0.zip/node_modules/@types/caniuse-lite/",
           "packageDependencies": [
             ["@types/caniuse-lite", "npm:1.0.0"]
+          ],
+          "linkType": "HARD",
+        }]
+      ]],
+      ["@types/classnames", [
+        ["npm:2.2.10", {
+          "packageLocation": "./.yarn/cache/@types-classnames-npm-2.2.10-68f3e4aa2f-31b6380183.zip/node_modules/@types/classnames/",
+          "packageDependencies": [
+            ["@types/classnames", "npm:2.2.10"]
           ],
           "linkType": "HARD",
         }]
@@ -9934,6 +9953,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@material-ui/icons", "virtual:784c4e422f69c91b05301a87332b8eb0ab404565bcdd4efa9e62e0ea620a3f41285003e6d1929aee4bc684be2dbe5193048c9e73a2fee3798ad2265eafa364e8#npm:4.9.1"],
             ["@types/body-parser", "npm:1.19.0"],
             ["@types/caniuse-lite", "npm:1.0.0"],
+            ["@types/classnames", "npm:2.2.10"],
             ["@types/cors", "npm:2.8.7"],
             ["@types/eslint", "npm:7.2.0"],
             ["@types/eslint-plugin-prettier", "npm:3.1.0"],
@@ -9953,6 +9973,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["aws-sdk", "npm:2.734.0"],
             ["body-parser", "npm:1.19.0"],
             ["caniuse-lite", "npm:1.0.30001114"],
+            ["classnames", "npm:2.2.6"],
             ["cors", "npm:2.8.5"],
             ["dotenv", "npm:8.2.0"],
             ["eslint", "npm:7.6.0"],

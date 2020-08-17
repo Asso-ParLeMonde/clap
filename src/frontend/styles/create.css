@@ -1,0 +1,8 @@
+.theme-cards-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-auto-rows: auto;
+  grid-gap: 16px;
+  max-width: 720px;
+  margin: 2rem auto 0 auto;
+}

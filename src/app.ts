@@ -6,15 +6,17 @@ import helmet from "helmet";
 import morgan from "morgan";
 import next from "next";
 
+import { handleErrors } from "./middlewares/handleErrors";
 import { removeTrailingSlash } from "./middlewares/trailingSlash";
 import { routes } from "./routes/routes";
+import { getLocales } from "./utils/getLocales";
 import { logger } from "./utils/logger";
 import { normalizePort, onError, getDefaultDirectives } from "./utils/server";
 
 config();
 
 const dev = process.env.NODE_ENV !== "production";
-const frontendHandler = next({ dev, dir: "./src/frontend" });
+const frontendHandler = next({ dev });
 const handle = frontendHandler.getRequestHandler();
 
 async function startApp() {
@@ -64,9 +66,13 @@ async function startApp() {
   app.get("/creer", (_req, res) => {
     res.redirect("/create");
   });
-  app.get("*", (req, res) => {
-    return handle(req, res).catch((e) => console.error(e));
-  });
+  app.get(
+    "*",
+    handleErrors(async (req, res) => {
+      req.locales = await getLocales("fr");
+      return handle(req, res).catch((e) => console.error(e));
+    }),
+  );
 
   /* --- Starting Server --- */
   const port = normalizePort(process.env.PORT || "5000");
