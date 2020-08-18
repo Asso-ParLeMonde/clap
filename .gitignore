@@ -42,3 +42,10 @@ mariaDB
 
 .next
 node_modules
+
+.yarn/*
+!.yarn/releases
+!.yarn/plugins
+!.yarn/sdks
+!.yarn/versions
+.pnp.*
