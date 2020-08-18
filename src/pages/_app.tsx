@@ -13,7 +13,7 @@ import Head from "next/head";
 import NProgress from "nprogress";
 import React from "react";
 
-import { TopNavBar } from "src/frontend/components/TopNavBar";
+import { TopNavBar } from "src/frontend/components/topNavBar";
 import { useTranslationContext } from "src/frontend/i18n/useTranslation";
 import CreateLogo from "src/frontend/svg/create.svg";
 import SettingsLogo from "src/frontend/svg/settings.svg";

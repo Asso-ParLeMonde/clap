@@ -2,12 +2,12 @@
 FROM node:12.13-alpine as build-dependencies
 
 # Create app directory
-WORKDIR /usr/src/app
+WORKDIR /app
 
 # Install app dependencies
 COPY package.json ./
 COPY yarn.lock ./
-RUN yarn set version berry
+COPY ./.yarn ./.yarn 
 COPY .yarnrc.yml ./
 RUN yarn install
 
@@ -30,24 +30,24 @@ RUN yarn build
 FROM node:12.13-slim as prod
 
 # Create app directory
-WORKDIR /usr/src/app
+WORKDIR /app
 
 # Install app dependencies
 COPY package.json ./
-COPY yarn.lock ./
-COPY yarnrc.yml ./
-COPY --from=build-dependencies ./.yarn ./.yarn
-COPY --from=build-dependencies .pnp.js ./
-RUN yarn set version berry
+COPY --from=build-dependencies app/yarn.lock ./
+COPY --from=build-dependencies app/.yarn ./.yarn
+COPY --from=build-dependencies app/.yarnrc.yml ./
 RUN yarn install
 
 # Copy app files
-COPY --from=build-dependencies dist dist
-COPY --from=build-dependencies public public
+COPY .env ./
+COPY next.config.js ./
+COPY --from=build-dependencies app/dist dist
+COPY --from=build-dependencies app/public public
 
 ENV DOCKER 1
 ENV NODE_ENV production
 
 EXPOSE 5000
-ENTRYPOINT ["dumb-init", "--"]
-CMD [ "yarn node", "./dist/app.js" ]
+# ENTRYPOINT ["dumb-init", "--"]
+CMD [ "yarn", "node", "./dist/app.js" ]

@@ -1,0 +1,30 @@
+FROM node:12.13-slim
+
+# Create app directory
+WORKDIR /app
+
+# Install app dependencies
+COPY package.json ./
+COPY yarn.lock ./
+COPY ./.yarn ./.yarn 
+COPY .yarnrc.yml ./
+RUN yarn install
+
+# Bundle app source
+COPY public ./public
+COPY src ./src
+COPY .env ./
+COPY .eslintignore ./
+COPY .eslintrc.js ./
+COPY .prettierrc.js ./
+COPY nodemon.json ./
+COPY next-env.d.ts ./
+COPY next.config.js ./
+COPY tsconfig.json ./
+COPY tsconfig.server.json ./
+
+ENV DOCKER 1
+
+EXPOSE 5000
+
+CMD [ "yarn", "dev" ]

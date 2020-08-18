@@ -49,3 +49,6 @@ node_modules
 !.yarn/sdks
 !.yarn/versions
 .pnp.*
+
+minio-data
+postgres-data

@@ -3,8 +3,8 @@ import { Container, Typography } from "@material-ui/core";
 import classnames from "classnames";
 import React from "react";
 
-import { ThemeCard } from "src/frontend/components/Create/ThemeCard";
 import { Inverted } from "src/frontend/components/Inverted";
+import { ThemeCard } from "src/frontend/components/create/ThemeCard";
 
 const useStyles = makeStyles((theme) => ({
   container: {
