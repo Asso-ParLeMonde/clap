@@ -4,6 +4,7 @@ import classnames from "classnames";
 import React from "react";
 
 import { Inverted } from "src/frontend/components/Inverted";
+import { Trans } from "src/frontend/components/Trans";
 import { ThemeCard } from "src/frontend/components/create/ThemeCard";
 
 const useStyles = makeStyles((theme) => ({
@@ -21,8 +22,9 @@ const Create: React.FunctionComponent = () => {
   return (
     <Container maxWidth="lg">
       <Typography color="primary" variant="h1">
-        {/* <Trans i18nKey="create_theme_title"> */}
-        Sur quel <Inverted>thème</Inverted> sera votre vidéo ?{/* </Trans> */}
+        <Trans i18nKey="create_theme_title">
+          Sur quel <Inverted>thème</Inverted> sera votre vidéo ?
+        </Trans>
       </Typography>
       <div className={classnames(classes.container, "theme-cards-container")}>
         <div key="new">
