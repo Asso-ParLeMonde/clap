@@ -29,9 +29,6 @@ class MyDocument extends Document {
         <Head>
           <meta name="theme-color" content="#6065fc" />
           <meta name="description" content="Par Le monde : Application de création de vidéos." />
-
-          <link href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap" rel="stylesheet" />
-          <link href="https://fonts.googleapis.com/css?family=Alegreya+Sans&display=swap" rel="stylesheet" />
         </Head>
         <body>
           <noscript>You need to enable JavaScript to run this app.</noscript>

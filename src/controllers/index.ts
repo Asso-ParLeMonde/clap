@@ -1,1 +1,2 @@
-export { LocalesController } from "./locales";
+export { LanguageController } from "./languageController";
+export { LocalesController } from "./localesController";

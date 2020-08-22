@@ -97,12 +97,6 @@ MyApp.getInitialProps = async (appContext: AppContext): Promise<AppInitialProps 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const ctxRequest: any = appContext.ctx.req || {};
   const locales = ctxRequest.locales || {};
-  // Fix to 'wait' for useContext to get their values
-  await new Promise((resolve) => {
-    setTimeout(() => {
-      resolve();
-    }, 0);
-  });
   return { ...appProps, language: "fr", locales };
 };
 

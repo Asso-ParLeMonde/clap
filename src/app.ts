@@ -5,10 +5,12 @@ import express, { Response, Router } from "express";
 import helmet from "helmet";
 import morgan from "morgan";
 import next from "next";
+import { Connection } from "typeorm";
 
 import { handleErrors } from "./middlewares/handleErrors";
 import { removeTrailingSlash } from "./middlewares/trailingSlash";
 import { routes } from "./routes/routes";
+import { connectToDatabase } from "./utils/database";
 import { getLocales } from "./utils/getLocales";
 import { logger } from "./utils/logger";
 import { normalizePort, onError, getDefaultDirectives } from "./utils/server";
@@ -20,6 +22,13 @@ const frontendHandler = next({ dev });
 const handle = frontendHandler.getRequestHandler();
 
 async function startApp() {
+  // Connect to DB
+  const connection: Connection | null = await connectToDatabase();
+  if (connection === null) {
+    throw new Error("Could not connect to database...");
+  }
+  logger.info(`Database connection established: ${connection.isConnected}`);
+
   // Prepare frontend routes
   await frontendHandler.prepare();
 

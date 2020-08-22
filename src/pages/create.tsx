@@ -14,11 +14,9 @@ const useStyles = makeStyles((theme) => ({
     },
   },
 }));
-// import { useTranslation } from "src/frontend/i18n/useTranslation";
 
 const Create: React.FunctionComponent = () => {
   const classes = useStyles();
-  // const { t } = useTranslation();
   return (
     <Container maxWidth="lg">
       <Typography color="primary" variant="h1">
