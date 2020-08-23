@@ -3,7 +3,7 @@ import Paper from "@material-ui/core/Paper";
 import { Typography } from "@material-ui/core";
 import React, { useEffect, useRef, useState } from "react";
 
-import { useTranslation } from "src/frontend/i18n/useTranslation";
+import { useTranslation } from "src/i18n/useTranslation";
 
 const colors = ["rgb(96, 105, 243)", "rgb(213, 89, 84)", "rgb(250, 225, 108)", "rgb(62, 65, 87)", "rgb(215, 213, 209)", "rgb(162, 220, 174)"];
 

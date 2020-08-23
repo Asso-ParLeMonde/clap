@@ -1,13 +1,14 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
+    "baseUrl": "./server",
     "module": "commonjs",
     "target": "es6",
-    "outDir": "dist",
+    "outDir": "dist/backend",
     "isolatedModules": false,
     "noEmit": false
   },
-  "include": ["src/**/*.ts"],
-  "exclude": ["node_modules", "src/frontend", "src/pages"],
-  "files": ["./src/types/express/index.d.ts"]
+  "include": ["server/**/*.ts", "types/**/*.ts"],
+  "exclude": ["node_modules", "types/next-hook.type.ts"],
+  "files": ["./types/express/index.d.ts"]
 }

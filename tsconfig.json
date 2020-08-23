@@ -27,7 +27,7 @@
     "resolveJsonModule": true,
     "isolatedModules": true
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
+  "include": ["next-env.d.ts", "src/**/*.ts", "src/**/*.tsx", "server/**/*.ts", "types/**/*.ts", "types/**/*.tsx"],
   "exclude": ["node_modules"],
-  "typeRoots": ["./src/types"]
+  "typeRoots": ["./types"]
 }

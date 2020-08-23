@@ -3,7 +3,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { useRouter } from "next/router";
 import React from "react";
 
-import { useTranslation } from "src/frontend/i18n/useTranslation";
+import { useTranslation } from "src/i18n/useTranslation";
 
 // === Styling the NavBarTab ===
 const useStyles = makeStyles((theme) => ({

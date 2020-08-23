@@ -3,9 +3,9 @@ import { Container, Typography } from "@material-ui/core";
 import classnames from "classnames";
 import React from "react";
 
-import { Inverted } from "src/frontend/components/Inverted";
-import { Trans } from "src/frontend/components/Trans";
-import { ThemeCard } from "src/frontend/components/create/ThemeCard";
+import { Inverted } from "src/components/Inverted";
+import { Trans } from "src/components/Trans";
+import { ThemeCard } from "src/components/create/ThemeCard";
 
 const useStyles = makeStyles((theme) => ({
   container: {

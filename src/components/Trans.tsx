@@ -1,6 +1,6 @@
 import React from "react";
 
-import { useTranslation } from "src/frontend/i18n/useTranslation";
+import { useTranslation } from "src/i18n/useTranslation";
 
 export interface TransProps {
   i18nKey: string;

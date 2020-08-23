@@ -5,7 +5,7 @@ import qs from "query-string";
 import React from "react";
 
 // import qs from "query-string";
-import { useTranslation } from "src/frontend/i18n/useTranslation";
+import { useTranslation } from "src/i18n/useTranslation";
 
 const errorMessages = {
   0: "login_unknown_error",
@@ -29,7 +29,7 @@ const Login: React.FunctionComponent = () => {
 
   React.useEffect(() => {
     try {
-      setRedirect(decodeURI(qs.parse(window.location.search, { ignoreQueryPrefix: true }).redirect || "/"));
+      setRedirect(decodeURI((qs.parse(window.location.search).redirect as string) || "/"));
     } catch (e) {
       setRedirect("/");
     }

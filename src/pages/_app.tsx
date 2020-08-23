@@ -1,7 +1,7 @@
 import "nprogress/nprogress.css";
 
-import "src/frontend/styles/globals.css";
-import "src/frontend/styles/user.css";
+import "src/styles/globals.css";
+import "src/styles/user.css";
 
 import { ThemeProvider } from "@material-ui/core/styles";
 import { CssBaseline } from "@material-ui/core";
@@ -12,12 +12,12 @@ import Head from "next/head";
 import NProgress from "nprogress";
 import React from "react";
 
-import type { User } from "src/entities/user";
-import { TopNavBar } from "src/frontend/components/topNavBar";
-import { useTranslationContext } from "src/frontend/i18n/useTranslation";
-import CreateLogo from "src/frontend/svg/create.svg";
-import SettingsLogo from "src/frontend/svg/settings.svg";
-import theme from "src/frontend/util/theme";
+// import type { User } from "server/entities/user";
+import { TopNavBar } from "src/components/topNavBar";
+import { useTranslationContext } from "src/i18n/useTranslation";
+import theme from "src/styles/theme";
+import CreateLogo from "src/svg/create.svg";
+import SettingsLogo from "src/svg/settings.svg";
 
 const defaultTabs = [
   {
@@ -41,13 +41,13 @@ interface MyAppOwnProps {
   language: string;
   locales: { [key: string]: string };
   csrfToken: string | null;
-  user: User | null;
+  // user: User | null;
 }
 type MyAppProps = AppProps & MyAppOwnProps;
 
 const MyApp: React.FunctionComponent<AppProps> & {
   getInitialProps(appContext: AppContext): Promise<AppInitialProps & { locales: { [key: string]: string } }>;
-} = ({ Component, pageProps, router, language, locales, csrfToken }: MyAppProps) => {
+} = ({ Component, pageProps, router, language, locales }: MyAppProps) => {
   const { t, translationContext } = useTranslationContext(language, locales);
 
   const onRouterChangeStart = (): void => {
@@ -100,8 +100,8 @@ MyApp.getInitialProps = async (appContext: AppContext): Promise<AppInitialProps 
   const ctxRequest: any = appContext.ctx.req || {};
   const locales = ctxRequest.locales || {};
   const csrfToken = ctxRequest.csrfToken || null;
-  const user = ctxRequest.user || null;
-  return { ...appProps, language: "fr", locales, csrfToken, user };
+  // const user = ctxRequest.user || null;
+  return { ...appProps, language: "fr", locales, csrfToken };
 };
 
 export default MyApp;

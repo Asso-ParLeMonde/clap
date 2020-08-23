@@ -6,14 +6,16 @@ WORKDIR /app
 
 # Install app dependencies
 COPY package.json ./
-COPY yarn.lock ./
-COPY ./.yarn ./.yarn 
-COPY .yarnrc.yml ./
+# COPY yarn.lock ./
+# COPY ./.yarn ./.yarn 
+# COPY .yarnrc.yml ./
 RUN yarn install
 
 # Bundle app source
 COPY public ./public
 COPY src ./src
+COPY server ./server
+COPY types ./types
 COPY .env ./
 COPY .eslintignore ./
 COPY .eslintrc.js ./
@@ -34,9 +36,9 @@ WORKDIR /app
 
 # Install app dependencies
 COPY package.json ./
-COPY --from=build-dependencies app/yarn.lock ./
-COPY --from=build-dependencies app/.yarn ./.yarn
-COPY --from=build-dependencies app/.yarnrc.yml ./
+# COPY --from=build-dependencies app/yarn.lock ./
+# COPY --from=build-dependencies app/.yarn ./.yarn
+# COPY --from=build-dependencies app/.yarnrc.yml ./
 RUN yarn install
 
 # Copy app files
@@ -50,4 +52,4 @@ ENV NODE_ENV production
 
 EXPOSE 5000
 # ENTRYPOINT ["dumb-init", "--"]
-CMD [ "yarn", "node", "./dist/app.js" ]
+CMD [ "yarn", "node", "./dist/backend/app.js" ]
