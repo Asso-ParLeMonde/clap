@@ -53,7 +53,10 @@ export class UserController extends Controller {
 
   @get({ path: "/test-pseudo/:pseudo" })
   public async getUserByPseudo(req: Request, res: Response): Promise<void> {
-    const nbUser: number = await getRepository(User).count({ where: { pseudo: req.params.pseudo || "" } });
+    const nbUser: number = await getRepository(User)
+      .createQueryBuilder()
+      .where("LOWER(pseudo) = LOWER(:pseudo)", { pseudo: req.params.pseudo || "" })
+      .getCount();
     res.sendJSON({ available: nbUser === 0 });
   }
 

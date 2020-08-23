@@ -1,7 +1,9 @@
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
+import type { Language as LanguageInterface } from "../../types/language.type";
+
 @Entity()
-export class Language {
+export class Language implements LanguageInterface {
   @PrimaryGeneratedColumn()
   public id: number;
 

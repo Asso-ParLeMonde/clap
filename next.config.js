@@ -1,6 +1,6 @@
 /* eslint-disable */
 module.exports = {
-  distDir: "./dist",
+  distDir: "./dist/next",
   poweredByHeader: false,
   webpack: (config) => {
     config.module.rules.push({

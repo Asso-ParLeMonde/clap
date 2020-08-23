@@ -52,4 +52,4 @@ ENV NODE_ENV production
 
 EXPOSE 5000
 # ENTRYPOINT ["dumb-init", "--"]
-CMD [ "yarn", "node", "./dist/backend/app.js" ]
+CMD [ "yarn", "node", "./dist/server/app.js" ]

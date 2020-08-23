@@ -1,13 +1,11 @@
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
-export enum UserType {
-  CLASS = 0,
-  ADMIN = 1,
-  PLMO_ADMIN = 2,
-}
+import { User as UserInterface, UserType } from "../../types/user.type";
+
+export { UserType };
 
 @Entity()
-export class User {
+export class User implements UserInterface {
   @PrimaryGeneratedColumn()
   public id: number;
 
