@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import { axiosRequest } from "src/components/axiosRequest";
+import { axiosRequest } from "src/services/axiosRequest";
 import { User } from "types/user.type";
 
 type UserServiceFunc = Promise<{ success: boolean; errorCode: number }>;

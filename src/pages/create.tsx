@@ -1,5 +1,5 @@
 import { makeStyles } from "@material-ui/core/styles";
-import { Container, Typography } from "@material-ui/core";
+import { Typography } from "@material-ui/core";
 import classnames from "classnames";
 import React from "react";
 
@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
 const Create: React.FunctionComponent = () => {
   const classes = useStyles();
   return (
-    <Container maxWidth="lg">
+    <>
       <Typography color="primary" variant="h1">
         <Trans i18nKey="create_theme_title">
           Sur quel <Inverted>thème</Inverted> sera votre vidéo ?
@@ -29,7 +29,7 @@ const Create: React.FunctionComponent = () => {
           <ThemeCard />
         </div>
       </div>
-    </Container>
+    </>
   );
 };
 

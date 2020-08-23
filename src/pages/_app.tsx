@@ -4,7 +4,7 @@ import "src/styles/globals.css";
 import "src/styles/user.css";
 
 import { ThemeProvider } from "@material-ui/core/styles";
-import { CssBaseline } from "@material-ui/core";
+import { CssBaseline, Container } from "@material-ui/core";
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import App from "next/app";
 import type { AppProps, AppInitialProps, AppContext } from "next/app";
@@ -39,7 +39,7 @@ const defaultTabs = [
 ];
 
 interface MyAppOwnProps {
-  language: string;
+  currentLocale: string;
   locales: { [key: string]: string };
   csrfToken: string | null;
   user: User | null;
@@ -48,8 +48,8 @@ type MyAppProps = AppProps & MyAppOwnProps;
 
 const MyApp: React.FunctionComponent<AppProps> & {
   getInitialProps(appContext: AppContext): Promise<AppInitialProps & { locales: { [key: string]: string } }>;
-} = ({ Component, pageProps, router, language, locales, user }: MyAppProps) => {
-  const { t, translationContext } = useTranslationContext(language, locales);
+} = ({ Component, pageProps, router, currentLocale, locales, user }: MyAppProps) => {
+  const { t, translationContext } = useTranslationContext(currentLocale, locales);
 
   const onRouterChangeStart = (): void => {
     NProgress.start();
@@ -85,10 +85,14 @@ const MyApp: React.FunctionComponent<AppProps> & {
       </Head>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <translationContext.Provider value={t}>
+        <translationContext.Provider value={{ t, currentLocale }}>
           <UserServiceProvider user={user}>
             <TopNavBar title={"Par Le monde"} tabs={defaultTabs} homeLink="/create" currentPath={router.pathname} />
-            <Component {...pageProps} />
+            <main>
+              <Container maxWidth="lg">
+                <Component {...pageProps} />
+              </Container>
+            </main>
           </UserServiceProvider>
         </translationContext.Provider>
       </ThemeProvider>
@@ -101,10 +105,11 @@ MyApp.getInitialProps = async (appContext: AppContext): Promise<AppInitialProps 
   const appProps = await App.getInitialProps(appContext);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const ctxRequest: any = appContext.ctx.req || {};
+  const currentLocale = ctxRequest.currentLocale || "fr";
   const locales = ctxRequest.locales || {};
   const csrfToken = ctxRequest.csrfToken || null;
   const user = ctxRequest.user || null;
-  return { ...appProps, language: "fr", locales, csrfToken, user };
+  return { ...appProps, locales, csrfToken, user, currentLocale };
 };
 
 export default MyApp;

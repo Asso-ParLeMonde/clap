@@ -1,5 +1,6 @@
 declare namespace Express {
   interface Request {
+    currentLocale: string;
     locales?: { [key: string]: string };
     user?: import("../../server/entities/user").User;
     getCsrfToken(): string;

@@ -14,6 +14,7 @@ services:
     volumes:
       - ./src:/app/src
       - ./server:/app/server
+      - ./types:/app/types
 
   postgres:
     image: postgres:12-alpine
