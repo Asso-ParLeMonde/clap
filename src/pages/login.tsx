@@ -4,8 +4,8 @@ import { useRouter } from "next/router";
 import qs from "query-string";
 import React from "react";
 
-// import qs from "query-string";
 import { useTranslation } from "src/i18n/useTranslation";
+import { UserServiceContext } from "src/services/UserService";
 
 const errorMessages = {
   0: "login_unknown_error",
@@ -16,6 +16,7 @@ const errorMessages = {
 
 const Login: React.FunctionComponent = () => {
   const { t } = useTranslation();
+  const { login } = React.useContext(UserServiceContext);
   const router = useRouter();
 
   const [showPassword, setShowPassword] = React.useState(false);
@@ -60,13 +61,12 @@ const Login: React.FunctionComponent = () => {
   const submit = async (event: React.MouseEvent) => {
     event.preventDefault();
     setErrorCode(-1);
-    console.log(user.username, user.password, user.remember);
-    // const response = await login(user.username, user.password, user.localSave);
-    // if (response.success) {
-    //   router.push(redirect);
-    // } else {
-    //   setErrorCode(response.errorCode || 0);
-    // }
+    const response = await login(user.username, user.password, user.localSave);
+    if (response.success) {
+      router.push(redirect);
+    } else {
+      setErrorCode(response.errorCode || 0);
+    }
   };
 
   const handleLinkClick = (path: string) => (event: React.MouseEvent) => {

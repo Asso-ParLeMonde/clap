@@ -109,6 +109,7 @@ export class UserController extends Controller {
     await getRepository(User).save(user);
 
     const accessToken = jwt.sign({ userId: user.id }, secret, { expiresIn: "1h" });
+    res.cookie("access-token", accessToken, { expires: new Date(Date.now() + 60 * 60000), httpOnly: true });
     res.sendJSON({ user: user.userWithoutPassword(), accessToken }); // send user
   }
 

@@ -11,7 +11,7 @@ export function authenticate(userType: UserType | undefined): RequestHandler {
   return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     let token: string;
     if (req.cookies && req.cookies["access-token"]) {
-      if (req.isCsrfValid) {
+      if (req.isCsrfValid || req.method === "GET") {
         // check cookie was not stolen
         token = req.cookies["access-token"];
       } else {
