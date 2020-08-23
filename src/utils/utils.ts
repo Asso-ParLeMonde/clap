@@ -1,3 +1,4 @@
+import { Request } from "express";
 import fs from "fs";
 
 /**
@@ -10,6 +11,16 @@ export function sleep(ms: number): Promise<void> {
       resolve();
     }, ms);
   });
+}
+
+export function getHeader(req: Request, header: string): string | undefined {
+  const headers: string | string[] | undefined = req.headers[header];
+  if (typeof headers === "string") {
+    return headers;
+  } else if (headers !== undefined) {
+    return headers[0] || undefined;
+  }
+  return undefined;
 }
 
 export function isPasswordValid(password: string): boolean {

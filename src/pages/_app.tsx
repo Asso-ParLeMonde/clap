@@ -1,8 +1,7 @@
 import "nprogress/nprogress.css";
 
-import "src/frontend/components/create/ThemeCard.css";
-import "src/frontend/styles/create.css";
 import "src/frontend/styles/globals.css";
+import "src/frontend/styles/user.css";
 
 import { ThemeProvider } from "@material-ui/core/styles";
 import { CssBaseline } from "@material-ui/core";
@@ -13,6 +12,7 @@ import Head from "next/head";
 import NProgress from "nprogress";
 import React from "react";
 
+import type { User } from "src/entities/user";
 import { TopNavBar } from "src/frontend/components/topNavBar";
 import { useTranslationContext } from "src/frontend/i18n/useTranslation";
 import CreateLogo from "src/frontend/svg/create.svg";
@@ -40,12 +40,14 @@ const defaultTabs = [
 interface MyAppOwnProps {
   language: string;
   locales: { [key: string]: string };
+  csrfToken: string | null;
+  user: User | null;
 }
 type MyAppProps = AppProps & MyAppOwnProps;
 
 const MyApp: React.FunctionComponent<AppProps> & {
   getInitialProps(appContext: AppContext): Promise<AppInitialProps & { locales: { [key: string]: string } }>;
-} = ({ Component, pageProps, router, language, locales }: MyAppProps) => {
+} = ({ Component, pageProps, router, language, locales, csrfToken }: MyAppProps) => {
   const { t, translationContext } = useTranslationContext(language, locales);
 
   const onRouterChangeStart = (): void => {
@@ -97,7 +99,9 @@ MyApp.getInitialProps = async (appContext: AppContext): Promise<AppInitialProps 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const ctxRequest: any = appContext.ctx.req || {};
   const locales = ctxRequest.locales || {};
-  return { ...appProps, language: "fr", locales };
+  const csrfToken = ctxRequest.csrfToken || null;
+  const user = ctxRequest.user || null;
+  return { ...appProps, language: "fr", locales, csrfToken, user };
 };
 
 export default MyApp;

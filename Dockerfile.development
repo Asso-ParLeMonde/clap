@@ -5,9 +5,8 @@ WORKDIR /app
 
 # Install app dependencies
 COPY package.json ./
-COPY yarn.lock ./
-COPY ./.yarn ./.yarn 
-COPY .yarnrc.yml ./
+# COPY ./.yarn ./.yarn 
+# COPY .yarnrc.yml ./
 RUN yarn install
 
 # Bundle app source

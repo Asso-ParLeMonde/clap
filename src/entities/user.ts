@@ -21,7 +21,7 @@ export class User {
   public managerFirstName: string;
 
   @Column({ type: "varchar", length: 150, unique: true })
-  public mail: string;
+  public email: string;
 
   @Column({ type: "varchar", length: 50, default: "" })
   public level: string;
@@ -29,7 +29,7 @@ export class User {
   @Column({ type: "varchar", length: 50, unique: true })
   public pseudo: string;
 
-  @Column({ type: "varchar", length: 200, unique: true })
+  @Column({ type: "varchar", length: 200, default: "" })
   public school: string;
 
   @Column({ default: 0 })

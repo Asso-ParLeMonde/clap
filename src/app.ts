@@ -1,12 +1,16 @@
 import bodyParser from "body-parser";
+import cookieParser from "cookie-parser";
 import cors from "cors";
 import { config } from "dotenv";
 import express, { Response, Router } from "express";
 import helmet from "helmet";
 import morgan from "morgan";
 import next from "next";
+import path from "path";
 import { Connection } from "typeorm";
 
+import { authenticate } from "./middlewares/authenticate";
+import { crsfProtection } from "./middlewares/csrfCheck";
 import { handleErrors } from "./middlewares/handleErrors";
 import { removeTrailingSlash } from "./middlewares/trailingSlash";
 import { routes } from "./routes/routes";
@@ -50,23 +54,21 @@ async function startApp() {
   );
   app.use(cors());
   app.use(removeTrailingSlash);
-  app.use(
-    morgan("dev", {
-      skip: function (req) {
-        return req.path.split("/")[1] === "_next";
-      },
-    }),
-  );
   app.use(bodyParser.json());
+  app.use(cookieParser());
+  app.use(crsfProtection());
 
   /* --- BACKEND --- */
   const backRouter = Router();
-  app.use("/api", backRouter);
+  backRouter.use(morgan("dev"));
   backRouter.get("/", (_, res: Response) => {
     res.status(200).send("Hello World PLMO1 !");
   });
-  /* --- Controllers --- */
   backRouter.use(routes);
+  backRouter.use((_, res: Response) => {
+    res.status(404).send("Error 404 - Not found.");
+  });
+  app.use("/api", backRouter);
 
   /* --- FRONTEND --- */
   app.get("/", (_req, res) => {
@@ -75,15 +77,24 @@ async function startApp() {
   app.get("/creer", (_req, res) => {
     res.redirect("/create");
   });
+  app.use(express.static(path.join(__dirname, "../public")));
+  app.get("/_next/*", (req, res) => {
+    handle(req, res).catch((e) => console.error(e));
+  });
   app.get(
     "*",
+    morgan("dev"),
+    handleErrors(authenticate(undefined)),
     handleErrors(async (req, res) => {
-      if (req.path === "/create") {
-        req.locales = await getLocales("fr");
-      }
+      req.locales = await getLocales("fr");
+      req.csrfToken = req.getCsrfToken();
       return handle(req, res).catch((e) => console.error(e));
     }),
   );
+  // last fallback
+  app.use(morgan("dev"), (_, res: Response) => {
+    res.status(404).send("Error 404 - Not found.");
+  });
 
   /* --- Starting Server --- */
   const port = normalizePort(process.env.PORT || "5000");

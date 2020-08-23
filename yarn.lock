@@ -2313,6 +2313,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/cookie-parser@npm:^1":
+  version: 1.4.2
+  resolution: "@types/cookie-parser@npm:1.4.2"
+  dependencies:
+    "@types/express": "*"
+  checksum: a27ce8cddf829def0afd59f8da71bf4d8ed8a91ae312bbd75464d6abd8aca8dff7a558ba20aee89a528619fb1758815f57f80f945a640825487778765cda81d5
+  languageName: node
+  linkType: hard
+
 "@types/cors@npm:^2":
   version: 2.8.7
   resolution: "@types/cors@npm:2.8.7"
@@ -2558,6 +2567,15 @@ __metadata:
   version: 6.9.4
   resolution: "@types/qs@npm:6.9.4"
   checksum: 152d2431f7d3ff20bb1525e40a4074aadc8dcde9368b0b1c153014f84cd49ef87218119e7e9d4a2ccd8a4a71c94523361fb4796d90b4328c2222816c0e422483
+  languageName: node
+  linkType: hard
+
+"@types/query-string@npm:^6":
+  version: 6.3.0
+  resolution: "@types/query-string@npm:6.3.0"
+  dependencies:
+    query-string: "*"
+  checksum: 29c8001780b04c8c9a61098b68f9389aaa4b1948d5a8a4dddca22a67ad133746c796623823fdcf1b88038612ef0dedf19e5f9423f796b5fcdb6f52e1d415ea0d
   languageName: node
   linkType: hard
 
@@ -4647,6 +4665,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"cookie-parser@npm:^1.4.5":
+  version: 1.4.5
+  resolution: "cookie-parser@npm:1.4.5"
+  dependencies:
+    cookie: 0.4.0
+    cookie-signature: 1.0.6
+  checksum: a3eeda832d81862477e40444a8d411595b91e15f9b1d2b397a173e9efa744a29129de9aaa99342cf9468641d854a464c4e215cd60d1df49374c9ccffa1af52bf
+  languageName: node
+  linkType: hard
+
 "cookie-signature@npm:1.0.6":
   version: 1.0.6
   resolution: "cookie-signature@npm:1.0.6"
@@ -4802,6 +4830,17 @@ __metadata:
   version: 2.0.0
   resolution: "crypto-random-string@npm:2.0.0"
   checksum: 7bc19f6cafe3194a434198c9414941cc36d874e1f85b6fcba573b5623f77a440c0a10a94c0d0da26d7d23d85b6fe07354e589ef1a0fe2d7b32e0bab9e70ca4c1
+  languageName: node
+  linkType: hard
+
+"csrf@npm:^3.1.0":
+  version: 3.1.0
+  resolution: "csrf@npm:3.1.0"
+  dependencies:
+    rndm: 1.2.0
+    tsscmp: 1.0.6
+    uid-safe: 2.1.5
+  checksum: 81ed32d3bb74806ad929aa590d0cbf8f41ae1d90ef0d9d51e82cd20b2e2262e9c3fd2565c4dc273d3cc116e29f6af19aa37e69f9307cf491b90cd3bdd9f83f4f
   languageName: node
   linkType: hard
 
@@ -9729,6 +9768,7 @@ fsevents@~2.1.2:
     "@types/body-parser": ^1
     "@types/caniuse-lite": ^1
     "@types/classnames": ^2
+    "@types/cookie-parser": ^1
     "@types/cors": ^2
     "@types/eslint": ^7
     "@types/eslint-plugin-prettier": ^3
@@ -9742,6 +9782,7 @@ fsevents@~2.1.2:
     "@types/node": ^14.0.27
     "@types/nprogress": ^0
     "@types/prettier": ^2
+    "@types/query-string": ^6
     "@types/react": ^16.9.46
     "@types/webpack": ^4
     "@typescript-eslint/eslint-plugin": ^3.9.0
@@ -9752,7 +9793,9 @@ fsevents@~2.1.2:
     body-parser: ^1.19.0
     caniuse-lite: ^1.0.30001114
     classnames: ^2.2.6
+    cookie-parser: ^1.4.5
     cors: ^2.8.5
+    csrf: ^3.1.0
     dotenv: ^8.2.0
     eslint: ^7.6.0
     eslint-config-prettier: ^6.11.0
@@ -9778,6 +9821,7 @@ fsevents@~2.1.2:
     nprogress: ^0.2.0
     pg: ^8.3.2
     prettier: ^2.0.5
+    query-string: ^6.13.1
     react: 16.13.1
     react-dom: 16.13.1
     ts-node: ^8.10.2
@@ -10537,6 +10581,17 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
+"query-string@npm:*, query-string@npm:^6.13.1":
+  version: 6.13.1
+  resolution: "query-string@npm:6.13.1"
+  dependencies:
+    decode-uri-component: ^0.2.0
+    split-on-first: ^1.0.0
+    strict-uri-encode: ^2.0.0
+  checksum: 5e640f0cf6077f3fd4dcb6d8f3a88306bbb5d5638001450b15a244ca74f76e4a6a1d70baff114cef43ca15670d5d2523f92113f3567561b9dbd1fcb26489066a
+  languageName: node
+  linkType: hard
+
 "query-string@npm:^4.1.0":
   version: 4.3.4
   resolution: "query-string@npm:4.3.4"
@@ -10565,6 +10620,13 @@ fsevents@~2.1.2:
   version: 5.1.1
   resolution: "quick-lru@npm:5.1.1"
   checksum: fafb2b2fa1a948d6f2e88d4a60571be70b316d9b0be857d24fba0ac28fc31acebf535b643fe968473d689f8c655bcb2a0e4da67912f571059a4e4eb15740b021
+  languageName: node
+  linkType: hard
+
+"random-bytes@npm:~1.0.0":
+  version: 1.0.0
+  resolution: "random-bytes@npm:1.0.0"
+  checksum: e60b4e1611b410b16dee4819040b19f787cce83e10f87518d0e0f807f2814b5f432d824740a79712903364ffc963c67ed1acbfb6d54201e9ab28fe80071617c9
   languageName: node
   linkType: hard
 
@@ -11101,6 +11163,13 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
+"rndm@npm:1.2.0":
+  version: 1.2.0
+  resolution: "rndm@npm:1.2.0"
+  checksum: b085cdbb521044b4c7a63f56c3f8e7713efab15b5185fc4f43396425da7499b99b73dd2c65189d55271230839d1f36157871c72fdf1f17ead9e2a1c258e3569c
+  languageName: node
+  linkType: hard
+
 "run-parallel@npm:^1.1.9":
   version: 1.1.9
   resolution: "run-parallel@npm:1.1.9"
@@ -11610,6 +11679,13 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
+"split-on-first@npm:^1.0.0":
+  version: 1.1.0
+  resolution: "split-on-first@npm:1.1.0"
+  checksum: 2ef26fee62665be9547e8035734b856e658b08fd13e70271a2f258147f29d1f18e12b5cb7f7670d83e113c172a9c5fe3d87d9d7c02a1d3d57824818d75d942ab
+  languageName: node
+  linkType: hard
+
 "split-string@npm:^3.0.1, split-string@npm:^3.0.2":
   version: 3.1.0
   resolution: "split-string@npm:3.1.0"
@@ -11819,6 +11895,13 @@ fsevents@~2.1.2:
   version: 1.1.0
   resolution: "strict-uri-encode@npm:1.1.0"
   checksum: 6c80f6998a45414d7c124772383cc10ce7bd22586af80762407cded1569666564fb8c0a4c9c997ac39a1116d46dfffc5d57135e759a0acb66a4da1191f5a3a4a
+  languageName: node
+  linkType: hard
+
+"strict-uri-encode@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "strict-uri-encode@npm:2.0.0"
+  checksum: 775012e88b9d8dff939d514bf376d615a15e8228a5dd587a94ac3c71fce41aa3635cd808aa796e2c1cd33f3f2fe2fbf89b74ee18a504a1905efa1854311e04bb
   languageName: node
   linkType: hard
 
@@ -12431,6 +12514,13 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
+"tsscmp@npm:1.0.6":
+  version: 1.0.6
+  resolution: "tsscmp@npm:1.0.6"
+  checksum: 1a5b76eb37c1a331f7e0b99f6414fdb1d58dffbc95301931a00e8728bc9fcb15b676d8e5eb2aecf884f424e8c9a218af388492cffe106539ffc0f8d09d8ab7c1
+  languageName: node
+  linkType: hard
+
 "tsutils@npm:^3.17.1":
   version: 3.17.1
   resolution: "tsutils@npm:3.17.1"
@@ -12577,6 +12667,15 @@ typescript@^3.9.7:
     tsc: bin/tsc
     tsserver: bin/tsserver
   checksum: f0d3d9c987860c7c458229ab6dd7e3d322405db36b70abccba610b5efd9f9451e4e67a3fc7983c0d3741033c1f1a8d7aa859a1510caa8f20fad762fc39648bfa
+  languageName: node
+  linkType: hard
+
+"uid-safe@npm:2.1.5":
+  version: 2.1.5
+  resolution: "uid-safe@npm:2.1.5"
+  dependencies:
+    random-bytes: ~1.0.0
+  checksum: 3babb99505759403264600665e7e639ac8ab4a5e608bcc9442e35a59bc72c6c4c0e305de70612b7e3ab4866d5e3adeeb419a22f011b64d445039b947a33824ee
   languageName: node
   linkType: hard
 
