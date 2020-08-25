@@ -1,8 +1,9 @@
+import { AxiosRequestConfig } from "axios";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
 
-import { axiosRequest } from "src/util/axiosRequest";
-import { User } from "types/user.type";
+import { AxiosReturnType, axiosRequest } from "src/util/axiosRequest";
+import { User } from "types/entities/user.type";
 
 type UserServiceFunc = Promise<{ success: boolean; errorCode: number }>;
 
@@ -10,7 +11,7 @@ interface UserServiceContextValue {
   user: User | null;
   isLoggedIn: boolean;
   login(username: string, password: string, remember: boolean): UserServiceFunc;
-  axiosLoggedRequest(_req: any): Promise<void>;
+  axiosLoggedRequest(req: AxiosRequestConfig): Promise<AxiosReturnType>;
   signup(user: User, inviteCode?: string): UserServiceFunc;
   updatePassword(user: User): UserServiceFunc;
   verifyEmail(user: User): UserServiceFunc;
@@ -21,10 +22,11 @@ export const UserServiceContext = React.createContext<UserServiceContextValue>(u
 
 interface UserServiceProviderProps {
   user: User | null;
+  csrfToken: string;
   children: React.ReactNodeArray;
 }
 
-export const UserServiceProvider: React.FunctionComponent<UserServiceProviderProps> = ({ user: initialUser, children }: UserServiceProviderProps) => {
+export const UserServiceProvider: React.FunctionComponent<UserServiceProviderProps> = ({ user: initialUser, csrfToken, children }: UserServiceProviderProps) => {
   const [user, setUser] = useState<User | null>(initialUser);
   const router = useRouter();
 
@@ -150,9 +152,9 @@ export const UserServiceProvider: React.FunctionComponent<UserServiceProviderPro
     };
   };
 
-  const logoutSessionExpired = async () => {
-    // TODO;
-  };
+  // const logoutSessionExpired = async () => {
+  //   // TODO;
+  // };
 
   /**
    * Do an Axios logged request to the backend with the csrf token.
@@ -160,8 +162,15 @@ export const UserServiceProvider: React.FunctionComponent<UserServiceProviderPro
    * @returns {Promise<{data, pending, error, complete}>}
    */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
-  const axiosLoggedRequest = async (_req: any): Promise<void> => {
-    // TODO;
+  const axiosLoggedRequest = async (req: AxiosRequestConfig): Promise<AxiosReturnType> => {
+    const response = await axiosRequest({
+      ...req,
+      headers: {
+        "csrf-token": csrfToken,
+      },
+    });
+    // if (response.error) ...
+    return response;
   };
 
   const isLoggedIn = user !== null;

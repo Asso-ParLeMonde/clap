@@ -28,4 +28,5 @@ ENV DOCKER 1
 
 EXPOSE 5000
 
+# RUN yarn build
 CMD [ "yarn", "dev" ]

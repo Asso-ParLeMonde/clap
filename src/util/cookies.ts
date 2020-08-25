@@ -28,4 +28,5 @@ export function setCookie(
   }
 
   document.cookie = updatedCookie;
+  alert(updatedCookie);
 }

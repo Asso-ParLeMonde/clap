@@ -1,6 +1,6 @@
-import axios from "axios";
+import axios, { AxiosRequestConfig } from "axios";
 
-interface AxiosReturnType {
+export interface AxiosReturnType {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data: any;
   error: boolean;
@@ -8,7 +8,7 @@ interface AxiosReturnType {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/explicit-module-boundary-types
-const axiosRequest = async (req: any): Promise<AxiosReturnType> => {
+const axiosRequest = async (req: AxiosRequestConfig): Promise<AxiosReturnType> => {
   try {
     const axiosOptions = {
       ...req,

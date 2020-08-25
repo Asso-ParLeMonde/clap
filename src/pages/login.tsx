@@ -61,7 +61,7 @@ const Login: React.FunctionComponent = () => {
   const submit = async (event: React.MouseEvent) => {
     event.preventDefault();
     setErrorCode(-1);
-    const response = await login(user.username, user.password, user.localSave);
+    const response = await login(user.username, user.password, user.remember);
     if (response.success) {
       router.push(redirect);
     } else {

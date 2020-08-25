@@ -5,7 +5,7 @@ import { useTranslation } from "src/i18n/useTranslation";
 import { UserServiceContext } from "src/services/UserService";
 import { axiosRequest } from "src/util/axiosRequest";
 import { setCookie } from "src/util/cookies";
-import type { Language } from "types/language.type";
+import type { Language } from "types/entities/language.type";
 
 const RedButton = withStyles((theme) => ({
   root: {
@@ -23,7 +23,9 @@ const Settings: React.FunctionComponent = () => {
 
   const handleLanguageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setCurrentLanguage(event.target.value);
-    setCookie("app-language", event.target.value);
+    setCookie("app-language", event.target.value, {
+      "max-age": 24 * 60 * 60,
+    });
     window.location.reload();
   };
 

@@ -6,6 +6,8 @@ import React from "react";
 import { Inverted } from "src/components/Inverted";
 import { Trans } from "src/components/Trans";
 import { ThemeCard } from "src/components/create/ThemeCard";
+import { UserServiceContext } from "src/services/UserService";
+import type { Theme } from "types/entities/theme.type";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -17,6 +19,27 @@ const useStyles = makeStyles((theme) => ({
 
 const Create: React.FunctionComponent = () => {
   const classes = useStyles();
+  const { isLoggedIn, axiosLoggedRequest } = React.useContext(UserServiceContext);
+  const [themes, setThemes] = React.useState<Theme[]>([]);
+
+  const getThemes = React.useCallback(async () => {
+    let url: string = "/themes?isPublished=true";
+    if (isLoggedIn) {
+      url += "&user";
+    }
+    const response = await axiosLoggedRequest({
+      method: "GET",
+      url,
+    });
+    if (!response.error) {
+      setThemes(response.data);
+    }
+  }, [isLoggedIn, axiosLoggedRequest]);
+
+  React.useEffect(() => {
+    getThemes().catch();
+  }, [getThemes]);
+
   return (
     <>
       <Typography color="primary" variant="h1">
@@ -28,6 +51,11 @@ const Create: React.FunctionComponent = () => {
         <div key="new">
           <ThemeCard />
         </div>
+        {themes.map((t, index) => (
+          <div key={index}>
+            <ThemeCard {...t} />
+          </div>
+        ))}
       </div>
     </>
   );

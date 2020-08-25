@@ -8,51 +8,47 @@ import { useTranslation } from "src/i18n/useTranslation";
 const colors = ["rgb(96, 105, 243)", "rgb(213, 89, 84)", "rgb(250, 225, 108)", "rgb(62, 65, 87)", "rgb(215, 213, 209)", "rgb(162, 220, 174)"];
 
 interface ThemeCardProps {
-  themeId?: string | number | null;
-  theme?: {
-    names: { [key: string]: string };
-    image?: {
-      path: string;
-    } | null;
+  id?: string | number | null;
+  names?: { [key: string]: string };
+  image?: {
+    path: string;
   } | null;
-  onClick?: (event: React.MouseEvent) => void;
+  onClick?(event: React.MouseEvent): void;
 }
 
-export const ThemeCard: React.FunctionComponent<ThemeCardProps> = ({ themeId = null, theme = null, onClick = () => {} }: ThemeCardProps) => {
+export const ThemeCard: React.FunctionComponent<ThemeCardProps> = ({ id, names, image, onClick = () => {} }: ThemeCardProps) => {
   const img = useRef(null);
-  const { t } = useTranslation();
-  // const { selectedLanguage } = useContext(AppLanguageServiceContext);
-  const selectedLanguage = "fr";
+  const { currentLocale, t } = useTranslation();
   const [imgHasError, setImgHasError] = useState(false);
 
-  const themeName = theme === null ? t("create_new_theme") : theme.names[selectedLanguage] || theme.names.fr;
-  const themeUrl = theme === null ? "/create/new-theme" : `/create/1-scenario-choice?themeId=${themeId}`;
+  const themeName = names === undefined ? t("create_new_theme") : names[currentLocale] || names.fr;
+  const themeUrl = id !== undefined ? `/create/1-scenario-choice?themeId=${id}` : "/create/new-theme";
 
   useEffect(() => {
-    if (theme !== null && theme.image !== undefined && theme.image !== null) {
-      const image = new Image();
-      image.onload = () => {
+    if (image !== undefined) {
+      const i = new Image();
+      i.onload = () => {
         if (img && img.current) {
-          img.current.src = image.src;
+          img.current.src = i.src;
         }
       };
-      image.onerror = () => {
+      i.onerror = () => {
         setImgHasError(true);
       };
-      image.src = theme.image.path;
+      i.src = image.path;
     }
-  }, [theme]);
+  }, [image]);
 
   return (
     <a className="theme-card-button" href={themeUrl} onClick={onClick}>
       <Paper className="theme-card-paper">
-        {theme !== null && theme.image && !imgHasError ? (
+        {id !== undefined && image && !imgHasError ? (
           <CardMedia ref={img} component="img" alt={`picture of ${themeName} theme`} image="/classe_default.png" />
         ) : (
           <div
             className="theme-card-default"
             style={{
-              backgroundColor: colors[(typeof themeId === "string" ? parseInt(themeId.split("_")[1], 10) || 0 : themeId) % 6],
+              backgroundColor: colors[(typeof id === "string" ? parseInt(id.split("_")[1], 10) || 0 : id || 0) % 6],
             }}
           />
         )}

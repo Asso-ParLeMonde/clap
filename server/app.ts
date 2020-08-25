@@ -86,7 +86,7 @@ async function startApp() {
     morgan("dev"),
     handleErrors(authenticate(undefined)),
     handleErrors(async (req, res) => {
-      req.currentLocale = req?.cookies["app-language"] || req?.user.languageCode || "fr";
+      req.currentLocale = req.cookies?.["app-language"] || req.user?.languageCode || "fr";
       req.locales = await getLocales(req.currentLocale);
       req.csrfToken = req.getCsrfToken();
       return handle(req, res).catch((e) => console.error(e));
