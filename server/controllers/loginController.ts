@@ -65,11 +65,11 @@ export class LoginController extends Controller {
       refreshToken.token = await argon2.hash(rToken);
       refreshToken.userId = user.id;
       await getRepository(Token).save(refreshToken);
-      res.cookie("access-token", accessToken, { expires: new Date(Date.now() + 60 * 60000), httpOnly: true });
-      res.cookie("refresh-token", refreshToken, { expires: new Date(Date.now() + 24 * 60 * 60000), httpOnly: true });
+      res.cookie("access-token", accessToken, { maxAge: 60 * 60000, expires: new Date(Date.now() + 60 * 60000), httpOnly: true });
+      res.cookie("refresh-token", refreshToken, { maxAge: 24 * 60 * 60000, expires: new Date(Date.now() + 24 * 60 * 60000), httpOnly: true });
       res.sendJSON({ user: user.userWithoutPassword(), accessToken, refreshToken: `${refreshToken.id}-${rToken}` });
     } else {
-      res.cookie("access-token", accessToken, { expires: new Date(Date.now() + 60 * 60000), httpOnly: true });
+      res.cookie("access-token", accessToken, { maxAge: 60 * 60000, expires: new Date(Date.now() + 60 * 60000), httpOnly: true });
       res.sendJSON({ user: user.userWithoutPassword(), accessToken });
     }
   }
@@ -132,7 +132,7 @@ export class LoginController extends Controller {
 
     // login user
     const accessToken = jwt.sign({ userId: user.id }, secret, { expiresIn: "1h" });
-    res.cookie("access-token", accessToken, { expires: new Date(Date.now() + 60 * 60000), httpOnly: true });
+    res.cookie("access-token", accessToken, { maxAge: 60 * 60000, expires: new Date(Date.now() + 60 * 60000), httpOnly: true });
     res.sendJSON({ user: user.userWithoutPassword(), accessToken }); // send new user
   }
 
@@ -170,7 +170,7 @@ export class LoginController extends Controller {
 
     // login user
     const accessToken = jwt.sign({ userId: user.id }, secret, { expiresIn: "1h" });
-    res.cookie("access-token", accessToken, { expires: new Date(Date.now() + 60 * 60000), httpOnly: true });
+    res.cookie("access-token", accessToken, { maxAge: 60 * 60000, expires: new Date(Date.now() + 60 * 60000), httpOnly: true });
     res.sendJSON({ user: user.userWithoutPassword(), accessToken });
   }
 
@@ -196,7 +196,6 @@ export class LoginController extends Controller {
     }
 
     const accessToken = jwt.sign({ userId: refreshToken.userId }, secret, { expiresIn: "1h" });
-    res.cookie("access-token", accessToken, { expires: new Date(Date.now() + 60 * 60000), httpOnly: true });
     res.sendJSON({ accessToken });
   }
 

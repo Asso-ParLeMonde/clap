@@ -6,11 +6,13 @@ import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import { useRouter } from "next/router";
-// import { useTranslation } from "react-i18next";
 import React, { useEffect } from "react";
 
+import { UserServiceContext } from "src/services/UserService";
+import { getTabs } from "src/util/tabs";
+
 import ElevationScroll from "./ElevationScroll";
-import NavBarTab, { NavBarTabProps } from "./NavBarTab";
+import NavBarTab from "./NavBarTab";
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -23,28 +25,30 @@ const useStyles = makeStyles((theme) => ({
 
 interface NavBarProps {
   title: string;
-  tabs: NavBarTabProps[];
   homeLink: string;
   currentPath: string;
 }
 
-const t = (s: string): string => s;
-
 export const NavBar: React.FunctionComponent<NavBarProps> = (props: NavBarProps) => {
-  // const { t } = useTranslation();
   const classes = useStyles();
   const router = useRouter();
   const [value, setValue] = React.useState(1);
+  const { isLoggedIn } = React.useContext(UserServiceContext);
+
+  const tabs = getTabs(isLoggedIn);
 
   useEffect(() => {
-    const index = props.tabs.reduce((i1, tab, i2) => (tab.path.split("/")[1] === props.currentPath.split("/")[1] ? i2 : i1), -1);
+    const navtabs = getTabs(isLoggedIn);
+    const index = navtabs.reduce((i1, tab, i2) => (tab.path.split("/")[1] === props.currentPath.split("/")[1] ? i2 : i1), -1);
     setValue(index + 1);
-  }, [props.tabs, props.currentPath]);
+  }, [isLoggedIn, props.currentPath]);
 
-  const handleHomeLink = (event: any): void => {
+  const handleHomeLink = (event: React.MouseEvent): void => {
     event.preventDefault();
     router.push(props.homeLink);
   };
+
+  const currentTab = value > tabs.length ? 0 : value;
 
   return (
     <React.Fragment>
@@ -62,10 +66,10 @@ export const NavBar: React.FunctionComponent<NavBarProps> = (props: NavBarProps)
                   </a>
                 </Grid>
                 <Grid item>
-                  <Tabs value={value} aria-label="navbar" classes={{ indicator: classes.indicator }}>
+                  <Tabs value={currentTab} aria-label="navbar" classes={{ indicator: classes.indicator }}>
                     <NavBarTab label="" path="/" style={{ display: "none" }} />
-                    {props.tabs.map((tab, index) => (
-                      <NavBarTab label={t(tab.label)} path={tab.path} icon={tab.icon} key={index} selected={index === value - 1} />
+                    {tabs.map((tab, index) => (
+                      <NavBarTab label={tab.label} path={tab.path} icon={tab.icon} key={index} selected={index === currentTab - 1} />
                     ))}
                   </Tabs>
                 </Grid>

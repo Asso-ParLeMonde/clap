@@ -4,10 +4,9 @@ import "src/styles/globals.css";
 import "src/styles/user.css";
 
 import { ThemeProvider } from "@material-ui/core/styles";
-import { CssBaseline, Container } from "@material-ui/core";
-import AccountCircleIcon from "@material-ui/icons/AccountCircle";
-import App from "next/app";
+import { CssBaseline, Container, Hidden } from "@material-ui/core";
 import type { AppProps, AppInitialProps, AppContext } from "next/app";
+import App from "next/app";
 import Head from "next/head";
 import NProgress from "nprogress";
 import React from "react";
@@ -16,27 +15,7 @@ import { TopNavBar } from "src/components/topNavBar";
 import { useTranslationContext } from "src/i18n/useTranslation";
 import { UserServiceProvider } from "src/services/UserService";
 import theme from "src/styles/theme";
-import CreateLogo from "src/svg/create.svg";
-import SettingsLogo from "src/svg/settings.svg";
 import { User } from "types/user.type";
-
-const defaultTabs = [
-  {
-    icon: <CreateLogo />,
-    label: "create",
-    path: "/create",
-  },
-  {
-    icon: <SettingsLogo />,
-    label: "settings",
-    path: "/settings",
-  },
-  {
-    icon: <AccountCircleIcon />,
-    label: "login",
-    path: "/login",
-  },
-];
 
 interface MyAppOwnProps {
   currentLocale: string;
@@ -87,7 +66,9 @@ const MyApp: React.FunctionComponent<AppProps> & {
         <CssBaseline />
         <translationContext.Provider value={{ t, currentLocale }}>
           <UserServiceProvider user={user}>
-            <TopNavBar title={"Par Le monde"} tabs={defaultTabs} homeLink="/create" currentPath={router.pathname} />
+            <Hidden smDown>
+              <TopNavBar title={"Par Le monde"} homeLink="/create" currentPath={router.pathname} />
+            </Hidden>
             <main>
               <Container maxWidth="lg">
                 <Component {...pageProps} />

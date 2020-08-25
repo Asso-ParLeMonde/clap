@@ -1,6 +1,7 @@
+import { useRouter } from "next/router";
 import React, { useState } from "react";
 
-import { axiosRequest } from "src/services/axiosRequest";
+import { axiosRequest } from "src/util/axiosRequest";
 import { User } from "types/user.type";
 
 type UserServiceFunc = Promise<{ success: boolean; errorCode: number }>;
@@ -25,6 +26,7 @@ interface UserServiceProviderProps {
 
 export const UserServiceProvider: React.FunctionComponent<UserServiceProviderProps> = ({ user: initialUser, children }: UserServiceProviderProps) => {
   const [user, setUser] = useState<User | null>(initialUser);
+  const router = useRouter();
 
   /**
    * Login the user with username and password.
@@ -59,7 +61,14 @@ export const UserServiceProvider: React.FunctionComponent<UserServiceProviderPro
   };
 
   const logout = async (): Promise<void> => {
-    // TODO;
+    // reject access token and server will delete cookies
+    await axiosRequest({
+      method: "POST",
+      url: "/logout",
+      // withCredentials: true,
+    });
+    setUser(null);
+    router.push("/create");
   };
 
   /**
@@ -142,10 +151,6 @@ export const UserServiceProvider: React.FunctionComponent<UserServiceProviderPro
   };
 
   const logoutSessionExpired = async () => {
-    // TODO;
-  };
-
-  const refreshAccessToken = async () => {
     // TODO;
   };
 

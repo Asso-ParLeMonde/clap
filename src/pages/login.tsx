@@ -26,13 +26,13 @@ const Login: React.FunctionComponent = () => {
     remember: false,
   });
   const [errorCode, setErrorCode] = React.useState(-1);
-  const [redirect, setRedirect] = React.useState("/");
+  const [redirect, setRedirect] = React.useState("/create");
 
   React.useEffect(() => {
     try {
-      setRedirect(decodeURI((qs.parse(window.location.search).redirect as string) || "/"));
+      setRedirect(decodeURI((qs.parse(window.location.search).redirect as string) || "/create"));
     } catch (e) {
-      setRedirect("/");
+      setRedirect("/create");
     }
   }, []);
 

@@ -3,8 +3,8 @@ import React, { useContext } from "react";
 
 import { useTranslation } from "src/i18n/useTranslation";
 import { UserServiceContext } from "src/services/UserService";
-import { axiosRequest } from "src/services/axiosRequest";
-import { setCookie } from "src/services/cookies";
+import { axiosRequest } from "src/util/axiosRequest";
+import { setCookie } from "src/util/cookies";
 import type { Language } from "types/language.type";
 
 const RedButton = withStyles((theme) => ({
