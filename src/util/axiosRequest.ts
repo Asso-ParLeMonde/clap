@@ -11,8 +11,8 @@ export interface AxiosReturnType {
 const axiosRequest = async (req: AxiosRequestConfig): Promise<AxiosReturnType> => {
   try {
     const axiosOptions = {
-      ...req,
       baseURL: process.env.NEXT_PUBLIC_BASE_APP,
+      ...req,
     };
     const res = await axios(axiosOptions);
     return {

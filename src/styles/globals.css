@@ -142,3 +142,11 @@ p {
   background-color: #fff !important;
   height: 1px;
 }
+
+@media (max-width: 959.95px) {
+  #nprogress .bar {
+    z-index: 2000 !important;
+    background-color: #6065fc !important;
+    height: 1px;
+  }
+}

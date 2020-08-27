@@ -1,3 +1,12 @@
+/* ---- NAVBAR ---- */
+.bottom-navbar {
+  position: fixed;
+  width: 100vw;
+  bottom: 0;
+  background-color: #fafafa !important;
+  border-top: 1px solid rgba(128, 128, 128, 0.7);
+}
+
 /* ---- THEMES ---- */
 .theme-cards-container {
   display: grid;

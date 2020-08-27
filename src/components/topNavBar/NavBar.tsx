@@ -26,22 +26,21 @@ const useStyles = makeStyles((theme) => ({
 interface NavBarProps {
   title: string;
   homeLink: string;
-  currentPath: string;
 }
 
 export const NavBar: React.FunctionComponent<NavBarProps> = (props: NavBarProps) => {
   const classes = useStyles();
   const router = useRouter();
-  const [value, setValue] = React.useState(1);
+  const [value, setValue] = React.useState(0);
   const { isLoggedIn } = React.useContext(UserServiceContext);
 
   const tabs = getTabs(isLoggedIn);
 
   useEffect(() => {
     const navtabs = getTabs(isLoggedIn);
-    const index = navtabs.reduce((i1, tab, i2) => (tab.path.split("/")[1] === props.currentPath.split("/")[1] ? i2 : i1), -1);
+    const index = navtabs.reduce((i1, tab, i2) => (tab.path.split("/")[1] === router.pathname.split("/")[1] ? i2 : i1), -1);
     setValue(index + 1);
-  }, [isLoggedIn, props.currentPath]);
+  }, [isLoggedIn, router.pathname]);
 
   const handleHomeLink = (event: React.MouseEvent): void => {
     event.preventDefault();

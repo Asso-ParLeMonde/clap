@@ -1,12 +1,15 @@
 import { makeStyles } from "@material-ui/core/styles";
 import { Typography } from "@material-ui/core";
+import type { AxiosRequestConfig } from "axios";
 import classnames from "classnames";
+import type { NextPage, NextPageContext } from "next";
 import React from "react";
 
 import { Inverted } from "src/components/Inverted";
 import { Trans } from "src/components/Trans";
 import { ThemeCard } from "src/components/create/ThemeCard";
-import { UserServiceContext } from "src/services/UserService";
+import { axiosRequest } from "src/util/axiosRequest";
+import { getInitialData } from "src/util/data";
 import type { Theme } from "types/entities/theme.type";
 
 const useStyles = makeStyles((theme) => ({
@@ -17,28 +20,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Create: React.FunctionComponent = () => {
+interface CreateProps {
+  themes: Theme[];
+}
+
+const Create: NextPage<CreateProps> = ({ themes }: CreateProps) => {
   const classes = useStyles();
-  const { isLoggedIn, axiosLoggedRequest } = React.useContext(UserServiceContext);
-  const [themes, setThemes] = React.useState<Theme[]>([]);
-
-  const getThemes = React.useCallback(async () => {
-    let url: string = "/themes?isPublished=true";
-    if (isLoggedIn) {
-      url += "&user";
-    }
-    const response = await axiosLoggedRequest({
-      method: "GET",
-      url,
-    });
-    if (!response.error) {
-      setThemes(response.data);
-    }
-  }, [isLoggedIn, axiosLoggedRequest]);
-
-  React.useEffect(() => {
-    getThemes().catch();
-  }, [getThemes]);
 
   return (
     <>
@@ -59,6 +46,26 @@ const Create: React.FunctionComponent = () => {
       </div>
     </>
   );
+};
+
+Create.getInitialProps = async (ctx: NextPageContext): Promise<CreateProps> => {
+  const { user, csrfToken } = getInitialData(ctx);
+  const url: string = `/themes?isPublished=true${user ? "&user" : ""}`;
+  const params: AxiosRequestConfig = {
+    method: "GET",
+    url,
+    headers: {
+      "csrf-token": csrfToken,
+    },
+  };
+  // server call
+  if (ctx.req !== undefined) {
+    params.baseURL = "http://localhost:5000/api";
+  }
+  const response = await axiosRequest(params);
+  return {
+    themes: response.error ? [] : response.data,
+  };
 };
 
 export default Create;

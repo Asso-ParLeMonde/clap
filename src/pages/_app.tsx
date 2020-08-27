@@ -11,11 +11,13 @@ import Head from "next/head";
 import NProgress from "nprogress";
 import React from "react";
 
+import { BottomNavBar } from "src/components/BottomNavBar";
 import { TopNavBar } from "src/components/topNavBar";
 import { useTranslationContext } from "src/i18n/useTranslation";
 import { UserServiceProvider } from "src/services/UserService";
 import theme from "src/styles/theme";
-import { User } from "types/entities/user.type";
+import { getInitialData } from "src/util/data";
+import type { User } from "types/entities/user.type";
 
 interface MyAppOwnProps {
   currentLocale: string;
@@ -31,6 +33,7 @@ const MyApp: React.FunctionComponent<AppProps> & {
   const { t, translationContext } = useTranslationContext(currentLocale, locales);
 
   const onRouterChangeStart = (): void => {
+    NProgress.configure({ showSpinner: false });
     NProgress.start();
   };
   const onRouterChangeComplete = (): void => {
@@ -67,13 +70,16 @@ const MyApp: React.FunctionComponent<AppProps> & {
         <translationContext.Provider value={{ t, currentLocale }}>
           <UserServiceProvider user={user} csrfToken={"null"}>
             <Hidden smDown implementation="css">
-              <TopNavBar title={"Par Le monde"} homeLink="/create" currentPath={router.pathname} />
+              <TopNavBar title={"Par Le monde"} homeLink="/create" />
             </Hidden>
             <main>
               <Container maxWidth="lg">
                 <Component {...pageProps} />
               </Container>
             </main>
+            <Hidden mdUp implementation="css">
+              <BottomNavBar />
+            </Hidden>
           </UserServiceProvider>
         </translationContext.Provider>
       </ThemeProvider>
@@ -84,21 +90,7 @@ const MyApp: React.FunctionComponent<AppProps> & {
 MyApp.getInitialProps = async (appContext: AppContext): Promise<AppInitialProps & MyAppOwnProps> => {
   // calls page's `getInitialProps` and fills `appProps.pageProps`
   const appProps = await App.getInitialProps(appContext);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const ctxRequest: any = appContext.ctx.req || null;
-
-  let currentLocale = ctxRequest?.currentLocale || "fr";
-  let locales = ctxRequest?.locales || {};
-  let csrfToken = ctxRequest?.csrfToken || null;
-  let user = ctxRequest?.user || null;
-  if (ctxRequest === null) {
-    const initialData = JSON.parse(window.document.getElementById("__NEXT_DATA__")?.innerText);
-    currentLocale = initialData?.props?.currentLocale || "fr";
-    locales = initialData?.props?.locales || {};
-    csrfToken = initialData?.props?.csrfToken || null;
-    user = initialData?.props?.user || null;
-  }
-  return { ...appProps, locales, csrfToken, user, currentLocale };
+  return { ...appProps, ...getInitialData(appContext.ctx) };
 };
 
 export default MyApp;
