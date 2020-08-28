@@ -16,6 +16,7 @@ export function authenticate(userType: UserType | undefined): RequestHandler {
         token = req.cookies["access-token"];
       } else {
         res.status(401).send("bad csrf token");
+        return;
       }
     } else {
       token = getHeader(req, "x-access-token") || getHeader(req, "authorization") || "";

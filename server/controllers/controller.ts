@@ -1,8 +1,8 @@
 import { RequestHandler, Router } from "express";
 import multer from "multer";
 
-// import { UserType } from "../entities/user";
-// import { authenticate } from "../middlewares/authenticate";
+import { UserType } from "../entities/user";
+import { authenticate } from "../middlewares/authenticate";
 import { handleErrors } from "../middlewares/handleErrors";
 
 // import { saveImage, Ratio } from "../middlewares/saveImage";
@@ -10,12 +10,12 @@ import { handleErrors } from "../middlewares/handleErrors";
 
 type decoratorParams = {
   path?: string;
-  // userType?: UserType;
+  userType?: UserType;
 };
 
 const defaultParams: decoratorParams = {
   path: "",
-  // userType: undefined,
+  userType: undefined,
 };
 
 // type imageParams = {
@@ -35,13 +35,13 @@ const defaultParams: decoratorParams = {
  * @param path: path for the get function
  * @param userType: Authentication type for this request
  */
-export function get({ path /*, userType */ }: decoratorParams = defaultParams) {
+export function get({ path, userType }: decoratorParams = defaultParams) {
   return function getDecorator(target: Controller, _: string, propertyDesciptor: PropertyDescriptor): PropertyDescriptor {
     const method: RequestHandler = propertyDesciptor.value;
     if (target.router === undefined) {
       target.router = Router({ mergeParams: true });
     }
-    target.router.get(path || "", /*authenticate(userType),*/ handleErrors(method));
+    target.router.get(path || "", authenticate(userType), handleErrors(method));
     return propertyDesciptor;
   };
 }
@@ -52,13 +52,13 @@ export function get({ path /*, userType */ }: decoratorParams = defaultParams) {
  * @param path: path for the post function
  * @param userType: Authentication type for this request
  */
-export function post({ path /*, userType */ }: decoratorParams = defaultParams) {
+export function post({ path, userType }: decoratorParams = defaultParams) {
   return function getDecorator(target: Controller, _: string, propertyDesciptor: PropertyDescriptor): PropertyDescriptor {
     const method: RequestHandler = propertyDesciptor.value;
     if (target.router === undefined) {
       target.router = Router({ mergeParams: true });
     }
-    target.router.post(path || "", /*authenticate(userType),*/ handleErrors(method));
+    target.router.post(path || "", authenticate(userType), handleErrors(method));
     return propertyDesciptor;
   };
 }
@@ -69,13 +69,13 @@ export function post({ path /*, userType */ }: decoratorParams = defaultParams) 
  * @param path: path for the put function
  * @param userType: Authentication type for this request
  */
-export function put({ path /*, userType */ }: decoratorParams = defaultParams) {
+export function put({ path, userType }: decoratorParams = defaultParams) {
   return function getDecorator(target: Controller, _: string, propertyDesciptor: PropertyDescriptor): PropertyDescriptor {
     const method: RequestHandler = propertyDesciptor.value;
     if (target.router === undefined) {
       target.router = Router({ mergeParams: true });
     }
-    target.router.put(path || "", /*authenticate(userType),*/ handleErrors(method));
+    target.router.put(path || "", authenticate(userType), handleErrors(method));
     return propertyDesciptor;
   };
 }
@@ -86,13 +86,13 @@ export function put({ path /*, userType */ }: decoratorParams = defaultParams) {
  * @param path: path for the put function
  * @param userType: Authentication type for this request
  */
-export function del({ path /*, userType */ }: decoratorParams = defaultParams) {
+export function del({ path, userType }: decoratorParams = defaultParams) {
   return function getDecorator(target: Controller, _: string, propertyDesciptor: PropertyDescriptor): PropertyDescriptor {
     const method: RequestHandler = propertyDesciptor.value;
     if (target.router === undefined) {
       target.router = Router({ mergeParams: true });
     }
-    target.router.delete(path || "", /*authenticate(userType),*/ handleErrors(method));
+    target.router.delete(path || "", authenticate(userType), handleErrors(method));
     return propertyDesciptor;
   };
 }
@@ -141,7 +141,7 @@ export function del({ path /*, userType */ }: decoratorParams = defaultParams) {
 //   };
 // }
 
-export function oneFile({ path /*, userType */ }: decoratorParams = defaultParams) {
+export function oneFile({ path, userType }: decoratorParams = defaultParams) {
   return function getDecorator(target: Controller, _: string, propertyDesciptor: PropertyDescriptor): PropertyDescriptor {
     const method: RequestHandler = propertyDesciptor.value;
     if (target.router === undefined) {
@@ -149,7 +149,7 @@ export function oneFile({ path /*, userType */ }: decoratorParams = defaultParam
     }
     const storage = multer.memoryStorage();
     const upload = multer({ storage });
-    target.router.post(path || "", /*authenticate(userType),*/ upload.single("file"), handleErrors(method));
+    target.router.post(path || "", authenticate(userType), upload.single("file"), handleErrors(method));
     return propertyDesciptor;
   };
 }

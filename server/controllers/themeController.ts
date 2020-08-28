@@ -4,7 +4,7 @@ import { getRepository } from "typeorm";
 import { Theme } from "../entities/theme";
 // import { ThemeRepository } from "../customRepositories/themeRepository";
 // import { Image } from "../entities/image";
-import { User } from "../entities/user";
+import { User, UserType } from "../entities/user";
 import { AppError } from "../middlewares/handleErrors";
 
 // import { deleteImage } from "../fileUpload";
@@ -29,14 +29,14 @@ export class ThemesController extends Controller {
   @get()
   public async getThemes(req: Request, res: Response): Promise<void> {
     const { query } = req;
-    const params: { isPublished?: boolean; user?: { id: number } } = {};
+    const params: Array<{ isPublished?: boolean; user?: { id: number } }> = [];
     if (query.isPublished !== undefined) {
-      params.isPublished = query.isPublished === "true" || query.isPublished === "";
+      params.push({ isPublished: query.isPublished === "true" || query.isPublished === "" });
     }
     if ((query.userId !== undefined || query.user !== undefined) && req.user !== undefined) {
-      params.user = { id: req.user.id };
+      params.push({ user: { id: req.user.id } });
     }
-    const themes: Theme[] = await getRepository(Theme).find(params);
+    const themes: Theme[] = await getRepository(Theme).find({ where: params });
     res.sendJSON(themes);
   }
 
@@ -51,7 +51,7 @@ export class ThemesController extends Controller {
     res.sendJSON(theme);
   }
 
-  @post()
+  @post({ userType: UserType.CLASS })
   public async addTheme(req: Request, res: Response): Promise<void> {
     const theme: Theme = new Theme(); // create a new theme
     theme.isPublished = req.body.isPublished || false;
@@ -77,7 +77,7 @@ export class ThemesController extends Controller {
     res.sendJSON(theme); // send new theme
   }
 
-  @put({ path: "/update-order" })
+  @put({ path: "/update-order", userType: UserType.PLMO_ADMIN })
   public async editThemesOrder(req: Request, res: Response): Promise<void> {
     const themesOrderPromises: Array<Promise<void>> = [];
     const themesOrder: [number] = req.body.themesOrder || [];
@@ -90,7 +90,7 @@ export class ThemesController extends Controller {
     res.status(204).send();
   }
 
-  @put({ path: "/:id" })
+  @put({ path: "/:id", userType: UserType.PLMO_ADMIN })
   public async editTheme(req: Request, res: Response, next: NextFunction): Promise<void> {
     const id: number = parseInt(req.params.id, 10) || 0;
     const theme: Theme | undefined = await getRepository(Theme).findOne(id);
@@ -109,7 +109,7 @@ export class ThemesController extends Controller {
     res.sendJSON(theme); // send updated theme
   }
 
-  @del({ path: "/:id" })
+  @del({ path: "/:id", userType: UserType.PLMO_ADMIN })
   public async deleteTheme(req: Request, res: Response): Promise<void> {
     const id: number = parseInt(req.params.id, 10) || 0;
     await getRepository(Theme).delete(id);
