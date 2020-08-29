@@ -36,7 +36,7 @@ export class FirebaseUtils extends Provider {
     }
 
     // local dir
-    const dir: string = path.join(__dirname, "../..", "dist", filePath);
+    const dir: string = path.join(__dirname, "..", filePath);
 
     // upload image on stockage server
     try {

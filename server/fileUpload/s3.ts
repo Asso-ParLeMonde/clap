@@ -145,7 +145,7 @@ export class AwsS3 extends Provider {
 
   public async uploadImage(filename: string, filePath: string): Promise<string> {
     // local dir
-    const dir: string = path.join(__dirname, "../..", "dist", filePath);
+    const dir: string = path.join(__dirname, "..", filePath);
     const fileStream = fs.createReadStream(`${dir}/${filename}.jpeg`);
     let url = "";
 

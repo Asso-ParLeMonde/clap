@@ -49,7 +49,7 @@ export function getDefaultDirectives(): { [directiveName: string]: Iterable<stri
     "block-all-mixed-content": [],
     "font-src": ["'self'", "https:", "data:"],
     "frame-ancestors": ["'self'"],
-    "img-src": ["'self'", "data:"],
+    "img-src": ["'self'", "http:", "data:"], // todo, use 's' for prod
     "object-src": ["'none'"],
     "script-src": ["'self'"],
     "script-src-attr": ["'none'"],
