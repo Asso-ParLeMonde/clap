@@ -6,6 +6,8 @@ declare namespace Express {
     getCsrfToken(): string;
     csrfToken: string;
     isCsrfValid: boolean;
+    imageID: number;
+    image: import("../../server/entities/image").Image;
   }
   interface Response {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -1,14 +1,13 @@
 import { NextFunction, Request, Response } from "express";
 import { getRepository } from "typeorm";
 
+import { Image } from "../entities/image";
 import { Theme } from "../entities/theme";
-// import { ThemeRepository } from "../customRepositories/themeRepository";
-// import { Image } from "../entities/image";
 import { User, UserType } from "../entities/user";
+import { deleteImage } from "../fileUpload";
 import { AppError } from "../middlewares/handleErrors";
 
-// import { deleteImage } from "../fileUpload";
-import { Controller, del, get, post, put } from "./controller";
+import { Controller, del, get, post, put, oneImage } from "./controller";
 
 async function updateThemeOrder(themeId: number, newOrder: number): Promise<void> {
   const theme: Theme | undefined = await getRepository(Theme).findOne(themeId);
@@ -36,7 +35,7 @@ export class ThemesController extends Controller {
     if ((query.userId !== undefined || query.user !== undefined) && req.user !== undefined) {
       params.push({ user: { id: req.user.id } });
     }
-    const themes: Theme[] = await getRepository(Theme).find({ where: params });
+    const themes: Theme[] = await getRepository(Theme).find({ where: params, relations: ["image"] });
     res.sendJSON(themes);
   }
 
@@ -116,41 +115,41 @@ export class ThemesController extends Controller {
     res.status(204).send();
   }
 
-  // @oneImage({ path: "/:id/image", tableName: "themes", userType: UserType.PLMO_ADMIN })
-  // public async addImage(req: Request, res: Response, next: NextFunction): Promise<void> {
-  //   if (req.imageID === undefined || req.image === undefined) {
-  //     next();
-  //     return;
-  //   }
+  @oneImage({ path: "/:id/image", tableName: "themes", userType: UserType.PLMO_ADMIN })
+  public async addImage(req: Request, res: Response, next: NextFunction): Promise<void> {
+    if (req.imageID === undefined || req.image === undefined) {
+      next();
+      return;
+    }
 
-  //   const id: number = parseInt(req.params.id, 10) || 0;
-  //   const theme: Theme | undefined = await getRepository(Theme).findOne(id, { relations: ["image"] });
-  //   if (theme === undefined) {
-  //     await getRepository(Image).delete(req.imageID);
-  //     await deleteImage(req.image);
-  //     next();
-  //     return;
-  //   }
+    const id: number = parseInt(req.params.id, 10) || 0;
+    const theme: Theme | undefined = await getRepository(Theme).findOne(id, { relations: ["image"] });
+    if (theme === undefined) {
+      await getRepository(Image).delete(req.imageID);
+      await deleteImage(req.image);
+      next();
+      return;
+    }
 
-  //   // delete previous image
-  //   if (theme.image) {
-  //     await deleteImage(theme.image);
-  //     await getRepository(Image).delete(theme.image.id);
-  //   }
+    // delete previous image
+    if (theme.image) {
+      await deleteImage(theme.image);
+      await getRepository(Image).delete(theme.image.id);
+    }
 
-  //   theme.image = req.image;
-  //   await getRepository(Theme).save(theme);
-  //   res.sendJSON(theme.image);
-  // }
+    theme.image = req.image;
+    await getRepository(Theme).save(theme);
+    res.sendJSON(theme.image);
+  }
 
-  // @del({ path: "/:id/image" })
-  // public async deleteThemeImage(req: Request, res: Response): Promise<void> {
-  //   const id: number = parseInt(req.params.id, 10) || 0;
-  //   const theme: Theme | undefined = await getRepository(Theme).findOne(id, { relations: ["image"] });
-  //   // if (theme !== undefined && theme.image) {
-  //   //   await deleteImage(theme.image);
-  //   //   await getRepository(Image).delete(theme.image.id);
-  //   // }
-  //   res.status(204).send();
-  // }
+  @del({ path: "/:id/image" })
+  public async deleteThemeImage(req: Request, res: Response): Promise<void> {
+    const id: number = parseInt(req.params.id, 10) || 0;
+    const theme: Theme | undefined = await getRepository(Theme).findOne(id, { relations: ["image"] });
+    if (theme !== undefined && theme.image) {
+      await deleteImage(theme.image);
+      await getRepository(Image).delete(theme.image.id);
+    }
+    res.status(204).send();
+  }
 }

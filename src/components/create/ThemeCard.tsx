@@ -25,7 +25,7 @@ export const ThemeCard: React.FunctionComponent<ThemeCardProps> = ({ id, names, 
   const themeUrl = id !== undefined ? `/create/1-scenario-choice?themeId=${id}` : "/create/new-theme";
 
   useEffect(() => {
-    if (image !== undefined) {
+    if (image !== undefined && image !== null) {
       const i = new Image();
       i.onload = () => {
         if (img && img.current) {

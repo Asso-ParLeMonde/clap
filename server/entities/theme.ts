@@ -1,7 +1,8 @@
-import { Column, Entity, PrimaryGeneratedColumn, ManyToOne } from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, OneToOne, JoinColumn } from "typeorm";
 
 import type { Theme as ThemeInterface } from "../../types/entities/theme.type";
 
+import { Image } from "./image";
 import { User } from "./user";
 
 @Entity()
@@ -15,9 +16,9 @@ export class Theme implements ThemeInterface {
   @Column({ default: false })
   public isPublished: boolean;
 
-  // @OneToOne(() => Image, { onDelete: "SET NULL" })
-  // @JoinColumn()
-  // public image: Image;
+  @OneToOne(() => Image, { onDelete: "SET NULL" })
+  @JoinColumn()
+  public image: Image;
 
   @ManyToOne(() => User)
   public user: User;

@@ -77,6 +77,7 @@ async function startApp() {
   app.get("/creer", (_req, res) => {
     res.redirect("/create");
   });
+  app.use(`/static/images`, express.static(path.join(__dirname, "./static/images")));
   app.use(express.static(path.join(__dirname, "../../public"))); // app.js is located at ./dist/server and public at ./public
   app.get("/_next/*", (req, res) => {
     handle(req, res).catch((e) => console.error(e));

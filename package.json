@@ -37,6 +37,7 @@
     "query-string": "^6.13.1",
     "react": "16.13.1",
     "react-dom": "16.13.1",
+    "sharp": "^0.26.0",
     "typeorm": "^0.2.25",
     "uuid": "^8.3.0",
     "winston": "^3.3.3"
@@ -62,6 +63,7 @@
     "@types/prettier": "^2",
     "@types/query-string": "^6",
     "@types/react": "^16.9.46",
+    "@types/sharp": "^0",
     "@types/uuid": "^8",
     "@types/webpack": "^4",
     "@typescript-eslint/eslint-plugin": "^3.9.0",

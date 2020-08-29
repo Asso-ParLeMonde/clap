@@ -4,8 +4,8 @@ import multer from "multer";
 import { UserType } from "../entities/user";
 import { authenticate } from "../middlewares/authenticate";
 import { handleErrors } from "../middlewares/handleErrors";
+import { saveImage, Ratio } from "../middlewares/saveImage";
 
-// import { saveImage, Ratio } from "../middlewares/saveImage";
 // import { saveTemporaryImage } from "../middlewares/saveTemporaryImage";
 
 type decoratorParams = {
@@ -18,16 +18,16 @@ const defaultParams: decoratorParams = {
   userType: undefined,
 };
 
-// type imageParams = {
-//   name?: string;
-//   tableName?: string;
-//   // ratio?: Ratio;
-// };
+type imageParams = {
+  name?: string;
+  tableName?: string;
+  ratio?: Ratio;
+};
 
-// const defaultImageParams: imageParams = {
-//   name: "image",
-//   tableName: "other",
-// };
+const defaultImageParams: imageParams = {
+  name: "image",
+  tableName: "other",
+};
 
 /**
  * GET decorator.
@@ -106,18 +106,18 @@ export function del({ path, userType }: decoratorParams = defaultParams) {
  * @param userType: Authentication type for this request
  * @param ratio: ratio of the image
  */
-// export function oneImage(data: decoratorParams & imageParams = { ...defaultParams, ...defaultImageParams }) {
-//   return function getDecorator(target: Controller, _: string, propertyDesciptor: PropertyDescriptor): PropertyDescriptor {
-//     const method: RequestHandler = propertyDesciptor.value;
-//     if (target.router === undefined) {
-//       target.router = Router({ mergeParams: true });
-//     }
-//     const storage = multer.memoryStorage();
-//     const upload = multer({ storage });
-//     target.router.post(data.path || "", authenticate(data.userType), upload.single(data.name || "image"), handleErrors(saveImage(data.tableName || "", data.ratio)), handleErrors(method));
-//     return propertyDesciptor;
-//   };
-// }
+export function oneImage(data: decoratorParams & imageParams = { ...defaultParams, ...defaultImageParams }) {
+  return function getDecorator(target: Controller, _: string, propertyDesciptor: PropertyDescriptor): PropertyDescriptor {
+    const method: RequestHandler = propertyDesciptor.value;
+    if (target.router === undefined) {
+      target.router = Router({ mergeParams: true });
+    }
+    const storage = multer.memoryStorage();
+    const upload = multer({ storage });
+    target.router.post(data.path || "", authenticate(data.userType), upload.single(data.name || "image"), handleErrors(saveImage(data.tableName || "", data.ratio)), handleErrors(method));
+    return propertyDesciptor;
+  };
+}
 
 /**
  * TEMPORARY-IMAGE decorator
