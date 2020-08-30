@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import React, { useState } from "react";
 
 import { AxiosReturnType, axiosRequest } from "src/util/axiosRequest";
-import { User } from "types/entities/user.type";
+import { User } from "types/models/user.type";
 
 type UserServiceFunc = Promise<{ success: boolean; errorCode: number }>;
 

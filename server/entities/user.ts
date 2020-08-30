@@ -1,6 +1,6 @@
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
-import { User as UserInterface, UserType } from "../../types/entities/user.type";
+import { User as UserInterface, UserType } from "../../types/models/user.type";
 
 export { UserType };
 

@@ -1,6 +1,6 @@
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
-import type { Image as ImageInterface } from "../../types/entities/image.type";
+import type { Image as ImageInterface } from "../../types/models/image.type";
 
 @Entity()
 export class Image implements ImageInterface {

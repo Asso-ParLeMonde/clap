@@ -9,7 +9,7 @@ import { Inverted } from "src/components/Inverted";
 import { Trans } from "src/components/Trans";
 import { useTranslation } from "src/i18n/useTranslation";
 import { UserServiceContext } from "src/services/UserService";
-import type { Theme } from "types/entities/theme.type";
+import type { Theme } from "types/models/theme.type";
 
 const NewTheme: React.FunctionComponent = () => {
   const { t, currentLocale } = useTranslation();

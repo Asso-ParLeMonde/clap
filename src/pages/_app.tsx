@@ -17,7 +17,7 @@ import { useTranslationContext } from "src/i18n/useTranslation";
 import { UserServiceProvider } from "src/services/UserService";
 import theme from "src/styles/theme";
 import { getInitialData } from "src/util/data";
-import type { User } from "types/entities/user.type";
+import type { User } from "types/models/user.type";
 
 interface MyAppOwnProps {
   currentLocale: string;

@@ -1,6 +1,6 @@
 import type { NextPageContext } from "next";
 
-import type { User } from "types/entities/user.type";
+import type { User } from "types/models/user.type";
 
 interface initialData {
   currentLocale: string;

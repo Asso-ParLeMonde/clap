@@ -1,6 +1,6 @@
 import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, OneToOne, JoinColumn } from "typeorm";
 
-import type { Theme as ThemeInterface } from "../../types/entities/theme.type";
+import type { Theme as ThemeInterface } from "../../types/models/theme.type";
 
 import { Image } from "./image";
 import { User } from "./user";

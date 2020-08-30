@@ -1,6 +1,6 @@
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
-import type { Language as LanguageInterface } from "../../types/entities/language.type";
+import type { Language as LanguageInterface } from "../../types/models/language.type";
 
 @Entity()
 export class Language implements LanguageInterface {

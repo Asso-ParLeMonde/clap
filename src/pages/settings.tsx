@@ -5,7 +5,7 @@ import { useTranslation } from "src/i18n/useTranslation";
 import { UserServiceContext } from "src/services/UserService";
 import { axiosRequest } from "src/util/axiosRequest";
 import { setCookie } from "src/util/cookies";
-import type { Language } from "types/entities/language.type";
+import type { Language } from "types/models/language.type";
 
 const RedButton = withStyles((theme) => ({
   root: {
