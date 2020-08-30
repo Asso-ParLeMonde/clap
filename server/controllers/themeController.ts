@@ -35,7 +35,7 @@ export class ThemesController extends Controller {
     if ((query.userId !== undefined || query.user !== undefined) && req.user !== undefined) {
       params.push({ user: { id: req.user.id } });
     }
-    const themes: Theme[] = await getRepository(Theme).find({ where: params, relations: ["image"] });
+    const themes: Theme[] = await getRepository(Theme).find({ where: params, order: { isPublished: "DESC", order: "ASC" }, relations: ["image"] });
     res.sendJSON(themes);
   }
 

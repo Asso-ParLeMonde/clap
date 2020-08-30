@@ -29,7 +29,7 @@ type MyAppProps = AppProps & MyAppOwnProps;
 
 const MyApp: React.FunctionComponent<AppProps> & {
   getInitialProps(appContext: AppContext): Promise<AppInitialProps & { locales: { [key: string]: string } }>;
-} = ({ Component, pageProps, router, currentLocale, locales, user }: MyAppProps) => {
+} = ({ Component, pageProps, router, currentLocale, locales, user, csrfToken }: MyAppProps) => {
   const { t, translationContext } = useTranslationContext(currentLocale, locales);
 
   const onRouterChangeStart = (): void => {
@@ -68,7 +68,7 @@ const MyApp: React.FunctionComponent<AppProps> & {
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <translationContext.Provider value={{ t, currentLocale }}>
-          <UserServiceProvider user={user} csrfToken={"null"}>
+          <UserServiceProvider user={user} csrfToken={csrfToken}>
             <Hidden smDown implementation="css">
               <TopNavBar title={"Par Le monde"} homeLink="/create" />
             </Hidden>

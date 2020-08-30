@@ -1,7 +1,7 @@
 import type { Image } from "./image.type";
 
 export interface Theme {
-  id: number;
+  id: number | string;
   order: number;
   isPublished: boolean;
   names: { [key: string]: string };

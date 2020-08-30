@@ -29,6 +29,9 @@ interface UserServiceProviderProps {
 export const UserServiceProvider: React.FunctionComponent<UserServiceProviderProps> = ({ user: initialUser, csrfToken, children }: UserServiceProviderProps) => {
   const [user, setUser] = useState<User | null>(initialUser);
   const router = useRouter();
+  const headers = {
+    "csrf-token": csrfToken,
+  };
 
   /**
    * Login the user with username and password.
@@ -42,6 +45,7 @@ export const UserServiceProvider: React.FunctionComponent<UserServiceProviderPro
     const response = await axiosRequest({
       method: "POST",
       url: "/login",
+      headers,
       data: {
         username,
         password,
@@ -66,6 +70,7 @@ export const UserServiceProvider: React.FunctionComponent<UserServiceProviderPro
     // reject access token and server will delete cookies
     await axiosRequest({
       method: "POST",
+      headers,
       url: "/logout",
       // withCredentials: true,
     });
@@ -82,6 +87,7 @@ export const UserServiceProvider: React.FunctionComponent<UserServiceProviderPro
   const signup = async (user: User, inviteCode?: string): Promise<{ success: boolean; errorCode: number }> => {
     const response = await axiosRequest({
       method: "POST",
+      headers,
       url: "/users",
       data: {
         inviteCode,
@@ -109,6 +115,7 @@ export const UserServiceProvider: React.FunctionComponent<UserServiceProviderPro
   const updatePassword = async (user: User): Promise<{ success: boolean; errorCode: number }> => {
     const response = await axiosRequest({
       method: "POST",
+      headers,
       url: "/login/update-password",
       data: {
         ...user,
@@ -135,6 +142,7 @@ export const UserServiceProvider: React.FunctionComponent<UserServiceProviderPro
   const verifyEmail = async (user: User): Promise<{ success: boolean; errorCode: number }> => {
     const response = await axiosRequest({
       method: "POST",
+      headers,
       url: "/login/verify-email",
       data: {
         ...user,
@@ -165,9 +173,7 @@ export const UserServiceProvider: React.FunctionComponent<UserServiceProviderPro
   const axiosLoggedRequest = async (req: AxiosRequestConfig): Promise<AxiosReturnType> => {
     const response = await axiosRequest({
       ...req,
-      headers: {
-        "csrf-token": csrfToken,
-      },
+      headers,
     });
     // if (response.error) ...
     return response;

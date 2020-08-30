@@ -1,6 +1,7 @@
 import { makeStyles } from "@material-ui/core/styles";
 import { Typography } from "@material-ui/core";
 import classnames from "classnames";
+import { useRouter } from "next/router";
 import React from "react";
 
 import { Inverted } from "src/components/Inverted";
@@ -19,6 +20,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Create: React.FunctionComponent = () => {
   const classes = useStyles();
+  const router = useRouter();
   const { isLoggedIn, axiosLoggedRequest } = React.useContext(UserServiceContext);
   const [themes, setThemes] = React.useState<Theme[]>([]);
 
@@ -32,13 +34,18 @@ const Create: React.FunctionComponent = () => {
       url,
     });
     if (!response.error) {
-      setThemes(response.data);
+      const localThemes: Theme[] = isLoggedIn ? [] : JSON.parse(localStorage.getItem("localThemes")) || [];
+      setThemes([...response.data, ...localThemes]);
     }
   }, [isLoggedIn, axiosLoggedRequest]);
 
   React.useEffect(() => {
     getThemes().catch();
   }, [getThemes]);
+
+  const handleThemeClick = (path: string): void => {
+    router.push(path);
+  };
 
   return (
     <>
@@ -49,11 +56,11 @@ const Create: React.FunctionComponent = () => {
       </Typography>
       <div className={classnames(classes.container, "theme-cards-container")}>
         <div key="new">
-          <ThemeCard />
+          <ThemeCard onClick={handleThemeClick} />
         </div>
         {themes.map((t, index) => (
           <div key={index}>
-            <ThemeCard {...t} />
+            <ThemeCard {...t} onClick={handleThemeClick} />
           </div>
         ))}
       </div>

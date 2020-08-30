@@ -13,7 +13,7 @@ interface ThemeCardProps {
   image?: {
     path: string;
   } | null;
-  onClick?(event: React.MouseEvent): void;
+  onClick?(path: string): void;
 }
 
 export const ThemeCard: React.FunctionComponent<ThemeCardProps> = ({ id, names, image, onClick = () => {} }: ThemeCardProps) => {
@@ -39,8 +39,13 @@ export const ThemeCard: React.FunctionComponent<ThemeCardProps> = ({ id, names, 
     }
   }, [image]);
 
+  const handleClick = (event: React.MouseEvent) => {
+    event.preventDefault();
+    onClick(themeUrl);
+  };
+
   return (
-    <a className="theme-card-button" href={themeUrl} onClick={onClick}>
+    <a className="theme-card-button" href={themeUrl} onClick={handleClick}>
       <Paper className="theme-card-paper">
         {id !== undefined && image && !imgHasError ? (
           <CardMedia ref={img} component="img" alt={`picture of ${themeName} theme`} image="/classe_default.png" />
