@@ -23,7 +23,7 @@ export const UserServiceContext = React.createContext<UserServiceContextValue>(u
 interface UserServiceProviderProps {
   user: User | null;
   csrfToken: string;
-  children: React.ReactNodeArray;
+  children: React.ReactNode;
 }
 
 export const UserServiceProvider: React.FunctionComponent<UserServiceProviderProps> = ({ user: initialUser, csrfToken, children }: UserServiceProviderProps) => {

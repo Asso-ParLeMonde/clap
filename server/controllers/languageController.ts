@@ -78,7 +78,7 @@ export class LanguageController extends Controller {
     // }
 
     // // Themes
-    // const themes: Theme[] = await getCustomRepository(ThemeRepository).findAll({ isPublished: null, userId: null });
+    // const themes: Theme[] = await getCustomRepository(ThemeRepository).findAll({ isDefault: null, userId: null });
     // for (const theme of themes) {
     //   const labels: { [key: string]: string } = req.body.names || {};
     //   delete labels[language.value];

@@ -7,6 +7,7 @@ import React from "react";
 import { Inverted } from "src/components/Inverted";
 import { Trans } from "src/components/Trans";
 import { ThemeCard } from "src/components/create/ThemeCard";
+import { ProjectServiceContext } from "src/services/ProjectService";
 import { UserServiceContext } from "src/services/UserService";
 import type { Theme } from "types/models/theme.type";
 
@@ -22,10 +23,11 @@ const Create: React.FunctionComponent = () => {
   const classes = useStyles();
   const router = useRouter();
   const { isLoggedIn, axiosLoggedRequest } = React.useContext(UserServiceContext);
+  const { updateProject } = React.useContext(ProjectServiceContext);
   const [themes, setThemes] = React.useState<Theme[]>([]);
 
   const getThemes = React.useCallback(async () => {
-    let url: string = "/themes?isPublished=true";
+    let url: string = "/themes?isDefault=true";
     if (isLoggedIn) {
       url += "&user";
     }
@@ -34,7 +36,7 @@ const Create: React.FunctionComponent = () => {
       url,
     });
     if (!response.error) {
-      const localThemes: Theme[] = isLoggedIn ? [] : JSON.parse(localStorage.getItem("localThemes")) || [];
+      const localThemes: Theme[] = isLoggedIn ? [] : JSON.parse(localStorage.getItem("themes")) || [];
       setThemes([...response.data, ...localThemes]);
     }
   }, [isLoggedIn, axiosLoggedRequest]);
@@ -43,7 +45,12 @@ const Create: React.FunctionComponent = () => {
     getThemes().catch();
   }, [getThemes]);
 
-  const handleThemeClick = (path: string): void => {
+  const handleThemeClick = (index: number) => (path: string): void => {
+    if (index >= 0) {
+      updateProject({
+        theme: themes[index],
+      });
+    }
     router.push(path);
   };
 
@@ -56,11 +63,11 @@ const Create: React.FunctionComponent = () => {
       </Typography>
       <div className={classnames(classes.container, "theme-cards-container")}>
         <div key="new">
-          <ThemeCard onClick={handleThemeClick} />
+          <ThemeCard onClick={handleThemeClick(-1)} />
         </div>
         {themes.map((t, index) => (
           <div key={index}>
-            <ThemeCard {...t} onClick={handleThemeClick} />
+            <ThemeCard {...t} onClick={handleThemeClick(index)} />
           </div>
         ))}
       </div>

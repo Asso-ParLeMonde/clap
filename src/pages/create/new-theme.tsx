@@ -8,12 +8,14 @@ import React from "react";
 import { Inverted } from "src/components/Inverted";
 import { Trans } from "src/components/Trans";
 import { useTranslation } from "src/i18n/useTranslation";
+import { ProjectServiceContext } from "src/services/ProjectService";
 import { UserServiceContext } from "src/services/UserService";
 import type { Theme } from "types/models/theme.type";
 
 const NewTheme: React.FunctionComponent = () => {
   const { t, currentLocale } = useTranslation();
   const { isLoggedIn, axiosLoggedRequest } = React.useContext(UserServiceContext);
+  const { updateProject } = React.useContext(ProjectServiceContext);
   const router = useRouter();
   const [themeName, setThemeName] = React.useState("");
   const [hasError, setHasError] = React.useState(false);
@@ -42,7 +44,7 @@ const NewTheme: React.FunctionComponent = () => {
         fr: themeName,
         [currentLocale]: themeName,
       },
-      isPublished: false,
+      isDefault: false,
     };
     if (isLoggedIn) {
       const response = await axiosLoggedRequest({
@@ -56,19 +58,19 @@ const NewTheme: React.FunctionComponent = () => {
       if (response.error) {
         console.error(console.error);
         // TODO
+        router.push(`/create`);
+        return;
       }
+      newTheme.id = response.data.id;
     } else {
-      const localThemes = JSON.parse(localStorage.getItem("localThemes")) || [];
+      const localThemes = JSON.parse(localStorage.getItem("themes")) || [];
       newTheme.id = `local_${localThemes.length + 1}`;
       localThemes.push(newTheme);
-      localStorage.setItem("localThemes", JSON.stringify(localThemes));
+      localStorage.setItem("themes", JSON.stringify(localThemes));
     }
-    // updateProject({
-    //   themeId: newTheme.id,
-    //   id: null,
-    //   title: "",
-    //   languageCode: selectedLanguage || "fr",
-    // });
+    updateProject({
+      theme: newTheme,
+    });
     router.push(`/create/1-scenario-choice`);
   };
 

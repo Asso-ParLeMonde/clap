@@ -1,7 +1,7 @@
 import mysql from "mysql";
 import path from "path";
 import { Client } from "pg";
-import { Connection, createConnection, ConnectionOptions } from "typeorm";
+import { Connection, createConnection, ConnectionOptions, EntityManager } from "typeorm";
 
 import { logger } from "./logger";
 import { sleep } from "./utils";
@@ -120,12 +120,11 @@ async function createPostgresDB(): Promise<void> {
   await client.end();
 }
 
-// async function createTranslationSequence(connection: Connection): Promise<void> {
-//   await connection.transaction(async (manager: EntityManager) => {
-//     await manager.query(`CREATE SEQUENCE IF NOT EXISTS LABEL_SEQUENCE START WITH 1 INCREMENT BY 1`);
-//     await manager.query(`CREATE SEQUENCE IF NOT EXISTS SCENARIO_SEQUENCE START WITH 1 INCREMENT BY 1`);
-//   });
-// }
+async function createSequences(connection: Connection): Promise<void> {
+  await connection.transaction(async (manager: EntityManager) => {
+    await manager.query(`CREATE SEQUENCE IF NOT EXISTS SCENARIO_SEQUENCE START WITH 1 INCREMENT BY 1`);
+  });
+}
 
 export async function connectToDatabase(tries: number = 10): Promise<Connection | null> {
   if (tries === 0) {
@@ -151,8 +150,8 @@ export async function connectToDatabase(tries: number = 10): Promise<Connection 
     }
     connection = await connectToDatabase(tries - 1);
   }
-  // if (connection !== null) {
-  //   await createTranslationSequence(connection);
-  // }
+  if (connection !== null) {
+    await createSequences(connection);
+  }
   return connection;
 }

@@ -28,14 +28,14 @@ export class ThemesController extends Controller {
   @get()
   public async getThemes(req: Request, res: Response): Promise<void> {
     const { query } = req;
-    const params: Array<{ isPublished?: boolean; user?: { id: number } }> = [];
-    if (query.isPublished !== undefined) {
-      params.push({ isPublished: query.isPublished === "true" || query.isPublished === "" });
+    const params: Array<{ isDefault?: boolean; user?: { id: number } }> = [];
+    if (query.isDefault !== undefined) {
+      params.push({ isDefault: query.isDefault === "true" || query.isDefault === "" });
     }
     if ((query.userId !== undefined || query.user !== undefined) && req.user !== undefined) {
       params.push({ user: { id: req.user.id } });
     }
-    const themes: Theme[] = await getRepository(Theme).find({ where: params, order: { isPublished: "DESC", order: "ASC" }, relations: ["image"] });
+    const themes: Theme[] = await getRepository(Theme).find({ where: params, order: { isDefault: "DESC", order: "ASC" }, relations: ["image"] });
     res.sendJSON(themes);
   }
 
@@ -53,7 +53,7 @@ export class ThemesController extends Controller {
   @post({ userType: UserType.CLASS })
   public async addTheme(req: Request, res: Response): Promise<void> {
     const theme: Theme = new Theme(); // create a new theme
-    theme.isPublished = req.body.isPublished || false;
+    theme.isDefault = req.body.isDefault || false;
     theme.names = req.body.names || {};
     theme.order = 0;
     theme.user = null;
@@ -62,8 +62,8 @@ export class ThemesController extends Controller {
       throw new AppError("Theme names can't be empty", 0);
     }
 
-    if (theme.isPublished) {
-      const themeNb = await getRepository(Theme).count({ where: { isPublished: true } });
+    if (theme.isDefault) {
+      const themeNb = await getRepository(Theme).count({ where: { isDefault: true } });
       theme.order = themeNb + 1;
     }
 
@@ -98,7 +98,7 @@ export class ThemesController extends Controller {
       return;
     }
 
-    theme.isPublished = req.body.isPublished || theme.isPublished;
+    theme.isDefault = req.body.isDefault || theme.isDefault;
     theme.names = req.body.names || theme.names;
     if (Object.keys(theme.names).length === 0) {
       throw new AppError("Theme names can't be empty", 0);

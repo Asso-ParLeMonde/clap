@@ -5,8 +5,8 @@ import "src/styles/user.css";
 
 import { ThemeProvider } from "@material-ui/core/styles";
 import { CssBaseline, Container, Hidden } from "@material-ui/core";
-import type { AppProps, AppInitialProps, AppContext } from "next/app";
 import App from "next/app";
+import type { AppProps, AppInitialProps, AppContext } from "next/app";
 import Head from "next/head";
 import NProgress from "nprogress";
 import React from "react";
@@ -14,6 +14,7 @@ import React from "react";
 import { BottomNavBar } from "src/components/BottomNavBar";
 import { TopNavBar } from "src/components/topNavBar";
 import { useTranslationContext } from "src/i18n/useTranslation";
+import { ProjectServiceProvider } from "src/services/ProjectService";
 import { UserServiceProvider } from "src/services/UserService";
 import theme from "src/styles/theme";
 import { getInitialData } from "src/util/data";
@@ -69,17 +70,19 @@ const MyApp: React.FunctionComponent<AppProps> & {
         <CssBaseline />
         <translationContext.Provider value={{ t, currentLocale }}>
           <UserServiceProvider user={user} csrfToken={csrfToken}>
-            <Hidden smDown implementation="css">
-              <TopNavBar title={"Par Le monde"} homeLink="/create" />
-            </Hidden>
-            <main>
-              <Container maxWidth="lg">
-                <Component {...pageProps} />
-              </Container>
-            </main>
-            <Hidden mdUp implementation="css">
-              <BottomNavBar />
-            </Hidden>
+            <ProjectServiceProvider>
+              <Hidden smDown implementation="css">
+                <TopNavBar title={"Par Le monde"} homeLink="/create" />
+              </Hidden>
+              <main>
+                <Container maxWidth="lg">
+                  <Component {...pageProps} />
+                </Container>
+              </main>
+              <Hidden mdUp implementation="css">
+                <BottomNavBar />
+              </Hidden>
+            </ProjectServiceProvider>
           </UserServiceProvider>
         </translationContext.Provider>
       </ThemeProvider>
