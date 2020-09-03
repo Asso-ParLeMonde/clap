@@ -16,19 +16,22 @@ const useStyles = makeStyles((theme) => ({
 interface ScenarioCardProps {
   scenario: Scenario;
   isNew?: boolean;
+  onClick?(path: string): void;
 }
 
-export const ScenarioCard: React.FunctionComponent<ScenarioCardProps> = ({ scenario, isNew = false }: ScenarioCardProps) => {
+export const ScenarioCard: React.FunctionComponent<ScenarioCardProps> = ({ scenario, isNew = false, onClick = () => {} }: ScenarioCardProps) => {
   const classes = useStyles();
   const { t } = useTranslation();
   const { updateProject } = React.useContext(ProjectServiceContext);
 
-  const path = ""; // todo
+  const path = isNew ? "/create/1-scenario-choice/new" : "/create/2"; // todo
 
   const handleClick = (event: React.MouseEvent) => {
     event.preventDefault();
-    updateProject({ scenario });
-    // history.push(shortPath);
+    if (!isNew) {
+      updateProject({ scenario });
+    }
+    onClick(path);
   };
 
   return (

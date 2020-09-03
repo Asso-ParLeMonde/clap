@@ -30,7 +30,7 @@ const getDBConfig = (): ConnectionOptions => {
     };
   } else {
     connectionOptions = {
-      database: process.env.DB_DB || process.env.DB_NAME || "PLMO",
+      database: process.env.DB_DB || process.env.DB_NAME || "plmo",
       host: process.env.DB_HOST,
       password: process.env.DB_PASS,
       port: parseInt(process.env.DB_PORT || "5432", 10),
@@ -105,7 +105,7 @@ async function createPostgresDB(): Promise<void> {
       connectionString: url_parts.join("/"),
     };
   } else {
-    dbName = process.env.DB_DB || process.env.DB_NAME;
+    dbName = process.env.DB_DB || process.env.DB_NAME || "plmo";
     connectionData = {
       host: process.env.DB_HOST,
       password: process.env.DB_PASS,

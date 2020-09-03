@@ -1,4 +1,5 @@
 import { Typography } from "@material-ui/core";
+import { useRouter } from "next/router";
 import React from "react";
 
 import { Inverted } from "src/components/Inverted";
@@ -12,6 +13,7 @@ import { UserServiceContext } from "src/services/UserService";
 import { Scenario } from "types/models/scenario.type";
 
 const ScenarioChoice: React.FunctionComponent = () => {
+  const router = useRouter();
   const { t, currentLocale } = useTranslation();
   const { isLoggedIn, axiosLoggedRequest } = React.useContext(UserServiceContext);
   const { project } = React.useContext(ProjectServiceContext);
@@ -47,6 +49,10 @@ const ScenarioChoice: React.FunctionComponent = () => {
     getScenarios().catch();
   }, [getScenarios]);
 
+  const handleScenarioClick = (path: string): void => {
+    router.push(path);
+  };
+
   return (
     <div>
       <ThemeLink />
@@ -62,7 +68,7 @@ const ScenarioChoice: React.FunctionComponent = () => {
           {t("part1_subtitle2")}
         </Typography>
         <div className="scenarios-container">
-          <ScenarioCard scenario={{ id: "new", languageCode: "fr", isDefault: true, name: t("new_scenario_card_title"), description: t("new_scenario_card_desc"), questionsCount: 0, user: null }} isNew />
+          <ScenarioCard scenario={{ id: "new", languageCode: "fr", isDefault: true, name: t("new_scenario_card_title"), description: t("new_scenario_card_desc"), questionsCount: 0, user: null }} isNew onClick={handleScenarioClick} />
           {scenarios.map((scenario, index) => (
             <ScenarioCard scenario={scenario} key={index} />
           ))}
