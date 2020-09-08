@@ -70,7 +70,7 @@ const ScenarioChoice: React.FunctionComponent = () => {
         <div className="scenarios-container">
           <ScenarioCard scenario={{ id: "new", languageCode: "fr", isDefault: true, name: t("new_scenario_card_title"), description: t("new_scenario_card_desc"), questionsCount: 0, user: null }} isNew onClick={handleScenarioClick} />
           {scenarios.map((scenario, index) => (
-            <ScenarioCard scenario={scenario} key={index} />
+            <ScenarioCard scenario={scenario} onClick={handleScenarioClick} key={index} />
           ))}
         </div>
       </div>

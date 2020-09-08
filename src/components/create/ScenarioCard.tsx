@@ -24,7 +24,7 @@ export const ScenarioCard: React.FunctionComponent<ScenarioCardProps> = ({ scena
   const { t } = useTranslation();
   const { updateProject } = React.useContext(ProjectServiceContext);
 
-  const path = isNew ? "/create/1-scenario-choice/new" : "/create/2"; // todo
+  const path = isNew ? "/create/1-scenario-choice/new" : "/create/2-questions-choice";
 
   const handleClick = (event: React.MouseEvent) => {
     event.preventDefault();

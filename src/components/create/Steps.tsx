@@ -12,7 +12,7 @@ import type { Project } from "types/models/project.type";
 
 const steps = [
   {
-    name: (t: tFunction, activeStep: number, project: Project) => (activeStep > 0 ? "scenario name here" /* project.scenario.name */ || t("step1") : t("step1")),
+    name: (t: tFunction, activeStep: number, project: Project) => (activeStep > 0 ? project.scenario?.name || t("step1") : t("step1")),
     back: "/create/1-scenario-choice",
   },
   {
