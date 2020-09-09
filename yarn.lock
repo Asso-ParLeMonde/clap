@@ -2633,6 +2633,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/sortablejs@npm:^1.10.0":
+  version: 1.10.6
+  resolution: "@types/sortablejs@npm:1.10.6"
+  checksum: 1a98669c88ea125b55df919235f9c55fe177222c5089a3ff5b77f1bc61400c6273849d43d22d77d6f2b0d5d528252bdca52eced3492474071a89758ffaca795d
+  languageName: node
+  linkType: hard
+
 "@types/source-list-map@npm:*":
   version: 0.1.2
   resolution: "@types/source-list-map@npm:0.1.2"
@@ -9947,6 +9954,7 @@ fsevents@~2.1.2:
     query-string: ^6.13.1
     react: 16.13.1
     react-dom: 16.13.1
+    react-sortablejs: ^2.0.11
     sharp: ^0.26.0
     ts-node: ^8.10.2
     typeorm: ^0.2.25
@@ -10857,6 +10865,21 @@ fsevents@~2.1.2:
   version: 0.8.3
   resolution: "react-refresh@npm:0.8.3"
   checksum: 38f06df8e0a20701b96e5d680838a3528d66cfb53db79843d30cb9517df3262ec596607147439975267bf0634bee77101db37298ea79b5742cc28664632f3c76
+  languageName: node
+  linkType: hard
+
+"react-sortablejs@npm:^2.0.11":
+  version: 2.0.11
+  resolution: "react-sortablejs@npm:2.0.11"
+  dependencies:
+    "@types/sortablejs": ^1.10.0
+    classnames: ^2.2.6
+    sortablejs: 1.10.1
+    tiny-invariant: ^1.0.6
+  peerDependencies:
+    react: ^16.9.0
+    react-dom: ^16.9.0
+  checksum: a5a7e291256fe81a35c94026478b33c41f7cf81929eb051fd8a3c064c9ab21fd4b182aa12d3fdd48d7cd51a2a95137e037b229a1409f32afe7d3f8c6aee0dd70
   languageName: node
   linkType: hard
 
@@ -11775,6 +11798,13 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
+"sortablejs@npm:1.10.1":
+  version: 1.10.1
+  resolution: "sortablejs@npm:1.10.1"
+  checksum: 9e9c79a68b16de5e6f55124d8218fa9dcef11dcf1b26dbd7f89425500a89ec09a39096299acca037ab7822a905517331435af4d56b41e896f803f0fc781fe9a1
+  languageName: node
+  linkType: hard
+
 "source-list-map@npm:^2.0.0":
   version: 2.0.1
   resolution: "source-list-map@npm:2.0.1"
@@ -12563,6 +12593,13 @@ fsevents@~2.1.2:
   dependencies:
     setimmediate: ^1.0.4
   checksum: 73faad065e503db39235ea6c7803cd42c6be41365a427f95fcba773d42c4a77d595ace955a2248f638cd983c61f8e928422dbf27d9237dd876645ed88a595e29
+  languageName: node
+  linkType: hard
+
+"tiny-invariant@npm:^1.0.6":
+  version: 1.1.0
+  resolution: "tiny-invariant@npm:1.1.0"
+  checksum: 64318fbd77c451cfff23b57b9f3aef56594d9cea051a87dc538c9b371f97e8d474eaa2a7cbd60b8aa23f852393152495e8651b197607465fdf9c8ff134043b1b
   languageName: node
   linkType: hard
 

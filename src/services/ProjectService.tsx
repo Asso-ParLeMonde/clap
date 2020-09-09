@@ -9,6 +9,7 @@ const DEFAULT_PROJECT: Project = {
   user: null,
   theme: null,
   scenario: null,
+  questions: null,
 };
 
 interface ProjectServiceContextValue {

@@ -1,3 +1,4 @@
+import type { Question } from "./question.type";
 import type { User } from "./user.type";
 
 export interface Scenario {
@@ -7,7 +8,7 @@ export interface Scenario {
   isDefault: boolean;
   description: string;
   user: User | null;
-  // questions: Question[];
   questionsCount: number;
+  questions?: Question[];
   themeId?: string | number;
 }

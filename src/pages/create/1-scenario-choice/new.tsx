@@ -72,6 +72,7 @@ const NewScenario: React.FunctionComponent = () => {
       }
       updateProject({
         scenario,
+        questions: null,
       });
       router.push(scenario === null ? "/create/1-scenario-choice" : `/create/2-questions-choice`);
     }

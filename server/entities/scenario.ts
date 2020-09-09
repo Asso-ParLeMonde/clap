@@ -2,7 +2,7 @@ import { Column, Entity, ManyToOne, PrimaryColumn } from "typeorm";
 
 import type { Scenario as ScenarioInterface } from "../../types/models/scenario.type";
 
-// import { Question } from "./question";
+import { Question } from "./question";
 import { Theme } from "./theme";
 import { User } from "./user";
 
@@ -29,7 +29,7 @@ export class Scenario implements ScenarioInterface {
   @ManyToOne(() => User)
   public user: User;
 
-  // public questions: Question[];
+  public questions: Question[];
 
   public questionsCount: number;
 }
