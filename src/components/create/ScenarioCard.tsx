@@ -1,6 +1,8 @@
-// import { ReactComponent as Arrow } from "../../../../images/right-arrow.svg";
-import { Typography, makeStyles } from "@material-ui/core";
 import React from "react";
+
+// import { ReactComponent as Arrow } from "../../../../images/right-arrow.svg";
+import Typography from "@material-ui/core/Typography";
+import { makeStyles } from "@material-ui/core/styles";
 
 import { useTranslation } from "src/i18n/useTranslation";
 import { ProjectServiceContext } from "src/services/ProjectService";

@@ -1,7 +1,11 @@
-import { Typography, Button, Hidden, DialogContentText } from "@material-ui/core";
 import { useRouter } from "next/router";
 import { ReactSortable } from "react-sortablejs";
 import React from "react";
+
+import Button from "@material-ui/core/Button";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import Hidden from "@material-ui/core/Hidden";
+import Typography from "@material-ui/core/Typography";
 
 import { Inverted } from "src/components/Inverted";
 import { Modal } from "src/components/Modal";

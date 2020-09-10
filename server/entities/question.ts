@@ -1,8 +1,8 @@
-import { Column, Entity, PrimaryGeneratedColumn, ManyToOne } from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, OneToMany, getRepository } from "typeorm";
 
 import type { Question as QuestionInterface } from "../../types/models/question.type";
 
-// import { Plan } from "./plan";
+import { Plan } from "./plan";
 import { Project } from "./project";
 
 @Entity()
@@ -25,17 +25,17 @@ export class Question implements QuestionInterface {
   @Column({ default: 0 })
   public index: number;
 
-  // @OneToMany(() => Plan, (plan) => plan.question)
-  // public plans: Plan[];
+  @OneToMany(() => Plan, (plan) => plan.question)
+  public plans: Plan[];
 
   @ManyToOne(() => Project, (project) => project.questions, { onDelete: "CASCADE" })
   public project: Project;
 
-  // public async getPlans(): Promise<Question> {
-  //   this.plans = await getRepository(Plan).find({ where: { question: { id: this.id } }, order: { index: "ASC" }, relations: ["image"] });
-  //   for (const plan of this.plans) {
-  //     plan.url = plan.image ? plan.image.path : null;
-  //   }
-  //   return this;
-  // }
+  public async getPlans(): Promise<Question> {
+    this.plans = await getRepository(Plan).find({ where: { question: { id: this.id } }, order: { index: "ASC" }, relations: ["image"] });
+    for (const plan of this.plans) {
+      plan.url = plan.image ? plan.image.path : null;
+    }
+    return this;
+  }
 }

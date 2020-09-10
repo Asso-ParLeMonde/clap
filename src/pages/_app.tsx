@@ -3,13 +3,16 @@ import "nprogress/nprogress.css";
 import "src/styles/globals.css";
 import "src/styles/user.css";
 
-import { ThemeProvider } from "@material-ui/core/styles";
-import { CssBaseline, Container, Hidden } from "@material-ui/core";
 import App from "next/app";
 import type { AppProps, AppInitialProps, AppContext } from "next/app";
 import Head from "next/head";
 import NProgress from "nprogress";
 import React from "react";
+
+import Container from "@material-ui/core/Container";
+import CssBaseline from "@material-ui/core/CssBaseline";
+import Hidden from "@material-ui/core/Hidden";
+import { ThemeProvider } from "@material-ui/core/styles";
 
 import { BottomNavBar } from "src/components/BottomNavBar";
 import { TopNavBar } from "src/components/topNavBar";

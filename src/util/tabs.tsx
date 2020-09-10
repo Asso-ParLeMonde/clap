@@ -1,5 +1,6 @@
-import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import React from "react";
+
+import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 
 import CreateLogo from "src/svg/create.svg";
 import LightLogo from "src/svg/light.svg";

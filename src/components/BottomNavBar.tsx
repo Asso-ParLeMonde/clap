@@ -1,8 +1,9 @@
+import { useRouter } from "next/router";
+import React, { useEffect } from "react";
+
 import BottomNavigationAction from "@material-ui/core/BottomNavigationAction";
 import BottomNavigation from "@material-ui/core/BottomNavigation";
 import { withStyles } from "@material-ui/core/styles";
-import { useRouter } from "next/router";
-import React, { useEffect } from "react";
 
 import { useTranslation } from "src/i18n/useTranslation";
 import { UserServiceContext } from "src/services/UserService";

@@ -6,3 +6,4 @@ export { QuestionController } from "./questionController";
 export { ThemesController } from "./themeController";
 export { ScenariosController } from "./scenarioController";
 export { UserController } from "./userController";
+export { PlanController } from "./planController";

@@ -1,8 +1,17 @@
-import { Typography, TextField, InputAdornment, IconButton, Button, FormControlLabel, Checkbox, Link } from "@material-ui/core";
-import { Visibility, VisibilityOff } from "@material-ui/icons";
 import { useRouter } from "next/router";
 import qs from "query-string";
 import React from "react";
+
+import Button from "@material-ui/core/Button";
+import Checkbox from "@material-ui/core/Checkbox";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import IconButton from "@material-ui/core/IconButton";
+import InputAdornment from "@material-ui/core/InputAdornment";
+import Link from "@material-ui/core/Link";
+import TextField from "@material-ui/core/TextField";
+import Typography from "@material-ui/core/Typography";
+import VisibilityOff from "@material-ui/icons/VisibilityOff";
+import Visibility from "@material-ui/icons/Visibility";
 
 import { useTranslation } from "src/i18n/useTranslation";
 import { UserServiceContext } from "src/services/UserService";

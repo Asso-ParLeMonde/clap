@@ -1,5 +1,6 @@
-import useScrollTrigger from "@material-ui/core/useScrollTrigger/useScrollTrigger";
 import React, { ReactElement } from "react";
+
+import useScrollTrigger from "@material-ui/core/useScrollTrigger";
 
 interface ElevationScrollProps {
   children: ReactElement;

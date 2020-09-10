@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 export function getQueryString(q: string | string[]): string {
   if (Array.isArray(q)) {
     return q[0];
@@ -12,9 +14,8 @@ export function getQueryString(q: string | string[]): string {
 export function debounce<T extends (args: any) => any>(func: T, wait: number, immediate: boolean): T {
   let timeout: NodeJS.Timeout;
   return (function () {
-    // eslint-disable-next-line
+    // @ts-ignore
     const context: any = this,
-      // eslint-disable-next-line
       args = arguments;
     const later = function () {
       timeout = null;

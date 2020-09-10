@@ -1,3 +1,6 @@
+import { useRouter } from "next/router";
+import React, { useEffect } from "react";
+
 import AppBar from "@material-ui/core/AppBar";
 import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
@@ -5,8 +8,6 @@ import Tabs from "@material-ui/core/Tabs";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
-import { useRouter } from "next/router";
-import React, { useEffect } from "react";
 
 import { UserServiceContext } from "src/services/UserService";
 import { getTabs } from "src/util/tabs";

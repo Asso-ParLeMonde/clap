@@ -1,7 +1,12 @@
-import { Hidden, Typography, Button, TextField, FormHelperText } from "@material-ui/core";
-import ArrowForwardIcon from "@material-ui/icons/ArrowForwardIos";
 import { useRouter } from "next/router";
 import React, { useContext, useState } from "react";
+
+import Button from "@material-ui/core/Button";
+import FormHelperText from "@material-ui/core/FormHelperText";
+import Hidden from "@material-ui/core/Hidden";
+import TextField from "@material-ui/core/TextField";
+import Typography from "@material-ui/core/Typography";
+import ArrowForwardIcon from "@material-ui/icons/ArrowForwardIos";
 
 import { Inverted } from "src/components/Inverted";
 import { Trans } from "src/components/Trans";

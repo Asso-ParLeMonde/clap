@@ -1,8 +1,9 @@
-import { makeStyles } from "@material-ui/core/styles";
-import { Typography } from "@material-ui/core";
 import classnames from "classnames";
 import { useRouter } from "next/router";
 import React from "react";
+
+import Typography from "@material-ui/core/Typography";
+import { makeStyles } from "@material-ui/core/styles";
 
 import { Inverted } from "src/components/Inverted";
 import { Trans } from "src/components/Trans";

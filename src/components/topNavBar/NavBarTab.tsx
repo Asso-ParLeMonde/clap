@@ -1,7 +1,8 @@
-import Tab from "@material-ui/core/Tab";
-import { makeStyles } from "@material-ui/core/styles";
 import { useRouter } from "next/router";
 import React from "react";
+
+import Tab from "@material-ui/core/Tab";
+import { makeStyles } from "@material-ui/core/styles";
 
 import { useTranslation } from "src/i18n/useTranslation";
 

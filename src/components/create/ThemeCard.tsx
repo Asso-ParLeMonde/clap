@@ -1,7 +1,8 @@
+import React, { useEffect, useRef, useState } from "react";
+
 import CardMedia from "@material-ui/core/CardMedia";
 import Paper from "@material-ui/core/Paper";
-import { Typography } from "@material-ui/core";
-import React, { useEffect, useRef, useState } from "react";
+import Typography from "@material-ui/core/Typography";
 
 import { useTranslation } from "src/i18n/useTranslation";
 

@@ -5,8 +5,7 @@ import { UserType } from "../entities/user";
 import { authenticate } from "../middlewares/authenticate";
 import { handleErrors } from "../middlewares/handleErrors";
 import { saveImage, Ratio } from "../middlewares/saveImage";
-
-// import { saveTemporaryImage } from "../middlewares/saveTemporaryImage";
+import { saveTemporaryImage } from "../middlewares/saveTemporaryImage";
 
 type decoratorParams = {
   path?: string;
@@ -93,6 +92,28 @@ export function del({ path, userType }: decoratorParams = defaultParams) {
       target.router = Router({ mergeParams: true });
     }
     target.router.delete(path || "", authenticate(userType), handleErrors(method));
+    return propertyDesciptor;
+  };
+}
+
+/**
+ * TEMPORARY-IMAGE decorator
+ *
+ * @param path: path for the put function
+ * @param name: name of the file from the request
+ * @param tableName: table name for the image
+ * @param userType: Authentication type for this request
+ * @param userType: Authentication type for this request
+ */
+export function tempImage(data: decoratorParams & imageParams = { ...defaultParams, ...defaultImageParams }) {
+  return function getDecorator(target: Controller, _: string, propertyDesciptor: PropertyDescriptor): PropertyDescriptor {
+    const method: RequestHandler = propertyDesciptor.value;
+    if (target.router === undefined) {
+      target.router = Router({ mergeParams: true });
+    }
+    const storage = multer.memoryStorage();
+    const upload = multer({ storage });
+    target.router.post(data.path || "", authenticate(data.userType), upload.single(data.name || "image"), handleErrors(saveTemporaryImage(data.tableName || "", data.ratio)), handleErrors(method));
     return propertyDesciptor;
   };
 }

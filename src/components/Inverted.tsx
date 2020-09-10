@@ -1,6 +1,7 @@
-import { makeStyles } from "@material-ui/core";
 import classnames from "classnames";
 import React from "react";
+
+import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = (color: "primary" | "secondary") =>
   makeStyles((theme) => ({
