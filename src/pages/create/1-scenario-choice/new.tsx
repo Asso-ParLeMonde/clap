@@ -131,7 +131,7 @@ const NewScenario: React.FunctionComponent = () => {
     <div>
       <ThemeLink />
       <Steps activeStep={0} />
-      <div style={{ maxWidth: "1000px", margin: "auto" }}>
+      <div style={{ maxWidth: "1000px", margin: "auto", paddingBottom: "2rem" }}>
         <div
           style={{
             maxWidth: "1000px",

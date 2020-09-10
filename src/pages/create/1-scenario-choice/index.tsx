@@ -58,7 +58,7 @@ const ScenarioChoice: React.FunctionComponent = () => {
     <div>
       <ThemeLink />
       <Steps activeStep={0} />
-      <div style={{ maxWidth: "1000px", margin: "auto" }}>
+      <div style={{ maxWidth: "1000px", margin: "auto", paddingBottom: "2rem" }}>
         <Typography color="primary" variant="h1">
           <Inverted round>1</Inverted>{" "}
           <Trans i18nKey="part1_title">

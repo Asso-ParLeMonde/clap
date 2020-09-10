@@ -1,4 +1,30 @@
 /* eslint-disable */
+import type { Project } from "types/models/project.type";
+import type { Question } from "types/models/question.type";
+
+/*
+  Returns the user's questions list with their plans.
+  Each question is added a plan list if it has not yet and a planStartIndex to know the plan number.
+ */
+export function getQuestions(project: Project): Question[] {
+  return (project.questions || []).reduce((list: Question[], current: Question, index: number) => {
+    let newCurrent: Question;
+    if (index > 0) {
+      const prev = list[index - 1];
+      newCurrent = {
+        ...current,
+        planStartIndex: prev.planStartIndex + ((prev.plans || []).length || 1),
+      };
+    } else {
+      newCurrent = { ...current, planStartIndex: 1 };
+    }
+    if (newCurrent.plans === undefined || newCurrent.plans === null || newCurrent.plans.length === 0) {
+      newCurrent.plans = [];
+    }
+    list.push(newCurrent);
+    return list;
+  }, []);
+}
 
 export function getQueryString(q: string | string[]): string {
   if (Array.isArray(q)) {

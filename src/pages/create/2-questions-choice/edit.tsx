@@ -63,7 +63,7 @@ const QuestionEdit: React.FunctionComponent = () => {
     <div>
       <ThemeLink />
       <Steps activeStep={1} />
-      <div style={{ maxWidth: "1000px", margin: "auto" }}>
+      <div style={{ maxWidth: "1000px", margin: "auto", paddingBottom: "2rem" }}>
         <Typography color="primary" variant="h1">
           <Inverted round>2</Inverted>{" "}
           <Trans i18nKey="part2_title">

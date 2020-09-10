@@ -49,6 +49,15 @@ const QuestionNew: React.FunctionComponent = () => {
       scenarioId: project.scenario.id,
       languageCode: project.scenario.languageCode,
       index: questions.length,
+      plans: [
+        {
+          id: 0,
+          index: 0,
+          description: "",
+          image: null,
+          url: null,
+        },
+      ],
     });
     updateProject({
       questions,
@@ -61,7 +70,7 @@ const QuestionNew: React.FunctionComponent = () => {
     <div>
       <ThemeLink />
       <Steps activeStep={1} />
-      <div style={{ maxWidth: "1000px", margin: "auto" }}>
+      <div style={{ maxWidth: "1000px", margin: "auto", paddingBottom: "2rem" }}>
         <Typography color="primary" variant="h1">
           <Inverted round>2</Inverted>{" "}
           <Trans i18nKey="part2_title">

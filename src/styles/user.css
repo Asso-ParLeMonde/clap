@@ -9,7 +9,9 @@
 
 /* ---- THEMES ---- */
 .theme-cards-container {
+  display: -ms-grid;
   display: grid;
+  -ms-grid-columns: 1fr 16px 1fr 16px 1fr;
   grid-template-columns: repeat(3, 1fr);
   grid-auto-rows: auto;
   grid-gap: 16px;
@@ -34,6 +36,7 @@
   width: 100%;
   overflow: hidden;
   border-radius: 10px !important;
+  -webkit-box-shadow: none !important;
   box-shadow: none !important;
 }
 .theme-card-title {
@@ -44,6 +47,7 @@
 }
 .theme-card-button:hover > div,
 .theme-card-button:focus > div {
+  -webkit-box-shadow: 0 3px 5px -1px rgba(0, 0, 0, 0.18), 0 5px 6px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12) !important;
   box-shadow: 0 3px 5px -1px rgba(0, 0, 0, 0.18), 0 5px 6px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12) !important;
 }
 .theme-card-button:focus > .theme-card-title {
@@ -107,6 +111,7 @@
 }
 .card-container:hover,
 .card-container:focus {
+  -webkit-box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.1), 0 5px 6px 0 rgba(0, 0, 0, 0.1), 0 1px 5px 0 rgba(0, 0, 0, 0.1);
   box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.1), 0 5px 6px 0 rgba(0, 0, 0, 0.1), 0 1px 5px 0 rgba(0, 0, 0, 0.1);
 }
 .steps {
@@ -125,7 +130,12 @@
 
 /* QuestionCard */
 .question-container {
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: row;
   flex-direction: row;
   width: 100%;
   margin: 1rem 0;
@@ -139,18 +149,121 @@
 }
 .question-index {
   color: white;
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
   align-items: center;
   padding: 0.25rem 0.4rem 0.25rem 0;
+  cursor: -webkit-grab;
   cursor: grab;
+  -ms-touch-action: none;
   touch-action: none;
 }
 .question-content {
+  -webkit-box-flex: 1;
+  -ms-flex: 1;
   flex: 1;
+  -ms-flex-item-align: center;
+  -ms-grid-row-align: center;
   align-self: center;
   padding: 0.4rem;
 }
 .question-actions {
+  -ms-flex-item-align: center;
+  -ms-grid-row-align: center;
   align-self: center;
   padding: 0.2rem 0.25rem;
+}
+
+/* Plan Card */
+.plan {
+  width: 100%;
+  height: 100%;
+  border: 1px solid black;
+  cursor: pointer;
+  outline: none;
+  padding: 0.5rem;
+  margin: 0;
+  text-align: left;
+  position: relative;
+}
+.plan > .edit {
+  margin: 0;
+  position: absolute;
+  display: none;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  background-color: rgb(255, 255, 255);
+  padding: 0.25rem 0.5rem;
+  border-radius: 2px;
+}
+.plan > .delete {
+  display: none;
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+}
+.plan:hover > .edit,
+.plan:hover > .delete {
+  display: block;
+}
+@media only screen and (max-width: 800px) {
+  .plan > .delete {
+    display: block;
+  }
+  .plan > .delete button {
+    font-size: 0.8rem;
+  }
+}
+
+/* Scene */
+.plans {
+  margin-top: 0.5rem;
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-columns: 1fr 1rem 1fr 1rem 1fr 1rem 1fr 1rem 1fr;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  grid-auto-rows: 1fr;
+  grid-gap: 1rem;
+}
+.plans::before {
+  content: "";
+  width: 0;
+  padding-bottom: 100%;
+  -ms-grid-row: 1;
+  grid-row: 1 / 1;
+  -ms-grid-column: 1;
+  grid-column: 1 / 1;
+}
+.plans > *:first-child {
+  -ms-grid-row: 1;
+  grid-row: 1 / 1;
+  -ms-grid-column: 1;
+  grid-column: 1 / 1;
+}
+.plan-button-container.add {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+}
+.add-plan-button {
+  color: white;
+  background-color: #6065fc;
+  margin: 0 4rem;
+}
+@media only screen and (max-width: 800px) {
+  .plans {
+    -ms-grid-columns: 1fr 1rem 1fr 1rem 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
+  }
 }

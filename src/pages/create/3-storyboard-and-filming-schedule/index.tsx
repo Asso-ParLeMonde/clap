@@ -7,24 +7,38 @@ import Typography from "@material-ui/core/Typography";
 
 import { Inverted } from "src/components/Inverted";
 import { Trans } from "src/components/Trans";
+import { Scene } from "src/components/create/Scene";
 import { Steps } from "src/components/create/Steps";
 import { ThemeLink } from "src/components/create/ThemeLink";
 import { useTranslation } from "src/i18n/useTranslation";
+import { ProjectServiceContext } from "src/services/ProjectService";
+import { getQuestions } from "src/util";
+import type { Question } from "types/models/question.type";
 
 const PlanEdit: React.FunctionComponent = () => {
   const router = useRouter();
   const { t } = useTranslation();
+  const { project, updateProject } = React.useContext(ProjectServiceContext);
+
+  const questions = getQuestions(project);
 
   const handleNext = (event: React.MouseEvent) => {
     event.preventDefault();
     router.push(`/create/4-to-your-camera`);
   };
 
+  const updateQuestion = (index: number, newQuestion: Partial<Question>) => {
+    const questions = project.questions || [];
+    const prevQuestion = project.questions[index];
+    questions[index] = { ...prevQuestion, ...newQuestion };
+    updateProject({ questions });
+  };
+
   return (
     <div>
       <ThemeLink />
       <Steps activeStep={2} />
-      <div style={{ maxWidth: "1000px", margin: "auto" }}>
+      <div style={{ maxWidth: "1000px", margin: "auto", paddingBottom: "2rem" }}>
         <Typography color="primary" variant="h1">
           <Inverted round>3</Inverted>{" "}
           <Trans i18nKey="part3_title">
@@ -35,7 +49,9 @@ const PlanEdit: React.FunctionComponent = () => {
           {t("part3_desc")}
         </Typography>
 
-        {/* TODO SCENES */}
+        {questions.map((q, index) => (
+          <Scene q={q} index={index} /* addPlan={handleAddPlan(index)} removePlan={handleRemovePlan(index)} */ key={index} />
+        ))}
 
         {/* TODO DELETE MODAL */}
 
