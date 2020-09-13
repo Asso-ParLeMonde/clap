@@ -267,3 +267,133 @@
     grid-template-columns: 1fr 1fr 1fr;
   }
 }
+
+/* Edit plan */
+.edit-plans-container {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: space-around;
+  margin: 2rem 0;
+}
+.edit-plans-container-mobile > button {
+  width: 100%;
+  margin: 2rem 0;
+}
+.or-vertical-divider {
+  display: flex;
+  height: 5rem;
+  flex-direction: column;
+  align-items: center;
+}
+.or-horizontal-divider {
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+  align-items: center;
+}
+.plan-img {
+  border: 1px solid black;
+  width: 40%;
+  max-width: 500px;
+  min-width: 350px;
+}
+.plan-button {
+  width: 40%;
+  max-width: 500px;
+  min-width: 350px;
+  margin: 0.5rem 0 2rem 0 !important;
+}
+.plan-croppie-container {
+  padding-bottom: 40%;
+  position: relative;
+  display: inline-block;
+  margin-bottom: 2rem;
+}
+.plan-croppie-container > div {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.plan-img-buttons {
+  display: block;
+  margin: 1rem auto;
+  width: 40%;
+  max-width: 500px;
+  min-width: 350px;
+}
+
+@media only screen and (max-width: 800px) {
+  .plan-croppie-container {
+    padding-bottom: 100%;
+  }
+  .plan-img-buttons {
+    width: 100%;
+    max-width: unset;
+    min-width: unset;
+  }
+}
+
+@media only screen and (max-width: 800px) {
+  .plan-img,
+  .plan-button {
+    width: 100%;
+    max-width: unset;
+    min-width: unset;
+  }
+  .mobile-full-width {
+    width: 100% !important;
+  }
+}
+
+/* Canvas */
+.draw-canvas-container-max-width {
+  width: 50%;
+  max-width: 500px;
+  margin: 1rem auto;
+}
+.draw-canvas-container {
+  width: 100%;
+  height: 0;
+  padding-bottom: 100%;
+  position: relative;
+}
+.draw-canvas {
+  border: 1px solid rgba(0, 0, 0, 0.54);
+  background-color: white;
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.actions-buttons-container {
+  width: 100%;
+  display: inline-flex;
+}
+.actions-buttons-container > button:not(:last-child) {
+  border-right-color: transparent;
+}
+.canvas-colors-container {
+  width: 100%;
+  max-width: 190px;
+  margin: auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-auto-rows: 1fr;
+  grid-gap: 10px;
+}
+.canvas-colors-container::before {
+  content: "";
+  width: 0;
+  padding-bottom: 100%;
+  grid-row: 1 / 1;
+  grid-column: 1 / 1;
+}
+.canvas-colors-container > *:first-child {
+  grid-row: 1 / 1;
+  grid-column: 1 / 1;
+}

@@ -2,10 +2,12 @@ import { useRouter } from "next/router";
 import React from "react";
 
 import Button from "@material-ui/core/Button";
+import DialogContentText from "@material-ui/core/DialogContentText";
 import Hidden from "@material-ui/core/Hidden";
 import Typography from "@material-ui/core/Typography";
 
 import { Inverted } from "src/components/Inverted";
+import { Modal } from "src/components/Modal";
 import { Trans } from "src/components/Trans";
 import { Scene } from "src/components/create/Scene";
 import { Steps } from "src/components/create/Steps";
@@ -15,10 +17,11 @@ import { ProjectServiceContext } from "src/services/ProjectService";
 import { getQuestions } from "src/util";
 import type { Question } from "types/models/question.type";
 
-const PlanEdit: React.FunctionComponent = () => {
+const PlanAll: React.FunctionComponent = () => {
   const router = useRouter();
   const { t } = useTranslation();
   const { project, updateProject } = React.useContext(ProjectServiceContext);
+  const [deleteIndexes, setDeleteIndexes] = React.useState<{ questionIndex: number; planIndex: number; showNumber: number } | null>(null);
 
   const questions = getQuestions(project);
 
@@ -32,6 +35,38 @@ const PlanEdit: React.FunctionComponent = () => {
     const prevQuestion = project.questions[index];
     questions[index] = { ...prevQuestion, ...newQuestion };
     updateProject({ questions });
+  };
+
+  const handleAddPlan = (index: number) => (event: React.MouseEvent) => {
+    event.preventDefault();
+    const plans = questions[index].plans || [];
+    plans.push({
+      id: 0,
+      index: plans.length,
+      description: "",
+      image: null,
+      url: null,
+    });
+    updateQuestion(index, { plans });
+  };
+
+  const handleDeletePlan = (questionIndex: number) => (planIndex: number) => (event: React.MouseEvent) => {
+    event.preventDefault();
+    event.stopPropagation();
+    setDeleteIndexes({
+      questionIndex,
+      planIndex,
+      showNumber: (questions[questionIndex].planStartIndex || 0) + planIndex,
+    });
+  };
+
+  const handleClose = (confirmDelete: boolean) => () => {
+    if (confirmDelete && deleteIndexes !== null) {
+      const plans = questions[deleteIndexes.questionIndex].plans;
+      plans.splice(deleteIndexes.planIndex, 1);
+      updateQuestion(deleteIndexes.questionIndex, { plans });
+    }
+    setDeleteIndexes(null);
   };
 
   return (
@@ -50,10 +85,27 @@ const PlanEdit: React.FunctionComponent = () => {
         </Typography>
 
         {questions.map((q, index) => (
-          <Scene q={q} index={index} /* addPlan={handleAddPlan(index)} removePlan={handleRemovePlan(index)} */ key={index} />
+          <Scene q={q} index={index} addPlan={handleAddPlan(index)} removePlan={handleDeletePlan(index)} key={index} />
         ))}
 
-        {/* TODO DELETE MODAL */}
+        <Modal
+          open={project.questions !== null && deleteIndexes !== null}
+          onClose={handleClose(false)}
+          onConfirm={handleClose(true)}
+          confirmLabel={t("delete")}
+          cancelLabel={t("cancel")}
+          title={t("part3_delete_plan_question")}
+          error={true}
+          ariaLabelledBy="delete-dialog-title"
+          ariaDescribedBy="delete-dialog-description"
+          fullWidth
+        >
+          <DialogContentText id="delete-dialog-description">
+            {t("part3_delete_plan_desc", {
+              planNumber: deleteIndexes?.showNumber || 0,
+            })}
+          </DialogContentText>
+        </Modal>
 
         <Hidden smDown implementation="css">
           <div style={{ width: "100%", textAlign: "right", marginTop: "2rem" }}>
@@ -72,4 +124,4 @@ const PlanEdit: React.FunctionComponent = () => {
   );
 };
 
-export default PlanEdit;
+export default PlanAll;

@@ -1,4 +1,6 @@
+import "croppie/croppie.css";
 import "nprogress/nprogress.css";
+import "react-html5-camera-photo/build/css/index.css";
 
 import "src/styles/globals.css";
 import "src/styles/user.css";
