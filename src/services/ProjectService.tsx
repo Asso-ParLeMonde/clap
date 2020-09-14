@@ -48,7 +48,7 @@ export const ProjectServiceProvider: React.FunctionComponent<ProjectServiceProvi
         if (locationParams.themeId !== undefined) {
           let theme: Theme | null = null;
           if (locationParams.themeId.slice(0, 5) === "local") {
-            theme = (JSON.parse(localStorage.getItem("themes")) || []).find((t) => t.id === locationParams.themeId) || null;
+            theme = (JSON.parse(localStorage.getItem("themes")) || []).find((t: Theme) => t.id === locationParams.themeId) || null;
           } else {
             const response = await axiosLoggedRequest({
               method: "GET",
