@@ -5,8 +5,8 @@ import "react-html5-camera-photo/build/css/index.css";
 import "src/styles/globals.css";
 import "src/styles/user.css";
 
-import App from "next/app";
 import type { AppProps, AppInitialProps, AppContext } from "next/app";
+import App from "next/app";
 import Head from "next/head";
 import NProgress from "nprogress";
 import React from "react";
@@ -17,6 +17,7 @@ import Hidden from "@material-ui/core/Hidden";
 import { ThemeProvider } from "@material-ui/core/styles";
 
 import { BottomNavBar } from "src/components/BottomNavBar";
+import { AdminDrawer } from "src/components/admin/AdminDrawer";
 import { TopNavBar } from "src/components/topNavBar";
 import { useTranslationContext } from "src/i18n/useTranslation";
 import { ProjectServiceProvider } from "src/services/ProjectService";
@@ -65,29 +66,65 @@ const MyApp: React.FunctionComponent<AppProps> & {
     };
   }, [router.events]);
 
+  const isOnAdmin = router.pathname.slice(1, 6) === "admin";
+  let content: React.ReactNode;
+  if (isOnAdmin) {
+    content = (
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          minHeight: "100vh",
+          backgroundColor: "#eee",
+        }}
+      >
+        <TopNavBar title={"Par Le monde"} homeLink="/create" isOnAdmin />
+        <div
+          style={{
+            backgroundColor: "#eee",
+            flex: 1,
+            display: "flex",
+            height: "100%",
+          }}
+        >
+          <AdminDrawer />
+          <main style={{ flex: 1 }}>
+            <Container maxWidth="lg">
+              <Component {...pageProps} />
+            </Container>
+          </main>
+        </div>
+      </div>
+    );
+  } else {
+    content = (
+      <ProjectServiceProvider>
+        <Hidden smDown implementation="css">
+          <TopNavBar title={"Par Le monde"} homeLink="/create" />
+        </Hidden>
+        <main>
+          <Container maxWidth="lg">
+            <Component {...pageProps} />
+          </Container>
+        </main>
+        <Hidden mdUp implementation="css">
+          <BottomNavBar />
+        </Hidden>
+      </ProjectServiceProvider>
+    );
+  }
+
   return (
     <>
       <Head>
-        <title>Par Le Monde</title>
+        <title>Par Le Monde{isOnAdmin ? " - Admin" : ""}</title>
         <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
       </Head>
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <translationContext.Provider value={{ t, currentLocale }}>
           <UserServiceProvider user={user} csrfToken={csrfToken}>
-            <ProjectServiceProvider>
-              <Hidden smDown implementation="css">
-                <TopNavBar title={"Par Le monde"} homeLink="/create" />
-              </Hidden>
-              <main>
-                <Container maxWidth="lg">
-                  <Component {...pageProps} />
-                </Container>
-              </main>
-              <Hidden mdUp implementation="css">
-                <BottomNavBar />
-              </Hidden>
-            </ProjectServiceProvider>
+            {content}
           </UserServiceProvider>
         </translationContext.Provider>
       </ThemeProvider>

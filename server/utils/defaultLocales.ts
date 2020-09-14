@@ -8,6 +8,7 @@ export const locales = {
   login: "Je me connecte !",
   app: "Application",
   admin: "Admin",
+  my_account: "Mon compte",
   //--- theme page ---
   create_theme_title: "Sur quel <1>thème</1> sera votre vidéo ?",
   create_new_theme: "Ajouter votre thème",

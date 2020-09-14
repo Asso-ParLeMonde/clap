@@ -27,25 +27,26 @@ const useStyles = makeStyles((theme) => ({
 interface NavBarProps {
   title: string;
   homeLink: string;
+  isOnAdmin?: boolean;
 }
 
 export const NavBar: React.FunctionComponent<NavBarProps> = (props: NavBarProps) => {
   const classes = useStyles();
   const router = useRouter();
   const [value, setValue] = React.useState(0);
-  const { isLoggedIn } = React.useContext(UserServiceContext);
+  const { user, isLoggedIn } = React.useContext(UserServiceContext);
 
-  const tabs = getTabs(isLoggedIn);
+  const tabs = getTabs(isLoggedIn, user && user.type === 2, props.isOnAdmin || false);
 
   useEffect(() => {
-    const navtabs = getTabs(isLoggedIn);
+    const navtabs = getTabs(isLoggedIn, user && user.type === 2, props.isOnAdmin || false);
     const index = navtabs.reduce((i1, tab, i2) => (tab.path.split("/")[1] === router.pathname.split("/")[1] ? i2 : i1), -1);
     setValue(index + 1);
-  }, [isLoggedIn, router.pathname]);
+  }, [user, isLoggedIn, router.pathname, props.isOnAdmin]);
 
   const handleHomeLink = (event: React.MouseEvent): void => {
     event.preventDefault();
-    router.push(props.homeLink);
+    router.push(props.isOnAdmin ? "/admin/themes" : props.homeLink);
   };
 
   const currentTab = value > tabs.length ? 0 : value;
@@ -61,7 +62,7 @@ export const NavBar: React.FunctionComponent<NavBarProps> = (props: NavBarProps)
                   <a href={props.homeLink} style={{ color: "white" }} onClick={handleHomeLink}>
                     <img src="/pelico.svg" alt="logo" style={{ height: "36px", width: "auto" }} />
                     <Typography variant="h6" className="plm-logo-title">
-                      {props.title}
+                      {props.isOnAdmin ? `Administrateur ${props.title}` : props.title}
                     </Typography>
                   </a>
                 </Grid>

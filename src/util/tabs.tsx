@@ -42,14 +42,24 @@ const userTabs = [
     icon: <LightLogo />,
   },
   {
-    label: "settings",
+    label: "my_account",
     path: "/settings",
-    icon: <SettingsLogo />,
+    icon: <AccountCircleIcon />,
+  },
+];
+
+const adminTabs = [
+  {
+    label: "app",
+    path: "/create",
+    icon: <div />,
   },
 ];
 
 export const getTabs = (
   isLoggedIn: boolean,
+  isAdmin: boolean,
+  isOnAdminPages: boolean,
 ): Array<{
   icon: JSX.Element;
   label: string;
@@ -59,5 +69,19 @@ export const getTabs = (
     return defaultTabs;
   }
 
+  if (isOnAdminPages) {
+    return adminTabs;
+  }
+
+  if (isAdmin) {
+    return [
+      ...userTabs,
+      {
+        label: "admin",
+        path: "/admin/themes",
+        icon: <SettingsLogo />,
+      },
+    ];
+  }
   return userTabs;
 };
