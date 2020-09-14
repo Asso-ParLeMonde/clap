@@ -20,24 +20,24 @@ import type { Project } from "types/models/project.type";
 const steps = [
   {
     name: (t: tFunction, activeStep: number, project: Project) => (activeStep > 0 ? project.scenario?.name || t("step1") : t("step1")),
-    back: "/create/1-scenario-choice",
+    back: (project: Project) => `/create/1-scenario-choice?themeId=${project.theme?.id || 0}`,
   },
   {
     name: (t: tFunction) => t("step2"),
-    back: "/create/2-questions-choice",
+    back: () => "/create/2-questions-choice",
   },
   {
     name: (t: tFunction) => t("step3"),
-    back: "/create/3-storyboard-and-filming-schedule",
+    back: () => "/create/3-storyboard-and-filming-schedule",
   },
   {
     name: (t: tFunction) => t("step4"),
-    back: "/create",
+    back: () => "/create",
   },
-  {
-    name: (t: tFunction) => t("step5"),
-    back: "/create",
-  },
+  // {
+  //   name: (t: tFunction) => t("step5"),
+  //   back: () => "/create",
+  // },
 ];
 
 const StyleMobileStepper = withStyles((theme) => ({
@@ -83,7 +83,7 @@ export const Steps: React.FunctionComponent<StepsProps> = ({ activeStep }: Steps
       const planIndex = parseInt(getQueryString(router.query.plan)) || 0;
       router.push(`/create/3-storyboard-and-filming-schedule/edit?question=${questionIndex}&plan=${planIndex}`);
     } else if (index < activeStep || (index === activeStep && isNewPage)) {
-      router.push(steps[index].back);
+      router.push(steps[index].back(project));
     }
   };
 

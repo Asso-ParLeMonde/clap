@@ -29,9 +29,12 @@ interface UserServiceProviderProps {
 export const UserServiceProvider: React.FunctionComponent<UserServiceProviderProps> = ({ user: initialUser, csrfToken, children }: UserServiceProviderProps) => {
   const [user, setUser] = useState<User | null>(initialUser);
   const router = useRouter();
-  const headers = {
-    "csrf-token": csrfToken,
-  };
+  const headers = React.useMemo(
+    () => ({
+      "csrf-token": csrfToken,
+    }),
+    [csrfToken],
+  );
 
   /**
    * Login the user with username and password.
@@ -170,14 +173,17 @@ export const UserServiceProvider: React.FunctionComponent<UserServiceProviderPro
    * @returns {Promise<{data, pending, error, complete}>}
    */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
-  const axiosLoggedRequest = async (req: AxiosRequestConfig): Promise<AxiosReturnType> => {
-    const response = await axiosRequest({
-      ...req,
-      headers,
-    });
-    // if (response.error) ...
-    return response;
-  };
+  const axiosLoggedRequest = React.useCallback(
+    async (req: AxiosRequestConfig): Promise<AxiosReturnType> => {
+      const response = await axiosRequest({
+        ...req,
+        headers,
+      });
+      // if (response.error) ...
+      return response;
+    },
+    [headers],
+  );
 
   const isLoggedIn = user !== null;
 
