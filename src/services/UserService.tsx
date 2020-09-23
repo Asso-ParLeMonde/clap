@@ -172,7 +172,6 @@ export const UserServiceProvider: React.FunctionComponent<UserServiceProviderPro
    * @param req
    * @returns {Promise<{data, pending, error, complete}>}
    */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
   const axiosLoggedRequest = React.useCallback(
     async (req: AxiosRequestConfig): Promise<AxiosReturnType> => {
       const response = await axiosRequest({

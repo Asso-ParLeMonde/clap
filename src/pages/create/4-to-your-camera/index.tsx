@@ -27,7 +27,7 @@ const ToCamera: React.FunctionComponent = () => {
   const { t } = useTranslation();
   const { project } = React.useContext(ProjectServiceContext);
   const canvasRef = React.useRef<HTMLCanvasElement | null>(null);
-  const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  const [isLoading] = React.useState<boolean>(false);
 
   const generatePDF = async () => {
     // TODO

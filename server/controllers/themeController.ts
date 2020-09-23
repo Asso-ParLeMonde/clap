@@ -42,7 +42,7 @@ export class ThemesController extends Controller {
   @get({ path: "/:id" })
   public async getTheme(req: Request, res: Response, next: NextFunction): Promise<void> {
     const id: number = parseInt(req.params.id, 10) || 0;
-    const theme: Theme | undefined = await getRepository(Theme).findOne(id);
+    const theme: Theme | undefined = await getRepository(Theme).findOne(id, { relations: ["image"] });
     if (theme === undefined) {
       next(); // will send 404 error
       return;
@@ -79,7 +79,7 @@ export class ThemesController extends Controller {
   @put({ path: "/update-order", userType: UserType.PLMO_ADMIN })
   public async editThemesOrder(req: Request, res: Response): Promise<void> {
     const themesOrderPromises: Array<Promise<void>> = [];
-    const themesOrder: [number] = req.body.themesOrder || [];
+    const themesOrder: [number] = req.body.themesOrder || req.body.order || [];
 
     for (let order = 0; order < themesOrder.length; order++) {
       themesOrderPromises.push(updateThemeOrder(themesOrder[order], order));

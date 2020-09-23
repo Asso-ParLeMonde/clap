@@ -90,6 +90,10 @@ async function startApp() {
     morgan("dev"),
     handleErrors(authenticate(undefined)),
     handleErrors(async (req, res) => {
+      if (req.path.slice(1, 6) === "admin" && (!req.user || req.user.type === 0)) {
+        res.redirect("/create");
+        return;
+      }
       req.currentLocale = req.cookies?.["app-language"] || req.user?.languageCode || "fr";
       req.locales = await getLocales(req.currentLocale);
       req.csrfToken = req.getCsrfToken();

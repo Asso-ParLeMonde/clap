@@ -20,6 +20,7 @@ import { AdminTile } from "src/components/admin/AdminTile";
 import { NameInput } from "src/components/admin/themes/NameInput";
 import { useLanguages } from "src/services/UseLanguages";
 import { UserServiceContext } from "src/services/UserService";
+import { getQueryString } from "src/util";
 import type { Language } from "types/models/language.type";
 import type { Theme } from "types/models/theme.type";
 
@@ -32,11 +33,12 @@ const useStyles = makeStyles((theme: MaterialTheme) =>
   }),
 );
 
-const AdminNewTheme: React.FunctionComponent = () => {
+const AdminEditTheme: React.FunctionComponent = () => {
   const classes = useStyles();
   const router = useRouter();
+  const themeId = React.useMemo(() => parseInt(getQueryString(router.query.id), 10) || 0, [router]);
   const { languages } = useLanguages();
-  const languagesMap = languages.reduce((acc: { [key: string]: number }, language: Language, index: number) => ({ ...acc, [language.value]: index }), {});
+  const languagesMap = React.useMemo(() => languages.reduce((acc: { [key: string]: number }, language: Language, index: number) => ({ ...acc, [language.value]: index }), {}), [languages]);
   const { axiosLoggedRequest } = React.useContext(UserServiceContext);
   const croppieRef = React.useRef<ImgCroppieRef | null>(null);
   const inputRef = React.useRef<HTMLInputElement>(null);
@@ -61,6 +63,29 @@ const AdminNewTheme: React.FunctionComponent = () => {
     event.preventDefault();
     router.push(path);
   };
+
+  const getTheme = React.useCallback(async () => {
+    const response = await axiosLoggedRequest({
+      method: "GET",
+      url: `/themes/${themeId}`,
+    });
+    if (response.error) {
+      router.push("/admin/themes");
+    } else {
+      setTheme(response.data);
+      if (languages.length > 0) {
+        setSelectedLanguages(
+          Object.keys(response.data.names)
+            .filter((key) => key !== "fr")
+            .map((languageValue) => languagesMap[languageValue] || 0),
+        );
+      }
+    }
+  }, [axiosLoggedRequest, router, themeId, languages, languagesMap]);
+
+  React.useEffect(() => {
+    getTheme().catch((e) => console.error(e));
+  }, [getTheme]);
 
   const onAddLanguage = () => {
     setShowModal(false);
@@ -99,6 +124,7 @@ const AdminNewTheme: React.FunctionComponent = () => {
   };
   const onSetImageBlob = async () => {
     if (croppieRef.current) {
+      setTheme({ ...theme, image: null });
       setImageBlob(await croppieRef.current.getBlob());
     }
     onImageUrlClear();
@@ -111,8 +137,8 @@ const AdminNewTheme: React.FunctionComponent = () => {
     setLoading(true);
     try {
       const response = await axiosLoggedRequest({
-        method: "POST",
-        url: "/themes",
+        method: "PUT",
+        url: `/themes/${themeId}`,
         data: {
           ...theme,
         },
@@ -122,6 +148,7 @@ const AdminNewTheme: React.FunctionComponent = () => {
         return;
       }
       const newTheme = response.data;
+      // replace image
       if (imageBlob !== null) {
         const bodyFormData = new FormData();
         bodyFormData.append("image", imageBlob);
@@ -134,6 +161,15 @@ const AdminNewTheme: React.FunctionComponent = () => {
         if (resp2.error) {
           console.error(resp2.error);
         }
+        // or delete the image
+      } else if (theme.image === null) {
+        const resp2 = await axiosLoggedRequest({
+          method: "DELETE",
+          url: `/themes/${newTheme.id}/image`,
+        });
+        if (resp2.error) {
+          console.error(resp2.error);
+        }
       }
       router.push("/admin/themes");
     } catch (e) {
@@ -141,6 +177,8 @@ const AdminNewTheme: React.FunctionComponent = () => {
     }
     setLoading(false);
   };
+
+  const imageSrc = React.useMemo(() => (theme.image ? theme.image.path : imageBlob !== null ? window.URL.createObjectURL(imageBlob) : null), [theme.image, imageBlob]);
 
   return (
     <div style={{ paddingBottom: "2rem" }}>
@@ -151,10 +189,10 @@ const AdminNewTheme: React.FunctionComponent = () => {
           </Typography>
         </Link>
         <Typography variant="h1" color="textPrimary">
-          Nouveau
+          {theme.names.fr}
         </Typography>
       </Breadcrumbs>
-      <AdminTile title="Ajouter un thème">
+      <AdminTile title="Modifier le thème">
         <div style={{ padding: "1rem" }}>
           <Typography variant="h3" color="textPrimary">
             Noms du thème :
@@ -183,12 +221,12 @@ const AdminNewTheme: React.FunctionComponent = () => {
           <Typography variant="h3" color="textPrimary" style={{ marginTop: "2rem" }}>
             Image :
           </Typography>
-          <div style={{ marginTop: "0.5rem" }}>{imageBlob && <img width="300px" src={window.URL.createObjectURL(imageBlob)} />}</div>
+          <div style={{ marginTop: "0.5rem" }}>{imageSrc && <img width="300px" src={imageSrc} />}</div>
           <Button variant="outlined" color="secondary" component="label" startIcon={<CloudUploadIcon />} style={{ marginTop: "0.5rem" }}>
-            {imageBlob ? "Changer d'image" : "Choisir une image"}
+            {imageSrc ? "Changer d'image" : "Choisir une image"}
             <input ref={inputRef} type="file" style={{ display: "none" }} onChange={onImageInputChange} accept="image/*" />
           </Button>
-          {imageBlob && (
+          {imageSrc && (
             <Button
               variant="outlined"
               color="secondary"
@@ -196,6 +234,7 @@ const AdminNewTheme: React.FunctionComponent = () => {
               style={{ marginTop: "0.5rem", marginLeft: "0.5rem" }}
               onClick={() => {
                 setImageBlob(null);
+                setTheme({ ...theme, image: null });
               }}
             >
               {"Supprimer l'image"}
@@ -203,7 +242,7 @@ const AdminNewTheme: React.FunctionComponent = () => {
           )}
           <div style={{ width: "100%", textAlign: "center", marginTop: "1rem" }}>
             <Button color="secondary" variant="contained" onClick={onSubmit}>
-              Créer le thème !
+              Modifier le thème !
             </Button>
           </div>
         </div>
@@ -267,4 +306,4 @@ const AdminNewTheme: React.FunctionComponent = () => {
   );
 };
 
-export default AdminNewTheme;
+export default AdminEditTheme;
