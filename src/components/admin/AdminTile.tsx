@@ -2,6 +2,7 @@ import React from "react";
 
 interface AdminTileProps {
   title: string;
+  selectLanguage?: React.ReactNode | null;
   children?: React.ReactNode | React.ReactNodeArray | null;
   toolbarButton?: React.ReactNode | null;
   style?: React.CSSProperties;
@@ -28,13 +29,13 @@ const useTableStyles = makeStyles((theme: MaterialTheme) =>
   }),
 );
 
-export const AdminTile: React.FunctionComponent<AdminTileProps> = ({ title, children = null, toolbarButton = null, style = {} }: AdminTileProps) => {
+export const AdminTile: React.FunctionComponent<AdminTileProps> = ({ title, children = null, toolbarButton = null, selectLanguage = null, style = {} }: AdminTileProps) => {
   const classes = useTableStyles();
   return (
     <Paper style={{ ...style, overflow: "hidden" }}>
       <Toolbar className={classes.toolbar}>
         <Typography variant="h2" id="themetabletitle" component="div" className={classes.title}>
-          {title}
+          {title} {selectLanguage}
         </Typography>
         {toolbarButton}
       </Toolbar>

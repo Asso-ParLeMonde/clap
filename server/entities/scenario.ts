@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne, PrimaryColumn } from "typeorm";
+import { Column, Entity, ManyToOne, PrimaryColumn, JoinColumn } from "typeorm";
 
 import type { Scenario as ScenarioInterface } from "../../types/models/scenario.type";
 
@@ -21,7 +21,11 @@ export class Scenario implements ScenarioInterface {
   public isDefault: boolean;
 
   @ManyToOne(() => Theme, (theme: Theme) => theme.scenarios)
+  @JoinColumn({ name: "themeId" })
   public theme: Theme;
+
+  @Column({ nullable: false })
+  public themeId: number;
 
   @Column({ type: "varchar", length: 280 })
   public description: string;

@@ -205,6 +205,7 @@ const AdminEditTheme: React.FunctionComponent = () => {
               language={languages[languageIndex]}
               onDelete={onDeleteLanguage(index)}
               onChange={onNameInputChange(languages[languageIndex].value)}
+              canDelete
             />
           ))}
           {availableLanguages.length > 0 && (

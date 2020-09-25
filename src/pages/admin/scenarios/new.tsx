@@ -4,22 +4,27 @@ import React from "react";
 import Backdrop from "@material-ui/core/Backdrop";
 import Breadcrumbs from "@material-ui/core/Breadcrumbs";
 import Button from "@material-ui/core/Button";
+import CardActions from "@material-ui/core/CardActions";
+import CardContent from "@material-ui/core/CardContent";
+import Card from "@material-ui/core/Card";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import FormControl from "@material-ui/core/FormControl";
+import IconButton from "@material-ui/core/IconButton";
 import InputLabel from "@material-ui/core/InputLabel";
 import Link from "@material-ui/core/Link";
 import Select from "@material-ui/core/Select";
+import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles, createStyles, Theme as MaterialTheme } from "@material-ui/core/styles";
-import CloudUploadIcon from "@material-ui/icons/CloudUpload";
+import Close from "@material-ui/icons/Close";
 import NavigateNextIcon from "@material-ui/icons/NavigateNext";
 
-import { ImgCroppie, ImgCroppieRef } from "src/components/ImgCroppie";
 import { Modal } from "src/components/Modal";
 import { AdminTile } from "src/components/admin/AdminTile";
-import { NameInput } from "src/components/admin/themes/NameInput";
 import { useLanguages } from "src/services/UseLanguages";
+import { useThemeNames } from "src/services/UseThemes";
 import { UserServiceContext } from "src/services/UserService";
+import { GroupedScenario } from "src/util/groupScenarios";
 import type { Language } from "types/models/language.type";
 import type { Theme } from "types/models/theme.type";
 
@@ -32,36 +37,39 @@ const useStyles = makeStyles((theme: MaterialTheme) =>
   }),
 );
 
-const AdminNewTheme: React.FunctionComponent = () => {
+type ThemeNames = { [key: number]: { [key: string]: string } };
+
+const AdminNewScenario: React.FunctionComponent = () => {
   const classes = useStyles();
   const router = useRouter();
   const { languages } = useLanguages();
-  const languagesMap = languages.reduce((acc: { [key: string]: number }, language: Language, index: number) => ({ ...acc, [language.value]: index }), {});
+  const languagesMap = React.useMemo(() => languages.reduce((acc: { [key: string]: number }, language: Language, index: number) => ({ ...acc, [language.value]: index }), {}), [languages]);
   const { axiosLoggedRequest } = React.useContext(UserServiceContext);
-  const croppieRef = React.useRef<ImgCroppieRef | null>(null);
-  const inputRef = React.useRef<HTMLInputElement>(null);
-  const [theme, setTheme] = React.useState<Theme>({
+  const { themeNames } = useThemeNames(axiosLoggedRequest);
+  const [themes, setThemes] = React.useState<ThemeNames>({});
+  const [scenario, setScenario] = React.useState<GroupedScenario>({
     id: 0,
-    names: {
-      fr: "",
-    },
+    themeId: 0,
+    names: {},
+    descriptions: {},
     isDefault: true,
-    image: null,
-    order: null,
   });
   const [showModal, setShowModal] = React.useState<boolean>(false);
   const [languageToAdd, setLanguageToAdd] = React.useState<number>(0);
   const [selectedLanguages, setSelectedLanguages] = React.useState<number[]>([]);
-  const [imageUrl, setImageUrl] = React.useState<string | null>(null);
-  const [imageBlob, setImageBlob] = React.useState<Blob | null>(null);
   const [loading, setLoading] = React.useState<boolean>(false);
-  const availableLanguages = languages.filter((l, index) => l.value !== "fr" && !selectedLanguages.includes(index));
+  const availableLanguages = languages.filter((l, index) => !selectedLanguages.includes(index));
 
   const goToPath = (path: string) => (event: React.MouseEvent) => {
     event.preventDefault();
     router.push(path);
   };
 
+  React.useEffect(() => {
+    if (languagesMap.fr !== undefined && selectedLanguages.length === 0) {
+      setSelectedLanguages([languagesMap.fr]);
+    }
+  }, [selectedLanguages, languagesMap]);
   const onAddLanguage = () => {
     setShowModal(false);
     setSelectedLanguages([...selectedLanguages, languagesMap[availableLanguages[languageToAdd].value]]);
@@ -72,74 +80,25 @@ const AdminNewTheme: React.FunctionComponent = () => {
     const s = [...selectedLanguages];
     s.splice(deleteIndex, 1);
     setSelectedLanguages(s);
-    const newTheme = { ...theme };
-    delete newTheme.names[language.value];
-    setTheme(newTheme);
+    const newScenario = { ...scenario };
+    delete newScenario.names[language.value];
+    delete newScenario.descriptions[language.value];
+    setScenario(newScenario);
   };
 
   const onNameInputChange = (languageValue: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newTheme = { ...theme };
-    newTheme.names[languageValue] = event.target.value;
-    setTheme(newTheme);
+    const newScenario = { ...scenario };
+    newScenario.names[languageValue] = event.target.value;
+    setScenario(newScenario);
   };
-
-  const onImageInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files.length > 0) {
-      const url = URL.createObjectURL(event.target.files[0]);
-      setImageUrl(url);
-    } else {
-      setImageUrl(null);
-    }
-  };
-  const onImageUrlClear = () => {
-    setImageUrl(null);
-    if (inputRef.current !== undefined && inputRef.current !== null) {
-      inputRef.current.value = "";
-    }
-  };
-  const onSetImageBlob = async () => {
-    if (croppieRef.current) {
-      setImageBlob(await croppieRef.current.getBlob());
-    }
-    onImageUrlClear();
+  const onDescInputChange = (languageValue: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newScenario = { ...scenario };
+    newScenario.descriptions[languageValue] = event.target.value;
+    setScenario(newScenario);
   };
 
   const onSubmit = async () => {
-    if (!theme.names.fr) {
-      return;
-    }
-    setLoading(true);
-    try {
-      const response = await axiosLoggedRequest({
-        method: "POST",
-        url: "/themes",
-        data: {
-          ...theme,
-        },
-      });
-      if (response.error) {
-        console.error(response.error);
-        return;
-      }
-      const newTheme = response.data;
-      if (imageBlob !== null) {
-        const bodyFormData = new FormData();
-        bodyFormData.append("image", imageBlob);
-        const resp2 = await axiosLoggedRequest({
-          method: "POST",
-          url: `/themes/${newTheme.id}/image`,
-          headers: { "Content-Type": "multipart/form-data" },
-          data: bodyFormData,
-        });
-        if (resp2.error) {
-          console.error(resp2.error);
-        }
-      }
-      router.push("/admin/themes");
-    } catch (e) {
-      console.error(e);
-    }
-    setLoading(false);
+    // TODO
   };
 
   return (
@@ -147,28 +106,37 @@ const AdminNewTheme: React.FunctionComponent = () => {
       <Breadcrumbs separator={<NavigateNextIcon fontSize="large" color="primary" />} aria-label="breadcrumb">
         <Link href="/admin/themes" onClick={goToPath("/admin/themes")}>
           <Typography variant="h1" color="primary">
-            Thèmes
+            Scénarios
           </Typography>
         </Link>
         <Typography variant="h1" color="textPrimary">
           Nouveau
         </Typography>
       </Breadcrumbs>
-      <AdminTile title="Ajouter un thème">
+      <AdminTile title="Créer un scénario">
         <div style={{ padding: "1rem" }}>
           <Typography variant="h3" color="textPrimary">
-            Noms du thème :
+            Thème associé:
           </Typography>
-          <NameInput value={theme.names.fr || ""} onChange={onNameInputChange("fr")} />
+          <br />
+          <Typography variant="h3" color="textPrimary">
+            Scénario :
+          </Typography>
           {selectedLanguages.map((languageIndex, index) => (
-            <NameInput
-              key={languages[languageIndex].value}
-              value={theme.names[languages[languageIndex].value] || ""}
-              language={languages[languageIndex]}
-              onDelete={onDeleteLanguage(index)}
-              onChange={onNameInputChange(languages[languageIndex].value)}
-              canDelete
-            />
+            <Card key={languages[languageIndex].value} variant="outlined" style={{ margin: "8px 0" }}>
+              <CardActions>
+                <div style={{ marginLeft: "8px", fontWeight: "bold" }}>{languages[languageIndex].label}</div>
+                {selectedLanguages.length > 1 && (
+                  <IconButton style={{ marginLeft: "auto" }} size="small" onClick={onDeleteLanguage(index)}>
+                    <Close />
+                  </IconButton>
+                )}
+              </CardActions>
+              <CardContent style={{ paddingTop: "0" }}>
+                <TextField label="Nom" value={scenario.names[languages[languageIndex].value] || ""} onChange={onNameInputChange(languages[languageIndex].value)} color="secondary" fullWidth />
+                <TextField style={{ marginTop: "8px" }} label="Description" value={scenario.descriptions[languages[languageIndex].value] || ""} onChange={onDescInputChange(languages[languageIndex].value)} color="secondary" multiline fullWidth />
+              </CardContent>
+            </Card>
           ))}
           {availableLanguages.length > 0 && (
             <Button
@@ -181,30 +149,9 @@ const AdminNewTheme: React.FunctionComponent = () => {
             </Button>
           )}
 
-          <Typography variant="h3" color="textPrimary" style={{ marginTop: "2rem" }}>
-            Image :
-          </Typography>
-          <div style={{ marginTop: "0.5rem" }}>{imageBlob && <img width="300px" src={window.URL.createObjectURL(imageBlob)} />}</div>
-          <Button variant="outlined" color="secondary" component="label" startIcon={<CloudUploadIcon />} style={{ marginTop: "0.5rem" }}>
-            {imageBlob ? "Changer d'image" : "Choisir une image"}
-            <input ref={inputRef} type="file" style={{ display: "none" }} onChange={onImageInputChange} accept="image/*" />
-          </Button>
-          {imageBlob && (
-            <Button
-              variant="outlined"
-              color="secondary"
-              component="label"
-              style={{ marginTop: "0.5rem", marginLeft: "0.5rem" }}
-              onClick={() => {
-                setImageBlob(null);
-              }}
-            >
-              {"Supprimer l'image"}
-            </Button>
-          )}
           <div style={{ width: "100%", textAlign: "center", marginTop: "1rem" }}>
             <Button color="secondary" variant="contained" onClick={onSubmit}>
-              Créer le thème !
+              Créer le scénario !
             </Button>
           </div>
         </div>
@@ -253,19 +200,8 @@ const AdminNewTheme: React.FunctionComponent = () => {
           </FormControl>
         )}
       </Modal>
-
-      {/* image modal */}
-      <Modal open={imageUrl !== null} onClose={onImageUrlClear} onConfirm={onSetImageBlob} confirmLabel="Valider" cancelLabel="Annuler" title="Redimensionner l'image" ariaLabelledBy="add-dialog" ariaDescribedBy="add-dialog-desc">
-        {imageUrl !== null && (
-          <div className="text-center">
-            <div style={{ width: "500px", height: "400px", marginBottom: "2rem" }}>
-              <ImgCroppie src={imageUrl} alt="Plan image" ref={croppieRef} imgWidth={420} imgHeight={308} />
-            </div>
-          </div>
-        )}
-      </Modal>
     </div>
   );
 };
 
-export default AdminNewTheme;
+export default AdminNewScenario;

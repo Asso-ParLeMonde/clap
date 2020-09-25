@@ -58,13 +58,21 @@ export class ScenariosController extends Controller {
   @get({ path: "/:id" })
   public async getScenario(req: Request, res: Response, next: NextFunction): Promise<void> {
     const { id, languageCode } = getIDs(req.params.id);
-    const scenario = await getRepository(Scenario).findOne({ where: { id, languageCode: languageCode || "fr" } });
-    if (scenario === undefined) {
-      next();
-      return;
+    if (languageCode !== null) {
+      const scenario = await getRepository(Scenario).findOne({ where: { id, languageCode: languageCode || "fr" } });
+      if (scenario === undefined) {
+        next();
+        return;
+      }
+      res.sendJSON(scenario);
+    } else {
+      const scenarios = await getRepository(Scenario).find({ where: { id } });
+      if (scenarios.length === 0) {
+        next();
+        return;
+      }
+      res.sendJSON(scenarios);
     }
-
-    res.sendJSON(scenario);
   }
 
   @post(/* { userType: UserType.CLASS } */)

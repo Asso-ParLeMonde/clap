@@ -25,11 +25,12 @@ const useStyles = makeStyles(() => ({
 interface NameInputProps {
   value?: string;
   language?: Language;
+  canDelete?: boolean;
   onChange?(event: React.ChangeEvent<HTMLInputElement>): void;
   onDelete?(): void;
 }
 
-export const NameInput: React.FunctionComponent<NameInputProps> = ({ value = "", language = { label: "Français", value: "fr" }, onChange = () => {}, onDelete = () => {} }: NameInputProps) => {
+export const NameInput: React.FunctionComponent<NameInputProps> = ({ value = "", language = { label: "Français", value: "fr" }, canDelete = false, onChange = () => {}, onDelete = () => {} }: NameInputProps) => {
   const classes = useStyles();
 
   return (
@@ -38,7 +39,7 @@ export const NameInput: React.FunctionComponent<NameInputProps> = ({ value = "",
 
       <TextField color="secondary" id={language.value} type="text" value={value} onChange={onChange} fullWidth className={classes.textFieldNames} />
 
-      {language.value !== "fr" && (
+      {canDelete && (
         <Button style={{ borderRadius: "100px", minWidth: "32px", marginLeft: "8px" }} onClick={onDelete}>
           <Close />
         </Button>

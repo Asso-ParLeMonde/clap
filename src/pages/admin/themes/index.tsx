@@ -212,7 +212,7 @@ const AdminThemes: React.FunctionComponent = () => {
                           {index}
                         </div>
                       </TableCell>
-                      <TableCell>{t.names[selectedLanguage] || t.names.fr}</TableCell>
+                      <TableCell style={{ color: t.names[selectedLanguage] ? "inherit" : "grey" }}>{t.names[selectedLanguage] || `${t.names.fr} (non traduit)`}</TableCell>
                       <TableCell style={{ padding: "0 16px" }} padding="none">
                         {t.image ? <img style={{ display: "table-cell" }} height="40" src={t.image.path} /> : "Aucune image"}
                       </TableCell>

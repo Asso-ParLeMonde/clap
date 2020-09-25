@@ -4,7 +4,7 @@ import { axiosRequest } from "src/util/axiosRequest";
 import type { Language } from "types/models/language.type";
 
 export const useLanguages = (): { languages: Language[] } => {
-  const [languages, setLanguages] = React.useState<Language[]>([]);
+  const [languages, setLanguages] = React.useState<Language[]>([{ value: "fr", label: "Français" }]);
 
   const getLanguages = React.useCallback(async () => {
     const response = await axiosRequest({
