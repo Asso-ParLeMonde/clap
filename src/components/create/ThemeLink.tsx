@@ -8,7 +8,7 @@ import Typography from "@material-ui/core/Typography";
 import NavigateNextIcon from "@material-ui/icons/NavigateNext";
 
 import { useTranslation } from "src/i18n/useTranslation";
-import { ProjectServiceContext } from "src/services/ProjectService";
+import { ProjectServiceContext } from "src/services/useProject";
 
 export const ThemeLink: React.FunctionComponent = () => {
   const router = useRouter();

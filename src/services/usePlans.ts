@@ -1,7 +1,7 @@
 import React from "react";
 
-import { ProjectServiceContext } from "./ProjectService";
 import { UserServiceContext } from "./UserService";
+import { ProjectServiceContext } from "./useProject";
 
 interface PlanRequests {
   uploadPlanImage(questionIndex: number, planIndex: number, imageBlob: Blob): Promise<void>;

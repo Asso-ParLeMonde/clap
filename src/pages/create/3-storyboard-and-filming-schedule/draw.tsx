@@ -12,8 +12,8 @@ import { Canvas, CanvasRef } from "src/components/create/Canvas";
 import { Steps } from "src/components/create/Steps";
 import { ThemeLink } from "src/components/create/ThemeLink";
 import { useTranslation } from "src/i18n/useTranslation";
-import { usePlanRequests } from "src/services/PlanService";
-import { ProjectServiceContext } from "src/services/ProjectService";
+import { usePlanRequests } from "src/services/usePlans";
+import { ProjectServiceContext } from "src/services/useProject";
 import { getQuestions } from "src/util";
 import { getQueryString } from "src/util";
 

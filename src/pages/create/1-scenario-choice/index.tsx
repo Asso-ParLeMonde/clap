@@ -9,8 +9,8 @@ import { ScenarioCard } from "src/components/create/ScenarioCard";
 import { Steps } from "src/components/create/Steps";
 import { ThemeLink } from "src/components/create/ThemeLink";
 import { useTranslation } from "src/i18n/useTranslation";
-import { ProjectServiceContext } from "src/services/ProjectService";
 import { UserServiceContext } from "src/services/UserService";
+import { ProjectServiceContext } from "src/services/useProject";
 import { Scenario } from "types/models/scenario.type";
 
 const ScenarioChoice: React.FunctionComponent = () => {

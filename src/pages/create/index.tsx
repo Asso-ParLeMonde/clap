@@ -8,9 +8,9 @@ import { makeStyles } from "@material-ui/core/styles";
 import { Inverted } from "src/components/Inverted";
 import { Trans } from "src/components/Trans";
 import { ThemeCard } from "src/components/create/ThemeCard";
-import { ProjectServiceContext } from "src/services/ProjectService";
 import { UserServiceContext } from "src/services/UserService";
-import type { Theme } from "types/models/theme.type";
+import { ProjectServiceContext } from "src/services/useProject";
+import { useThemes } from "src/services/useThemes";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -23,28 +23,9 @@ const useStyles = makeStyles((theme) => ({
 const Create: React.FunctionComponent = () => {
   const classes = useStyles();
   const router = useRouter();
-  const { isLoggedIn, axiosLoggedRequest } = React.useContext(UserServiceContext);
   const { updateProject } = React.useContext(ProjectServiceContext);
-  const [themes, setThemes] = React.useState<Theme[]>([]);
-
-  const getThemes = React.useCallback(async () => {
-    let url: string = "/themes?isDefault=true";
-    if (isLoggedIn) {
-      url += "&user";
-    }
-    const response = await axiosLoggedRequest({
-      method: "GET",
-      url,
-    });
-    if (!response.error) {
-      const localThemes: Theme[] = isLoggedIn ? [] : JSON.parse(localStorage.getItem("themes")) || [];
-      setThemes([...response.data, ...localThemes]);
-    }
-  }, [isLoggedIn, axiosLoggedRequest]);
-
-  React.useEffect(() => {
-    getThemes().catch();
-  }, [getThemes]);
+  const { isLoggedIn } = React.useContext(UserServiceContext);
+  const { themes } = useThemes({ user: isLoggedIn, isDefault: true });
 
   const handleThemeClick = (index: number) => (path: string): void => {
     if (index >= 0) {

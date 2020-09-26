@@ -5,7 +5,7 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 
 import { useTranslation } from "src/i18n/useTranslation";
-import { ProjectServiceContext } from "src/services/ProjectService";
+import { ProjectServiceContext } from "src/services/useProject";
 import type { Scenario } from "types/models/scenario.type";
 
 const useStyles = makeStyles((theme) => ({

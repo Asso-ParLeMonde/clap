@@ -12,7 +12,7 @@ import { Trans } from "src/components/Trans";
 import { Steps } from "src/components/create/Steps";
 import { ThemeLink } from "src/components/create/ThemeLink";
 import { useTranslation } from "src/i18n/useTranslation";
-import { ProjectServiceContext } from "src/services/ProjectService";
+import { ProjectServiceContext } from "src/services/useProject";
 import { getQueryString } from "src/util";
 
 const QuestionEdit: React.FunctionComponent = () => {

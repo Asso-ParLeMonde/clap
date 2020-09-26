@@ -14,8 +14,8 @@ import { QuestionCard } from "src/components/create/QuestionCard";
 import { Steps } from "src/components/create/Steps";
 import { ThemeLink } from "src/components/create/ThemeLink";
 import { useTranslation } from "src/i18n/useTranslation";
-import { ProjectServiceContext } from "src/services/ProjectService";
 import { UserServiceContext } from "src/services/UserService";
+import { ProjectServiceContext } from "src/services/useProject";
 import type { Question } from "types/models/question.type";
 
 const QuestionChoice: React.FunctionComponent = () => {

@@ -5,10 +5,12 @@ import "react-html5-camera-photo/build/css/index.css";
 import "src/styles/globals.css";
 import "src/styles/user.css";
 
-import type { AppProps, AppInitialProps, AppContext } from "next/app";
 import App from "next/app";
+import type { AppProps, AppInitialProps, AppContext } from "next/app";
 import Head from "next/head";
 import NProgress from "nprogress";
+import { ReactQueryDevtools } from "react-query-devtools";
+import { QueryCache, ReactQueryCacheProvider } from "react-query";
 import React from "react";
 
 import Container from "@material-ui/core/Container";
@@ -20,8 +22,8 @@ import { BottomNavBar } from "src/components/BottomNavBar";
 import { AdminDrawer } from "src/components/admin/AdminDrawer";
 import { TopNavBar } from "src/components/topNavBar";
 import { useTranslationContext } from "src/i18n/useTranslation";
-import { ProjectServiceProvider } from "src/services/ProjectService";
 import { UserServiceProvider } from "src/services/UserService";
+import { ProjectServiceProvider } from "src/services/useProject";
 import theme from "src/styles/theme";
 import { getInitialData } from "src/util/data";
 import type { User } from "types/models/user.type";
@@ -33,6 +35,8 @@ interface MyAppOwnProps {
   user: User | null;
 }
 type MyAppProps = AppProps & MyAppOwnProps;
+
+const queryCache = new QueryCache();
 
 const MyApp: React.FunctionComponent<AppProps> & {
   getInitialProps(appContext: AppContext): Promise<AppInitialProps & { locales: { [key: string]: string } }>;
@@ -122,11 +126,15 @@ const MyApp: React.FunctionComponent<AppProps> & {
       </Head>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <translationContext.Provider value={{ t, currentLocale }}>
-          <UserServiceProvider user={user} csrfToken={csrfToken}>
-            {content}
-          </UserServiceProvider>
-        </translationContext.Provider>
+        <ReactQueryCacheProvider queryCache={queryCache}>
+          <translationContext.Provider value={{ t, currentLocale }}>
+            <UserServiceProvider user={user} csrfToken={csrfToken}>
+              {content}
+            </UserServiceProvider>
+          </translationContext.Provider>
+          {/* Dev only, it won't appear after build for prod. */}
+          <ReactQueryDevtools />
+        </ReactQueryCacheProvider>
       </ThemeProvider>
     </>
   );

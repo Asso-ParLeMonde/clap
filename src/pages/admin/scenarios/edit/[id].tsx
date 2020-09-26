@@ -15,9 +15,9 @@ import NavigateNextIcon from "@material-ui/icons/NavigateNext";
 
 import { Modal } from "src/components/Modal";
 import { AdminTile } from "src/components/admin/AdminTile";
-import { useLanguages } from "src/services/UseLanguages";
-import { UserServiceContext } from "src/services/UserService";
-import { getQueryString } from "src/util";
+// import { UserServiceContext } from "src/services/UserService";
+import { useLanguages } from "src/services/useLanguages";
+// import { getQueryString } from "src/util";
 import type { Language } from "types/models/language.type";
 
 const useStyles = makeStyles((theme: MaterialTheme) =>
@@ -32,15 +32,15 @@ const useStyles = makeStyles((theme: MaterialTheme) =>
 const AdminEditScenario: React.FunctionComponent = () => {
   const classes = useStyles();
   const router = useRouter();
-  const scenarioId = React.useMemo(() => parseInt(getQueryString(router.query.id), 10) || 0, [router]);
+  // const scenarioId = React.useMemo(() => parseInt(getQueryString(router.query.id), 10) || 0, [router]);
   const { languages } = useLanguages();
   const languagesMap = React.useMemo(() => languages.reduce((acc: { [key: string]: number }, language: Language, index: number) => ({ ...acc, [language.value]: index }), {}), [languages]);
-  const { axiosLoggedRequest } = React.useContext(UserServiceContext);
+  // const { axiosLoggedRequest } = React.useContext(UserServiceContext);
 
   const [showModal, setShowModal] = React.useState<boolean>(false);
   const [languageToAdd, setLanguageToAdd] = React.useState<number>(0);
   const [selectedLanguages, setSelectedLanguages] = React.useState<number[]>([]);
-  const [loading, setLoading] = React.useState<boolean>(false);
+  const [loading /* setLoading */] = React.useState<boolean>(false);
   const availableLanguages = languages.filter((l, index) => l.value !== "fr" && !selectedLanguages.includes(index));
 
   const goToPath = (path: string) => (event: React.MouseEvent) => {
@@ -76,15 +76,15 @@ const AdminEditScenario: React.FunctionComponent = () => {
     setSelectedLanguages([...selectedLanguages, languagesMap[availableLanguages[languageToAdd].value]]);
     setLanguageToAdd(0);
   };
-  const onDeleteLanguage = (deleteIndex: number) => () => {
-    const language = languages[selectedLanguages[deleteIndex]];
-    const s = [...selectedLanguages];
-    s.splice(deleteIndex, 1);
-    setSelectedLanguages(s);
-    // const newTheme = { ...theme };
-    // delete newTheme.names[language.value];
-    // setTheme(newTheme);
-  };
+  // const onDeleteLanguage = (deleteIndex: number) => () => {
+  //   const language = languages[selectedLanguages[deleteIndex]];
+  //   const s = [...selectedLanguages];
+  //   s.splice(deleteIndex, 1);
+  //   setSelectedLanguages(s);
+  //   // const newTheme = { ...theme };
+  //   // delete newTheme.names[language.value];
+  //   // setTheme(newTheme);
+  // };
 
   const onSubmit = async () => {
     // TODO

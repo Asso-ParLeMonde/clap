@@ -13,7 +13,7 @@ import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
 import type { tFunction } from "src/i18n/translateFunction";
 // import ProjectTitle from "../ProjectTitle";
 import { useTranslation } from "src/i18n/useTranslation";
-import { ProjectServiceContext } from "src/services/ProjectService";
+import { ProjectServiceContext } from "src/services/useProject";
 import { getQueryString } from "src/util";
 import type { Project } from "types/models/project.type";
 

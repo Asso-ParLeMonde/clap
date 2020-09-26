@@ -25,8 +25,8 @@ import EditIcon from "@material-ui/icons/Edit";
 
 import { Modal } from "src/components/Modal";
 import { AdminTile } from "src/components/admin/AdminTile";
-import { useLanguages } from "src/services/UseLanguages";
 import { UserServiceContext } from "src/services/UserService";
+import { useLanguages } from "src/services/useLanguages";
 import type { Theme } from "types/models/theme.type";
 
 const useTableStyles = makeStyles((theme: MaterialTheme) =>

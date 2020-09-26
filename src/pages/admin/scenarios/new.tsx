@@ -21,12 +21,13 @@ import NavigateNextIcon from "@material-ui/icons/NavigateNext";
 
 import { Modal } from "src/components/Modal";
 import { AdminTile } from "src/components/admin/AdminTile";
-import { useLanguages } from "src/services/UseLanguages";
-import { useThemeNames } from "src/services/UseThemes";
-import { UserServiceContext } from "src/services/UserService";
+// import { UserServiceContext } from "src/services/UserService";
+import { useLanguages } from "src/services/useLanguages";
+// import { useThemeNames } from "src/services/useThemes";
 import { GroupedScenario } from "src/util/groupScenarios";
 import type { Language } from "types/models/language.type";
-import type { Theme } from "types/models/theme.type";
+
+// import type { Theme } from "types/models/theme.type";
 
 const useStyles = makeStyles((theme: MaterialTheme) =>
   createStyles({
@@ -37,16 +38,13 @@ const useStyles = makeStyles((theme: MaterialTheme) =>
   }),
 );
 
-type ThemeNames = { [key: number]: { [key: string]: string } };
-
 const AdminNewScenario: React.FunctionComponent = () => {
   const classes = useStyles();
   const router = useRouter();
   const { languages } = useLanguages();
   const languagesMap = React.useMemo(() => languages.reduce((acc: { [key: string]: number }, language: Language, index: number) => ({ ...acc, [language.value]: index }), {}), [languages]);
-  const { axiosLoggedRequest } = React.useContext(UserServiceContext);
-  const { themeNames } = useThemeNames(axiosLoggedRequest);
-  const [themes, setThemes] = React.useState<ThemeNames>({});
+  // const { axiosLoggedRequest } = React.useContext(UserServiceContext);
+  // const { themeNames } = useThemeNames(axiosLoggedRequest);
   const [scenario, setScenario] = React.useState<GroupedScenario>({
     id: 0,
     themeId: 0,
@@ -57,8 +55,8 @@ const AdminNewScenario: React.FunctionComponent = () => {
   const [showModal, setShowModal] = React.useState<boolean>(false);
   const [languageToAdd, setLanguageToAdd] = React.useState<number>(0);
   const [selectedLanguages, setSelectedLanguages] = React.useState<number[]>([]);
-  const [loading, setLoading] = React.useState<boolean>(false);
-  const availableLanguages = languages.filter((l, index) => !selectedLanguages.includes(index));
+  const [loading /* setLoading */] = React.useState<boolean>(false);
+  const availableLanguages = languages.filter((_l, index) => !selectedLanguages.includes(index));
 
   const goToPath = (path: string) => (event: React.MouseEvent) => {
     event.preventDefault();

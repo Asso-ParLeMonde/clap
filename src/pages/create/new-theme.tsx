@@ -14,8 +14,8 @@ import NavigateNextIcon from "@material-ui/icons/NavigateNext";
 import { Inverted } from "src/components/Inverted";
 import { Trans } from "src/components/Trans";
 import { useTranslation } from "src/i18n/useTranslation";
-import { ProjectServiceContext } from "src/services/ProjectService";
 import { UserServiceContext } from "src/services/UserService";
+import { ProjectServiceContext } from "src/services/useProject";
 import type { Theme } from "types/models/theme.type";
 
 const NewTheme: React.FunctionComponent = () => {

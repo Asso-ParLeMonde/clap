@@ -1571,7 +1571,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.3.1, @babel/runtime@npm:^7.4.4, @babel/runtime@npm:^7.5.5, @babel/runtime@npm:^7.8.3, @babel/runtime@npm:^7.8.4, @babel/runtime@npm:^7.8.7":
+"@babel/runtime@npm:^7.10.5, @babel/runtime@npm:^7.3.1, @babel/runtime@npm:^7.4.4, @babel/runtime@npm:^7.5.5, @babel/runtime@npm:^7.8.3, @babel/runtime@npm:^7.8.4, @babel/runtime@npm:^7.8.7":
   version: 7.11.2
   resolution: "@babel/runtime@npm:7.11.2"
   dependencies:
@@ -2649,7 +2649,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/sortablejs@npm:^1.10.0":
+"@types/sortablejs@npm:^1.10.6":
   version: 1.10.6
   resolution: "@types/sortablejs@npm:1.10.6"
   checksum: 1a98669c88ea125b55df919235f9c55fe177222c5089a3ff5b77f1bc61400c6273849d43d22d77d6f2b0d5d528252bdca52eced3492474071a89758ffaca795d
@@ -8673,6 +8673,16 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
+"match-sorter@npm:^4.1.0":
+  version: 4.2.1
+  resolution: "match-sorter@npm:4.2.1"
+  dependencies:
+    "@babel/runtime": ^7.10.5
+    remove-accents: 0.4.2
+  checksum: 7b28e050cb4ee14e96e7233fb37f2d4587e9addbda10c10832d50e10cca0b99b49fd77669d094b8c42779442b8db7c2b52197ee4733422df3a3bf170d311c8c2
+  languageName: node
+  linkType: hard
+
 "md5.js@npm:^1.3.4":
   version: 1.3.5
   resolution: "md5.js@npm:1.3.5"
@@ -9982,6 +9992,7 @@ fsevents@~2.1.2:
     "@types/query-string": ^6
     "@types/react": ^16.9.46
     "@types/sharp": ^0
+    "@types/sortablejs": ^1.10.6
     "@types/uuid": ^8
     "@types/webpack": ^4
     "@typescript-eslint/eslint-plugin": ^3.9.0
@@ -10027,8 +10038,11 @@ fsevents@~2.1.2:
     react: 16.13.1
     react-dom: 16.13.1
     react-html5-camera-photo: ^1.5.4
-    react-sortablejs: ^2.0.11
+    react-query: ^2.23.0
+    react-query-devtools: ^2.5.1
+    react-sortablejs: ^5.0.5
     sharp: ^0.26.0
+    sortablejs: 1.10.2
     ts-node: ^8.10.2
     typeorm: ^0.2.25
     typescript: ^3.9.7
@@ -10970,6 +10984,36 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
+"react-query-devtools@npm:^2.5.1":
+  version: 2.5.1
+  resolution: "react-query-devtools@npm:2.5.1"
+  dependencies:
+    match-sorter: ^4.1.0
+  peerDependencies:
+    react: ^16.6.3
+    react-query: ^2.0.0
+  checksum: df778a655905bbecde812551709aae0993adc570e7de04bb034f499e7d5ad1778467f90d801867572c5e6a9a58a55c8dc980f84b338df054187e9ad6b37b31bb
+  languageName: node
+  linkType: hard
+
+"react-query@npm:^2.23.0":
+  version: 2.23.0
+  resolution: "react-query@npm:2.23.0"
+  dependencies:
+    "@babel/runtime": ^7.5.5
+  peerDependencies:
+    react: ^16.8.0
+    react-dom: "*"
+    react-native: "*"
+  peerDependenciesMeta:
+    react-dom:
+      optional: true
+    react-native:
+      optional: true
+  checksum: add55750a1e5e45ce8601a3c7bdcb6631974730c05689fbecbb93ceb9954738155d6ed271d95f68982b6ed5cf6741686cb796e7dec92b57a468ecde60b67aae7
+  languageName: node
+  linkType: hard
+
 "react-refresh@npm:0.8.3":
   version: 0.8.3
   resolution: "react-refresh@npm:0.8.3"
@@ -10977,18 +11021,18 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
-"react-sortablejs@npm:^2.0.11":
-  version: 2.0.11
-  resolution: "react-sortablejs@npm:2.0.11"
+"react-sortablejs@npm:^5.0.5":
+  version: 5.0.5
+  resolution: "react-sortablejs@npm:5.0.5"
   dependencies:
-    "@types/sortablejs": ^1.10.0
     classnames: ^2.2.6
-    sortablejs: 1.10.1
-    tiny-invariant: ^1.0.6
+    tiny-invariant: ^1.1.0
   peerDependencies:
+    "@types/sortablejs": ^1.10.0
     react: ^16.9.0
     react-dom: ^16.9.0
-  checksum: a5a7e291256fe81a35c94026478b33c41f7cf81929eb051fd8a3c064c9ab21fd4b182aa12d3fdd48d7cd51a2a95137e037b229a1409f32afe7d3f8c6aee0dd70
+    sortablejs: ^1.10.0
+  checksum: 8b820ea31711a4ef77853e07ef62bab5adbde64e07acbb57d22561e94d57c46cc29a545ce65d8aa28457ba25398893c94e581df5692b47fdf25c639939b8e1a6
   languageName: node
   linkType: hard
 
@@ -11224,6 +11268,13 @@ fsevents@~2.1.2:
   bin:
     regjsparser: bin/parser
   checksum: cf7838462ebe0256ef25618eab5981dc080501efde6458906a47ee1c017c93f7e27723d4a56f658014d5c8381a60d189e19f05198ef343e106343642471b1594
+  languageName: node
+  linkType: hard
+
+"remove-accents@npm:0.4.2":
+  version: 0.4.2
+  resolution: "remove-accents@npm:0.4.2"
+  checksum: 54fd27e4b0df03e7827c49721113a99b51292dcd23233d65ef89aa2b73e4d96f071eaf11ff58cfec22cab0ad711ba60914749c57e4f37f799c2bf22b78be7992
   languageName: node
   linkType: hard
 
@@ -11907,10 +11958,10 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
-"sortablejs@npm:1.10.1":
-  version: 1.10.1
-  resolution: "sortablejs@npm:1.10.1"
-  checksum: 9e9c79a68b16de5e6f55124d8218fa9dcef11dcf1b26dbd7f89425500a89ec09a39096299acca037ab7822a905517331435af4d56b41e896f803f0fc781fe9a1
+"sortablejs@npm:1.10.2":
+  version: 1.10.2
+  resolution: "sortablejs@npm:1.10.2"
+  checksum: 4815489b3d333c074a05e93d15691d001724be21ec318b283997d0fbef6f8de6e66c38379efaab11de3d963b8c8498b719c03a0390530cc28e749a757aea8312
   languageName: node
   linkType: hard
 
@@ -12705,7 +12756,7 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
-"tiny-invariant@npm:^1.0.6":
+"tiny-invariant@npm:^1.1.0":
   version: 1.1.0
   resolution: "tiny-invariant@npm:1.1.0"
   checksum: 64318fbd77c451cfff23b57b9f3aef56594d9cea051a87dc538c9b371f97e8d474eaa2a7cbd60b8aa23f852393152495e8651b197607465fdf9c8ff134043b1b

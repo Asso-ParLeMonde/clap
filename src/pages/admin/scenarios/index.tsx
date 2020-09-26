@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import React from "react";
 
 import Button from "@material-ui/core/Button";
-import DialogContentText from "@material-ui/core/DialogContentText";
+// import DialogContentText from "@material-ui/core/DialogContentText";
 import IconButton from "@material-ui/core/IconButton";
 import MenuItem from "@material-ui/core/MenuItem";
 import Select from "@material-ui/core/Select";
@@ -21,11 +21,11 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 import HelpIcon from "@material-ui/icons/Help";
 
-import { Modal } from "src/components/Modal";
+// import { Modal } from "src/components/Modal";
 import { AdminTile } from "src/components/admin/AdminTile";
-import { useLanguages } from "src/services/UseLanguages";
-import { useThemeNames } from "src/services/UseThemes";
 import { UserServiceContext } from "src/services/UserService";
+import { useLanguages } from "src/services/useLanguages";
+import { useThemeNames } from "src/services/useThemes";
 import { GroupedScenario, groupScenarios } from "src/util/groupScenarios";
 
 const useTableStyles = makeStyles((theme: MaterialTheme) =>
@@ -80,7 +80,7 @@ const AdminThemes: React.FunctionComponent = () => {
   const { axiosLoggedRequest } = React.useContext(UserServiceContext);
   const { themeNames } = useThemeNames(axiosLoggedRequest);
   const [scenarios, setScenarios] = React.useState<GroupedScenario[]>([]);
-  const [deleteIndex, setDeleteIndex] = React.useState<number | null>(null);
+  // const [deleteIndex, setDeleteIndex] = React.useState<number | null>(null);
   const [selectedLanguage, setSelectedLanguage] = React.useState<string>("fr");
 
   // get scenarios
@@ -205,7 +205,7 @@ const AdminThemes: React.FunctionComponent = () => {
                                 <IconButton
                                   aria-label="delete"
                                   onClick={() => {
-                                    setDeleteIndex(index);
+                                    // setDeleteIndex(index);
                                   }}
                                 >
                                   <DeleteIcon />

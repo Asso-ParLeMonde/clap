@@ -13,8 +13,8 @@ import { Trans } from "src/components/Trans";
 import { Steps } from "src/components/create/Steps";
 import { ThemeLink } from "src/components/create/ThemeLink";
 import { useTranslation } from "src/i18n/useTranslation";
-import { ProjectServiceContext } from "src/services/ProjectService";
 import { UserServiceContext } from "src/services/UserService";
+import { ProjectServiceContext } from "src/services/useProject";
 import { debounce } from "src/util";
 import type { Scenario } from "types/models/scenario.type";
 
