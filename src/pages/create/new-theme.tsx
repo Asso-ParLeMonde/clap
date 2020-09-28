@@ -1,4 +1,5 @@
 import { useRouter } from "next/router";
+import { useMutation, useQueryCache } from "react-query";
 import React from "react";
 
 import Breadcrumbs from "@material-ui/core/Breadcrumbs";
@@ -14,15 +15,16 @@ import NavigateNextIcon from "@material-ui/icons/NavigateNext";
 import { Inverted } from "src/components/Inverted";
 import { Trans } from "src/components/Trans";
 import { useTranslation } from "src/i18n/useTranslation";
-import { UserServiceContext } from "src/services/UserService";
 import { ProjectServiceContext } from "src/services/useProject";
-import type { Theme } from "types/models/theme.type";
+import { useThemeRequests } from "src/services/useThemes";
 
 const NewTheme: React.FunctionComponent = () => {
-  const { t, currentLocale } = useTranslation();
-  const { isLoggedIn, axiosLoggedRequest } = React.useContext(UserServiceContext);
-  const { updateProject } = React.useContext(ProjectServiceContext);
   const router = useRouter();
+  const queryCache = useQueryCache();
+  const { t, currentLocale } = useTranslation();
+  const { updateProject } = React.useContext(ProjectServiceContext);
+  const { createTheme } = useThemeRequests();
+  const [mutate] = useMutation(createTheme);
   const [themeName, setThemeName] = React.useState("");
   const [hasError, setHasError] = React.useState(false);
 
@@ -42,42 +44,31 @@ const NewTheme: React.FunctionComponent = () => {
       setHasError(true);
       return;
     }
-    const newTheme: Theme = {
-      id: 0,
-      order: 0,
-      image: null,
-      names: {
-        fr: themeName,
-        [currentLocale]: themeName,
-      },
-      isDefault: false,
-    };
-    if (isLoggedIn) {
-      const response = await axiosLoggedRequest({
-        method: "POST",
-        url: "/themes",
-        data: {
-          ...newTheme,
-          userId: true,
+    try {
+      const newTheme = await mutate({
+        newTheme: {
+          id: 0,
+          order: 0,
+          image: null,
+          names: {
+            fr: themeName,
+            [currentLocale]: themeName,
+          },
+          isDefault: false,
         },
       });
-      if (response.error) {
-        console.error(console.error);
+      if (newTheme === null) {
         // TODO
-        router.push(`/create`);
         return;
       }
-      newTheme.id = response.data.id;
-    } else {
-      const localThemes = JSON.parse(localStorage.getItem("themes")) || [];
-      newTheme.id = `local_${localThemes.length + 1}`;
-      localThemes.push(newTheme);
-      localStorage.setItem("themes", JSON.stringify(localThemes));
+      queryCache.invalidateQueries("themes");
+      updateProject({
+        theme: newTheme,
+      });
+      router.push(`/create/1-scenario-choice`);
+    } catch (e) {
+      // TODO
     }
-    updateProject({
-      theme: newTheme,
-    });
-    router.push(`/create/1-scenario-choice`);
   };
 
   return (

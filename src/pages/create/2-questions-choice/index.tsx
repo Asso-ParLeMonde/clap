@@ -14,15 +14,15 @@ import { QuestionCard } from "src/components/create/QuestionCard";
 import { Steps } from "src/components/create/Steps";
 import { ThemeLink } from "src/components/create/ThemeLink";
 import { useTranslation } from "src/i18n/useTranslation";
-import { UserServiceContext } from "src/services/UserService";
 import { ProjectServiceContext } from "src/services/useProject";
+import { useQuestionRequests } from "src/services/useQuestions";
 import type { Question } from "types/models/question.type";
 
 const QuestionChoice: React.FunctionComponent = () => {
   const router = useRouter();
   const { t, currentLocale } = useTranslation();
-  const { axiosLoggedRequest } = React.useContext(UserServiceContext);
   const { project, updateProject } = React.useContext(ProjectServiceContext);
+  const { getDefaultQuestions } = useQuestionRequests();
   const [deleteIndex, setDeleteIndex] = React.useState<number | null>(null);
 
   const setQuestions = React.useCallback(
@@ -34,38 +34,31 @@ const QuestionChoice: React.FunctionComponent = () => {
     [updateProject],
   );
 
-  const getDefaultQuestions = React.useCallback(async () => {
-    if (project.scenario === null || typeof project.scenario.id === "string") {
-      setQuestions([]);
-      return;
-    }
-    const url: string = `/questions?isDefault=true&scenarioId=${project.scenario.id}&languageCode=${currentLocale}`;
-    const response = await axiosLoggedRequest({
-      method: "GET",
-      url,
+  const getQuestions = React.useCallback(async () => {
+    const defaultQuestions = await getDefaultQuestions({
+      isDefault: true,
+      scenarioId: project.scenario?.id || null,
+      languageCode: currentLocale,
     });
-    if (!response.error) {
-      const defaultQuestions = response.data;
-      for (const question of defaultQuestions) {
-        question.plans = [
-          {
-            id: 0,
-            index: 0,
-            description: "",
-            image: null,
-            url: null,
-          },
-        ];
-      }
-      setQuestions(defaultQuestions);
+    for (const question of defaultQuestions) {
+      question.plans = [
+        {
+          id: 0,
+          index: 0,
+          description: "",
+          image: null,
+          url: null,
+        },
+      ];
     }
-  }, [setQuestions, project.scenario, axiosLoggedRequest, currentLocale]);
+    setQuestions(defaultQuestions);
+  }, [getDefaultQuestions, setQuestions, project.scenario, currentLocale]);
 
   React.useEffect(() => {
     if (project.questions === null) {
-      getDefaultQuestions().catch();
+      getQuestions().catch();
     }
-  }, [project.questions, getDefaultQuestions]);
+  }, [project.questions, getQuestions]);
 
   const handleNew = (event: React.MouseEvent) => {
     event.preventDefault();
@@ -74,7 +67,7 @@ const QuestionChoice: React.FunctionComponent = () => {
 
   const handleNext = (event: React.MouseEvent) => {
     event.preventDefault();
-    // TODO: set questions to project and save it?
+    // TODO: ssave project?
     router.push(`/create/3-storyboard-and-filming-schedule`);
   };
 

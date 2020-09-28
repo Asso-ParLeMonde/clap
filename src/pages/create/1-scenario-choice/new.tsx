@@ -1,4 +1,5 @@
 import { useRouter } from "next/router";
+import { useMutation, useQueryCache } from "react-query";
 import React, { useContext, useState } from "react";
 
 import Button from "@material-ui/core/Button";
@@ -13,15 +14,16 @@ import { Trans } from "src/components/Trans";
 import { Steps } from "src/components/create/Steps";
 import { ThemeLink } from "src/components/create/ThemeLink";
 import { useTranslation } from "src/i18n/useTranslation";
-import { UserServiceContext } from "src/services/UserService";
 import { ProjectServiceContext } from "src/services/useProject";
+import { useScenarioRequests } from "src/services/useScenarios";
 import { debounce } from "src/util";
-import type { Scenario } from "types/models/scenario.type";
 
 const NewScenario: React.FunctionComponent = () => {
   const router = useRouter();
+  const queryCache = useQueryCache();
   const { t, currentLocale } = useTranslation();
-  const { isLoggedIn, axiosLoggedRequest } = useContext(UserServiceContext);
+  const { createScenario } = useScenarioRequests();
+  const [mutate] = useMutation(createScenario);
   const { project, updateProject } = useContext(ProjectServiceContext);
   const [newScenario, setNewScenario] = useState({
     name: "",
@@ -31,23 +33,6 @@ const NewScenario: React.FunctionComponent = () => {
   const [descHasError, setDescHasError] = useState(false);
   const themeId = project.theme?.id || -1;
 
-  const postNewScenario = async (): Promise<Scenario | null> => {
-    const response = await axiosLoggedRequest({
-      url: `/scenarios`,
-      method: "POST",
-      data: {
-        ...newScenario,
-        languageCode: currentLocale,
-        themeId,
-        userId: true,
-      },
-    });
-    if (!response.error) {
-      return response.data;
-    }
-    return null;
-  };
-
   const handleSubmit = async (event: React.MouseEvent) => {
     event.preventDefault();
     if (newScenario.name.length === 0) {
@@ -56,14 +41,10 @@ const NewScenario: React.FunctionComponent = () => {
         setHasError(false);
       }, 1000);
     }
-    let scenario: Scenario | null;
-    if (newScenario.name.length > 0 && newScenario.description.length <= 280) {
-      if (isLoggedIn && typeof themeId !== "string") {
-        scenario = await postNewScenario();
-      } else {
-        const localScenarios = JSON.parse(localStorage.getItem("scenarios")) || [];
-        scenario = {
-          id: `local_${localScenarios.length}`,
+    try {
+      const scenario = await mutate({
+        newScenario: {
+          id: 0,
           languageCode: currentLocale,
           name: newScenario.name,
           isDefault: false,
@@ -71,15 +52,20 @@ const NewScenario: React.FunctionComponent = () => {
           user: null,
           questionsCount: 0,
           themeId: themeId,
-        };
-        localScenarios.push(scenario);
-        localStorage.setItem("scenarios", JSON.stringify(localScenarios));
+        },
+      });
+      if (scenario === null) {
+        // TODO
+        return;
       }
+      queryCache.invalidateQueries("scenarios");
       updateProject({
         scenario,
         questions: null,
       });
-      router.push(scenario === null ? "/create/1-scenario-choice" : `/create/2-questions-choice`);
+      router.push(`/create/2-questions-choice`);
+    } catch (e) {
+      // TODO
     }
   };
 

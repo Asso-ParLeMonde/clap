@@ -11,44 +11,19 @@ import { ThemeLink } from "src/components/create/ThemeLink";
 import { useTranslation } from "src/i18n/useTranslation";
 import { UserServiceContext } from "src/services/UserService";
 import { ProjectServiceContext } from "src/services/useProject";
-import { Scenario } from "types/models/scenario.type";
+import { useScenarios } from "src/services/useScenarios";
 
 const ScenarioChoice: React.FunctionComponent = () => {
   const router = useRouter();
   const { t, currentLocale } = useTranslation();
-  const { isLoggedIn, axiosLoggedRequest } = React.useContext(UserServiceContext);
+  const { isLoggedIn } = React.useContext(UserServiceContext);
   const { project } = React.useContext(ProjectServiceContext);
-  const [scenarios, setScenarios] = React.useState<Scenario[]>([]);
-
-  const getScenarios = React.useCallback(async () => {
-    if (project.theme === null) {
-      setScenarios([]);
-      return;
-    }
-
-    const localScenarios: Scenario[] = (JSON.parse(localStorage.getItem("scenarios")) || []).filter((s: Scenario) => s.themeId === project.theme.id);
-    // local only
-    if (typeof project.theme.id === "string") {
-      setScenarios(localScenarios);
-      return;
-    }
-
-    let url: string = `/scenarios?isDefault=true&themeId=${project.theme.id}&languageCode=${currentLocale}`; // fetch scenarios
-    if (isLoggedIn) {
-      url += "&user";
-    }
-    const response = await axiosLoggedRequest({
-      method: "GET",
-      url,
-    });
-    if (!response.error) {
-      setScenarios([...response.data, ...localScenarios]);
-    }
-  }, [isLoggedIn, axiosLoggedRequest, project.theme, currentLocale]);
-
-  React.useEffect(() => {
-    getScenarios().catch();
-  }, [getScenarios]);
+  const { scenarios } = useScenarios({
+    user: isLoggedIn,
+    isDefault: true,
+    languageCode: currentLocale,
+    themeId: project.theme?.id || null,
+  });
 
   const handleScenarioClick = (path: string): void => {
     router.push(path);

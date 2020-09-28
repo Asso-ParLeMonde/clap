@@ -36,7 +36,13 @@ interface MyAppOwnProps {
 }
 type MyAppProps = AppProps & MyAppOwnProps;
 
-const queryCache = new QueryCache();
+const queryCache = new QueryCache({
+  defaultConfig: {
+    queries: {
+      staleTime: 3600000, // 1 hour
+    },
+  },
+});
 
 const MyApp: React.FunctionComponent<AppProps> & {
   getInitialProps(appContext: AppContext): Promise<AppInitialProps & { locales: { [key: string]: string } }>;

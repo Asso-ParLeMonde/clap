@@ -35,6 +35,9 @@ export function getQueryString(q: string | string[]): string {
 
 // @ts-ignore
 export function serializeToQueryUrl(obj: { [key: string]: any }) {
+  if (Object.keys(obj).length === 0) {
+    return "";
+  }
   let str =
     "?" +
     Object.keys(obj)
