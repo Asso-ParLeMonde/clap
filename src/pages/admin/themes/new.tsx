@@ -1,4 +1,5 @@
 import { useRouter } from "next/router";
+import { useQueryCache } from "react-query";
 import React from "react";
 
 import Backdrop from "@material-ui/core/Backdrop";
@@ -35,6 +36,7 @@ const useStyles = makeStyles((theme: MaterialTheme) =>
 const AdminNewTheme: React.FunctionComponent = () => {
   const classes = useStyles();
   const router = useRouter();
+  const queryCache = useQueryCache();
   const { languages } = useLanguages();
   const languagesMap = languages.reduce((acc: { [key: string]: number }, language: Language, index: number) => ({ ...acc, [language.value]: index }), {});
   const { axiosLoggedRequest } = React.useContext(UserServiceContext);
@@ -135,6 +137,7 @@ const AdminNewTheme: React.FunctionComponent = () => {
           console.error(resp2.error);
         }
       }
+      queryCache.invalidateQueries("themes");
       router.push("/admin/themes");
     } catch (e) {
       console.error(e);

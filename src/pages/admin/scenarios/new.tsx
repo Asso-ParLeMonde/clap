@@ -1,4 +1,5 @@
 import { useRouter } from "next/router";
+import { useQueryCache } from "react-query";
 import React from "react";
 
 import Backdrop from "@material-ui/core/Backdrop";
@@ -12,6 +13,7 @@ import FormControl from "@material-ui/core/FormControl";
 import IconButton from "@material-ui/core/IconButton";
 import InputLabel from "@material-ui/core/InputLabel";
 import Link from "@material-ui/core/Link";
+import MenuItem from "@material-ui/core/MenuItem";
 import Select from "@material-ui/core/Select";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
@@ -21,13 +23,13 @@ import NavigateNextIcon from "@material-ui/icons/NavigateNext";
 
 import { Modal } from "src/components/Modal";
 import { AdminTile } from "src/components/admin/AdminTile";
-// import { UserServiceContext } from "src/services/UserService";
+import { UserServiceContext } from "src/services/UserService";
 import { useLanguages } from "src/services/useLanguages";
-// import { useThemeNames } from "src/services/useThemes";
+import { useThemeNames } from "src/services/useThemes";
+import type { AxiosReturnType } from "src/util/axiosRequest";
 import { GroupedScenario } from "src/util/groupScenarios";
 import type { Language } from "types/models/language.type";
-
-// import type { Theme } from "types/models/theme.type";
+import type { Scenario } from "types/models/scenario.type";
 
 const useStyles = makeStyles((theme: MaterialTheme) =>
   createStyles({
@@ -41,13 +43,14 @@ const useStyles = makeStyles((theme: MaterialTheme) =>
 const AdminNewScenario: React.FunctionComponent = () => {
   const classes = useStyles();
   const router = useRouter();
+  const queryCache = useQueryCache();
+  const { axiosLoggedRequest } = React.useContext(UserServiceContext);
   const { languages } = useLanguages();
   const languagesMap = React.useMemo(() => languages.reduce((acc: { [key: string]: number }, language: Language, index: number) => ({ ...acc, [language.value]: index }), {}), [languages]);
-  // const { axiosLoggedRequest } = React.useContext(UserServiceContext);
-  // const { themeNames } = useThemeNames(axiosLoggedRequest);
+  const { themeNames } = useThemeNames();
   const [scenario, setScenario] = React.useState<GroupedScenario>({
     id: 0,
-    themeId: 0,
+    themeId: -1,
     names: {},
     descriptions: {},
     isDefault: true,
@@ -55,7 +58,7 @@ const AdminNewScenario: React.FunctionComponent = () => {
   const [showModal, setShowModal] = React.useState<boolean>(false);
   const [languageToAdd, setLanguageToAdd] = React.useState<number>(0);
   const [selectedLanguages, setSelectedLanguages] = React.useState<number[]>([]);
-  const [loading /* setLoading */] = React.useState<boolean>(false);
+  const [loading, setLoading] = React.useState<boolean>(false);
   const availableLanguages = languages.filter((_l, index) => !selectedLanguages.includes(index));
 
   const goToPath = (path: string) => (event: React.MouseEvent) => {
@@ -95,14 +98,75 @@ const AdminNewScenario: React.FunctionComponent = () => {
     setScenario(newScenario);
   };
 
+  const onThemeSelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const newScenario = { ...scenario };
+    newScenario.themeId = parseInt(event.target.value, 10);
+    setScenario(newScenario);
+  };
+
   const onSubmit = async () => {
-    // TODO
+    const usedLanguages = Object.keys(scenario.names).filter((key) => key !== "default");
+    if (scenario.themeId === -1 || usedLanguages.length === 0) {
+      // TODO show error
+      return;
+    }
+    const firstScenario: Scenario = {
+      id: 0,
+      languageCode: usedLanguages[0],
+      name: scenario.names[usedLanguages[0]],
+      isDefault: true,
+      description: scenario.descriptions[usedLanguages[0]],
+      themeId: scenario.themeId,
+      user: null,
+      questionsCount: 0,
+    };
+    if (!firstScenario.name) {
+      // TODO show error
+      return;
+    }
+    setLoading(true);
+    const response = await axiosLoggedRequest({
+      method: "POST",
+      url: "/scenarios",
+      data: firstScenario,
+    });
+    if (response.error) {
+      setLoading(false);
+      return;
+    }
+    if (usedLanguages.length === 1) {
+      setLoading(false);
+      queryCache.invalidateQueries("scenarios");
+      router.push("/admin/scenarios");
+      return;
+    }
+    const scenarioId = response.data.id;
+    const responses: Promise<AxiosReturnType>[] = [];
+    for (let i = 1, n = usedLanguages.length; i < n; i++) {
+      responses.push(
+        axiosLoggedRequest({
+          method: "POST",
+          url: "/scenarios",
+          data: {
+            ...firstScenario,
+            id: scenarioId,
+            languageCode: usedLanguages[i],
+            name: scenario.names[usedLanguages[i]],
+            description: scenario.descriptions[usedLanguages[i]],
+          },
+        }),
+      );
+    }
+    await Promise.all(responses);
+    setLoading(false);
+    queryCache.invalidateQueries("scenarios");
+    router.push("/admin/scenarios");
   };
 
   return (
     <div style={{ paddingBottom: "2rem" }}>
       <Breadcrumbs separator={<NavigateNextIcon fontSize="large" color="primary" />} aria-label="breadcrumb">
-        <Link href="/admin/themes" onClick={goToPath("/admin/themes")}>
+        <Link href="/admin/scenarios" onClick={goToPath("/admin/scenarios")}>
           <Typography variant="h1" color="primary">
             Scénarios
           </Typography>
@@ -116,6 +180,18 @@ const AdminNewScenario: React.FunctionComponent = () => {
           <Typography variant="h3" color="textPrimary">
             Thème associé:
           </Typography>
+          <div style={{ padding: "8px 16px 16px 16px", width: "100%" }}>
+            <FormControl fullWidth color="secondary">
+              <InputLabel id="demo-simple-select-label">Choisir le thème associé</InputLabel>
+              <Select labelId="demo-simple-select-label" id="demo-simple-select" value={scenario.themeId === -1 ? "" : scenario.themeId} onChange={onThemeSelect}>
+                {Object.keys(themeNames).map((themeId) => (
+                  <MenuItem value={themeId} key={themeId}>
+                    {themeNames[parseInt(themeId, 10)].fr}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </div>
           <br />
           <Typography variant="h3" color="textPrimary">
             Scénario :
@@ -154,7 +230,7 @@ const AdminNewScenario: React.FunctionComponent = () => {
           </div>
         </div>
       </AdminTile>
-      <Button variant="outlined" style={{ marginTop: "1rem" }} onClick={goToPath("/admin/themes")}>
+      <Button variant="outlined" style={{ marginTop: "1rem" }} onClick={goToPath("/admin/scenarios")}>
         Retour
       </Button>
       <Backdrop className={classes.backdrop} open={loading}>

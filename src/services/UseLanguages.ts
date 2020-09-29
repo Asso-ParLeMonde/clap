@@ -1,24 +1,24 @@
+import { useQuery } from "react-query";
 import React from "react";
 
 import { axiosRequest } from "src/util/axiosRequest";
 import type { Language } from "types/models/language.type";
 
-export const useLanguages = (): { languages: Language[] } => {
-  const [languages, setLanguages] = React.useState<Language[]>([{ value: "fr", label: "Français" }]);
+const defaultLanguages = [{ value: "fr", label: "Français" }];
 
-  const getLanguages = React.useCallback(async () => {
+export const useLanguages = (): { languages: Language[]; isLoading: boolean } => {
+  const getLanguages: () => Promise<Language[]> = React.useCallback(async () => {
     const response = await axiosRequest({
       method: "GET",
       url: "/languages",
     });
-    if (!response.error) {
-      setLanguages(response.data);
+    if (response.error) {
+      return [];
     }
+    return response.data;
   }, []);
 
-  React.useEffect(() => {
-    getLanguages().catch();
-  }, [getLanguages]);
+  const { data, isLoading, error } = useQuery<Language[], unknown>("languages", getLanguages);
 
-  return { languages };
+  return { languages: isLoading || error ? defaultLanguages : data, isLoading };
 };

@@ -1,47 +1,17 @@
-import type { AxiosRequestConfig } from "axios";
-import { useQuery, QueryFunction } from "react-query";
+import { useQuery, QueryFunction, useQueryCache } from "react-query";
 import React from "react";
 
 import { UserServiceContext } from "src/services/UserService";
-import type { AxiosReturnType } from "src/util/axiosRequest";
 import { serializeToQueryUrl } from "src/util";
 import type { Theme } from "types/models/theme.type";
 
-export type ThemeNames = { [key: number]: { [key: string]: string } };
-
-export const useThemeNames = (axiosLoggedRequest: (req: AxiosRequestConfig) => Promise<AxiosReturnType>): { themeNames: ThemeNames } => {
-  const [themeNames, setThemeNames] = React.useState<ThemeNames>({});
-
-  // get themes
-  const getThemeNames = React.useCallback(async () => {
-    const response = await axiosLoggedRequest({
-      method: "GET",
-      url: "/themes?isDefault=true",
-    });
-    if (!response.error) {
-      const themeNames = response.data.reduce((acc: ThemeNames, theme: Theme) => {
-        acc[theme.id as number] = theme.names;
-        return acc;
-      }, {});
-      setThemeNames(themeNames);
-    }
-  }, [axiosLoggedRequest]);
-  React.useEffect(() => {
-    getThemeNames().catch();
-  }, [getThemeNames]);
-
-  return { themeNames };
-};
-
 export const useThemes = (
   args: {
-    user: boolean;
-    isDefault: boolean;
-  } = {
-    user: false,
-    isDefault: false,
-  },
-): { themes: Theme[] } => {
+    user?: boolean;
+    isDefault?: boolean;
+  } = {},
+): { themes: Theme[]; setThemes(themes: Theme[]): void } => {
+  const queryCache = useQueryCache();
   const { axiosLoggedRequest } = React.useContext(UserServiceContext);
   const getThemes: QueryFunction<Theme[]> = React.useCallback(async () => {
     const response = await axiosLoggedRequest({
@@ -51,12 +21,20 @@ export const useThemes = (
     if (response.error) {
       return [];
     }
-    const localThemes: Theme[] = args.user ? [] : JSON.parse(localStorage.getItem("themes")) || [];
+    const localThemes: Theme[] = args.user === false ? JSON.parse(localStorage.getItem("themes")) || [] : [];
     return [...response.data, ...localThemes];
   }, [args, axiosLoggedRequest]);
   const { data, isLoading, error } = useQuery<Theme[], unknown>(["themes", args], getThemes);
+
+  const setThemes = React.useCallback(
+    (themes: Theme[]) => {
+      queryCache.setQueryData(["themes", args], themes);
+    },
+    [args, queryCache],
+  );
   return {
-    themes: isLoading ? [] : error ? [] : data,
+    themes: isLoading || error ? [] : data,
+    setThemes,
   };
 };
 
@@ -92,4 +70,18 @@ export const useThemeRequests = (): {
   );
 
   return { createTheme };
+};
+
+export type ThemeNames = { [key: number]: { [key: string]: string } };
+
+export const useThemeNames = (): { themeNames: ThemeNames } => {
+  const { themes } = useThemes({ isDefault: true });
+  const themeNames = React.useMemo(() => {
+    return themes.reduce((acc: ThemeNames, theme: Theme) => {
+      acc[theme.id as number] = theme.names;
+      return acc;
+    }, {});
+  }, [themes]);
+
+  return { themeNames };
 };

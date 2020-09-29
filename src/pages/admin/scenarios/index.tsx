@@ -23,8 +23,8 @@ import HelpIcon from "@material-ui/icons/Help";
 
 // import { Modal } from "src/components/Modal";
 import { AdminTile } from "src/components/admin/AdminTile";
-import { UserServiceContext } from "src/services/UserService";
 import { useLanguages } from "src/services/useLanguages";
+import { useScenarios } from "src/services/useScenarios";
 import { useThemeNames } from "src/services/useThemes";
 import { GroupedScenario, groupScenarios } from "src/util/groupScenarios";
 
@@ -73,38 +73,21 @@ interface ScenarioData {
   scenarios: GroupedScenario[];
 }
 
-const AdminThemes: React.FunctionComponent = () => {
+const AdminScenarios: React.FunctionComponent = () => {
   const classes = useTableStyles();
   const router = useRouter();
   const { languages } = useLanguages();
-  const { axiosLoggedRequest } = React.useContext(UserServiceContext);
-  const { themeNames } = useThemeNames(axiosLoggedRequest);
-  const [scenarios, setScenarios] = React.useState<GroupedScenario[]>([]);
+  const { themeNames } = useThemeNames();
+  const { scenarios } = useScenarios({ isDefault: true });
   // const [deleteIndex, setDeleteIndex] = React.useState<number | null>(null);
   const [selectedLanguage, setSelectedLanguage] = React.useState<string>("fr");
-
-  // get scenarios
-  const getScenarios = React.useCallback(async () => {
-    const response = await axiosLoggedRequest({
-      method: "GET",
-      url: `/scenarios?isDefault=true`,
-    });
-    if (response.error) {
-      setScenarios([]);
-      return;
-    }
-    setScenarios(groupScenarios(response.data));
-  }, [axiosLoggedRequest]);
-  React.useEffect(() => {
-    getScenarios().catch();
-  }, [getScenarios]);
 
   // get scenario per themes
   const scenariosData: ScenarioData[] = React.useMemo(() => {
     const data = Object.keys(themeNames).map((id) => ({
       id: parseInt(id, 10),
       startIndex: 0,
-      scenarios: scenarios.filter((scenario) => scenario.themeId === parseInt(id, 10)),
+      scenarios: groupScenarios(scenarios).filter((scenario) => scenario.themeId === parseInt(id, 10)),
     }));
     for (let i = 1, n = data.length; i < n; i++) {
       data[i].startIndex = data[i - 1].startIndex + data[i - 1].scenarios.length;
@@ -188,7 +171,7 @@ const AdminThemes: React.FunctionComponent = () => {
                       </TableRow>
                       {theme.scenarios.length > 0 ? (
                         theme.scenarios.map((s, index) => (
-                          <TableRow key={s.id} className={index % 2 === 0 ? classes.normalRow : classes.evenRow}>
+                          <TableRow key={`${theme.id}_${s.id}`} className={index % 2 === 0 ? classes.normalRow : classes.evenRow}>
                             <TableCell style={{ width: "3rem" }}>{index + theme.startIndex + 1}</TableCell>
                             <TableCell style={{ color: s.names[selectedLanguage] ? "inherit" : "grey" }}>
                               {s.names[selectedLanguage] || `${s.names.default} (non traduit)`}
@@ -215,7 +198,7 @@ const AdminThemes: React.FunctionComponent = () => {
                           </TableRow>
                         ))
                       ) : (
-                        <TableRow className={classes.normalRow}>
+                        <TableRow className={classes.normalRow} key={`${theme.id}_no_data`}>
                           <TableCell colSpan={4} align="center" style={{ padding: "4px" }}>
                             {`Ce thème n'a pas de scénario ! `}
                             <Link href="/admin/scenarios/new" onClick={goToPath("/admin/scenarios/new")}>
@@ -247,4 +230,4 @@ const AdminThemes: React.FunctionComponent = () => {
   );
 };
 
-export default AdminThemes;
+export default AdminScenarios;

@@ -55,7 +55,7 @@ export const AdminDrawer: React.FunctionComponent = () => {
   const [selectedIndex, setSelectedIndex] = React.useState(0);
 
   React.useEffect(() => {
-    const index = adminTabs.reduce((i1: number, tab: Tab, i2: number) => (tab.path === router.pathname ? i2 : i1), 0);
+    const index = adminTabs.reduce((i1: number, tab: Tab, i2: number) => (tab.path === router.pathname.slice(0, tab.path.length) ? i2 : i1), 0);
     setSelectedIndex(index);
   }, [router.pathname]);
 

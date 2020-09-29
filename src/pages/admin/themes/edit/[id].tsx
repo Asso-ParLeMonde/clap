@@ -1,4 +1,5 @@
 import { useRouter } from "next/router";
+import { useQueryCache } from "react-query";
 import React from "react";
 
 import Backdrop from "@material-ui/core/Backdrop";
@@ -36,8 +37,9 @@ const useStyles = makeStyles((theme: MaterialTheme) =>
 const AdminEditTheme: React.FunctionComponent = () => {
   const classes = useStyles();
   const router = useRouter();
+  const queryCache = useQueryCache();
   const themeId = React.useMemo(() => parseInt(getQueryString(router.query.id), 10) || 0, [router]);
-  const { languages } = useLanguages();
+  const { languages, isLoading } = useLanguages();
   const languagesMap = React.useMemo(() => languages.reduce((acc: { [key: string]: number }, language: Language, index: number) => ({ ...acc, [language.value]: index }), {}), [languages]);
   const { axiosLoggedRequest } = React.useContext(UserServiceContext);
   const croppieRef = React.useRef<ImgCroppieRef | null>(null);
@@ -65,6 +67,9 @@ const AdminEditTheme: React.FunctionComponent = () => {
   };
 
   const getTheme = React.useCallback(async () => {
+    if (isLoading) {
+      return;
+    }
     const response = await axiosLoggedRequest({
       method: "GET",
       url: `/themes/${themeId}`,
@@ -73,15 +78,13 @@ const AdminEditTheme: React.FunctionComponent = () => {
       router.push("/admin/themes");
     } else {
       setTheme(response.data);
-      if (languages.length > 0) {
-        setSelectedLanguages(
-          Object.keys(response.data.names)
-            .filter((key) => key !== "fr")
-            .map((languageValue) => languagesMap[languageValue] || 0),
-        );
-      }
+      setSelectedLanguages(
+        Object.keys(response.data.names)
+          .filter((key) => key !== "fr")
+          .map((languageValue) => languagesMap[languageValue] || 0),
+      );
     }
-  }, [axiosLoggedRequest, router, themeId, languages, languagesMap]);
+  }, [axiosLoggedRequest, router, themeId, isLoading, languagesMap]);
 
   React.useEffect(() => {
     getTheme().catch((e) => console.error(e));
@@ -171,6 +174,7 @@ const AdminEditTheme: React.FunctionComponent = () => {
           console.error(resp2.error);
         }
       }
+      queryCache.invalidateQueries("themes");
       router.push("/admin/themes");
     } catch (e) {
       console.error(e);

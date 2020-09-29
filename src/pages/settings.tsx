@@ -9,9 +9,8 @@ import { withStyles } from "@material-ui/core/styles";
 
 import { useTranslation } from "src/i18n/useTranslation";
 import { UserServiceContext } from "src/services/UserService";
-import { axiosRequest } from "src/util/axiosRequest";
+import { useLanguages } from "src/services/useLanguages";
 import { setCookie } from "src/util/cookies";
-import type { Language } from "types/models/language.type";
 
 const RedButton = withStyles((theme) => ({
   root: {
@@ -25,7 +24,7 @@ const Settings: React.FunctionComponent = () => {
   const { isLoggedIn, logout } = useContext(UserServiceContext);
 
   const [currentLanguage, setCurrentLanguage] = React.useState<string | null>(null);
-  const [languages, setLanguages] = React.useState<Language[]>([]);
+  const { languages } = useLanguages();
 
   const handleLanguageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setCurrentLanguage(event.target.value);
@@ -34,20 +33,6 @@ const Settings: React.FunctionComponent = () => {
     });
     window.location.reload();
   };
-
-  const getLanguages = async () => {
-    const response = await axiosRequest({
-      method: "GET",
-      url: "/languages",
-    });
-    if (!response.error) {
-      setLanguages(response.data);
-    }
-  };
-
-  React.useEffect(() => {
-    getLanguages().catch();
-  }, []);
 
   return (
     <>

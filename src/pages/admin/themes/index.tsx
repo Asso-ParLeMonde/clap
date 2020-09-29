@@ -27,6 +27,7 @@ import { Modal } from "src/components/Modal";
 import { AdminTile } from "src/components/admin/AdminTile";
 import { UserServiceContext } from "src/services/UserService";
 import { useLanguages } from "src/services/useLanguages";
+import { useThemes } from "src/services/useThemes";
 import type { Theme } from "types/models/theme.type";
 
 const useTableStyles = makeStyles((theme: MaterialTheme) =>
@@ -64,27 +65,13 @@ const StyledTableRow = withStyles(() =>
 const AdminThemes: React.FunctionComponent = () => {
   const classes = useTableStyles();
   const router = useRouter();
-  const { languages } = useLanguages();
   const { axiosLoggedRequest } = React.useContext(UserServiceContext);
-  const [defaultThemes, setDefaultThemes] = React.useState<Theme[]>([]);
-  const [userThemes, setUserThemes] = React.useState<Theme[]>([]);
+  const { languages } = useLanguages();
+  const { themes: defaultThemes, setThemes: setDefaultThemes } = useThemes({ isDefault: true });
+  const { themes: userThemes, setThemes: setUserThemes } = useThemes({ isDefault: false });
   const [deleteIndex, setDeleteIndex] = React.useState<number | null>(null);
   const [selectedLanguage, setSelectedLanguage] = React.useState<string>("fr");
 
-  const getThemes = React.useCallback(async () => {
-    const response = await axiosLoggedRequest({
-      method: "GET",
-      url: "/themes",
-    });
-    if (!response.error) {
-      setDefaultThemes(response.data.filter((theme: Theme) => theme.isDefault));
-      setUserThemes(response.data.filter((theme: Theme) => !theme.isDefault));
-    }
-  }, [axiosLoggedRequest]);
-
-  React.useEffect(() => {
-    getThemes().catch();
-  }, [getThemes]);
   // const [page, setPage] = React.useState<number>(0);
   // const [rowsPerPage, setRowsPerPage] = React.useState<number>(5);
 

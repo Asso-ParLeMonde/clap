@@ -15,10 +15,12 @@ export const useScenarios = (
 ): { scenarios: Scenario[] } => {
   const { axiosLoggedRequest } = React.useContext(UserServiceContext);
   const getScenarios: QueryFunction<Scenario[]> = React.useCallback(async () => {
+    let localScenarios: Scenario[];
     if (args.themeId === undefined || args.themeId === null) {
-      return [];
+      localScenarios = [];
+    } else {
+      localScenarios = (JSON.parse(localStorage.getItem("scenarios")) || []).filter((s: Scenario) => s.themeId === args.themeId);
     }
-    const localScenarios: Scenario[] = (JSON.parse(localStorage.getItem("scenarios")) || []).filter((s: Scenario) => s.themeId === args.themeId);
     // local only
     if (typeof args.themeId === "string") {
       return localScenarios;
@@ -34,7 +36,7 @@ export const useScenarios = (
   }, [args, axiosLoggedRequest]);
   const { data, isLoading, error } = useQuery<Scenario[], unknown>(["scenarios", args], getScenarios);
   return {
-    scenarios: isLoading ? [] : error ? [] : data,
+    scenarios: isLoading || error ? [] : data,
   };
 };
 
