@@ -66,7 +66,7 @@ export class LoginController extends Controller {
       refreshToken.userId = user.id;
       await getRepository(Token).save(refreshToken);
       res.cookie("access-token", accessToken, { maxAge: 60 * 60000, expires: new Date(Date.now() + 60 * 60000), httpOnly: true });
-      res.cookie("refresh-token", refreshToken, { maxAge: 24 * 60 * 60000, expires: new Date(Date.now() + 24 * 60 * 60000), httpOnly: true });
+      res.cookie("refresh-token", `${refreshToken.id}-${rToken}`, { maxAge: 24 * 60 * 60000, expires: new Date(Date.now() + 24 * 60 * 60000), httpOnly: true });
       res.sendJSON({ user: user.userWithoutPassword(), accessToken, refreshToken: `${refreshToken.id}-${rToken}` });
     } else {
       res.cookie("access-token", accessToken, { maxAge: 60 * 60000, expires: new Date(Date.now() + 60 * 60000), httpOnly: true });

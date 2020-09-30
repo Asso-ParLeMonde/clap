@@ -1,7 +1,9 @@
+import * as argon2 from "argon2";
 import { NextFunction, Request, RequestHandler, Response } from "express";
 import jwt from "jsonwebtoken";
-import { getRepository } from "typeorm";
+import { getRepository, MoreThan } from "typeorm";
 
+import { Token } from "../entities/token";
 import { UserType, User } from "../entities/user";
 import { getHeader } from "../utils/utils";
 
@@ -11,13 +13,35 @@ export function authenticate(userType: UserType | undefined): RequestHandler {
   return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     let token: string;
     if (req.cookies && req.cookies["access-token"]) {
-      if (req.isCsrfValid || req.method === "GET") {
+      if (!req.isCsrfValid && req.method !== "GET") {
         // check cookie was not stolen
-        token = req.cookies["access-token"];
-      } else {
         res.status(401).send("bad csrf token");
         return;
       }
+      token = req.cookies["access-token"];
+    } else if (req.cookies && req.cookies["refresh-token"]) {
+      if (!req.isCsrfValid && req.method !== "GET") {
+        // check cookie was not stolen
+        res.status(401).send("bad csrf token");
+        return;
+      }
+      const rToken = req.cookies["refresh-token"];
+      const refreshTokenID: string = rToken.split("-")[0];
+      const refreshTokenToken: string = rToken.slice(refreshTokenID.length + 1);
+      const expiredDate = new Date(new Date().getTime() - 31536000000); // now minus 1year
+      const refreshToken = await getRepository(Token).findOne({
+        where: {
+          id: parseInt(refreshTokenID, 10) || 0,
+          date: MoreThan(expiredDate),
+        },
+      });
+      if (refreshToken === undefined || !(await argon2.verify(refreshToken.token, refreshTokenToken))) {
+        res.status(401).send("invalid refresh token");
+        return;
+      }
+      token = jwt.sign({ userId: refreshToken.userId }, secret, { expiresIn: "1h" });
+      // send new token
+      res.cookie("access-token", token, { maxAge: 60 * 60000, expires: new Date(Date.now() + 60 * 60000), httpOnly: true });
     } else {
       token = getHeader(req, "x-access-token") || getHeader(req, "authorization") || "";
     }

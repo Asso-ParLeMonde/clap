@@ -29,6 +29,7 @@ import { useLanguages } from "src/services/useLanguages";
 import { useThemeNames } from "src/services/useThemes";
 import type { AxiosReturnType } from "src/util/axiosRequest";
 import { GroupedScenario } from "src/util/groupScenarios";
+import { getQueryString } from "src/util";
 import type { Language } from "types/models/language.type";
 import type { Scenario } from "types/models/scenario.type";
 
@@ -67,6 +68,15 @@ const AdminNewScenario: React.FunctionComponent = () => {
     event.preventDefault();
     router.push(path);
   };
+
+  React.useEffect(() => {
+    if (router.query.themeId !== undefined) {
+      const themeId = parseInt(getQueryString(router.query.themeId), 10);
+      if (themeNames[themeId] !== undefined) {
+        setScenario((s) => ({ ...s, themeId }));
+      }
+    }
+  }, [router, themeNames]);
 
   React.useEffect(() => {
     if (languagesMap.fr !== undefined && selectedLanguages.length === 0) {

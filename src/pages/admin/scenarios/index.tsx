@@ -233,7 +233,7 @@ const AdminScenarios: React.FunctionComponent = () => {
                           <TableRow className={classes.normalRow} key={`${theme.id}_no_data`}>
                             <TableCell colSpan={4} align="center" style={{ padding: "4px" }}>
                               {`Ce thème n'a pas de scénario ! `}
-                              <Link href="/admin/scenarios/new" onClick={goToPath("/admin/scenarios/new")}>
+                              <Link href={`/admin/scenarios/new?themeId=${theme.id}`} onClick={goToPath(`/admin/scenarios/new?themeId=${theme.id}`)}>
                                 Ajouter un scénario ?
                               </Link>
                             </TableCell>
