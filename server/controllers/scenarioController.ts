@@ -123,6 +123,10 @@ export class ScenariosController extends Controller {
   @del({ path: "/:id" /*, userType: UserType.CLASS */ })
   public async deleteScenario(req: Request, res: Response): Promise<void> {
     const { id, languageCode } = getIDs(req.params.id);
+    if (languageCode === null) {
+      await getRepository(Scenario).delete({ id, languageCode: languageCode || "fr" });
+    } else {
+    }
     await getRepository(Scenario).delete({ id, languageCode: languageCode || "fr" });
     res.status(204).send();
   }

@@ -1,4 +1,5 @@
 import { useRouter } from "next/router";
+import { useSnackbar } from "notistack";
 import { useQueryCache } from "react-query";
 import React from "react";
 
@@ -9,6 +10,7 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
 import Link from "@material-ui/core/Link";
+import NoSsr from "@material-ui/core/NoSsr";
 import Select from "@material-ui/core/Select";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles, createStyles, Theme as MaterialTheme } from "@material-ui/core/styles";
@@ -37,6 +39,7 @@ const useStyles = makeStyles((theme: MaterialTheme) =>
 const AdminEditTheme: React.FunctionComponent = () => {
   const classes = useStyles();
   const router = useRouter();
+  const { enqueueSnackbar } = useSnackbar();
   const queryCache = useQueryCache();
   const themeId = React.useMemo(() => parseInt(getQueryString(router.query.id), 10) || 0, [router]);
   const { languages, isLoading } = useLanguages();
@@ -135,6 +138,9 @@ const AdminEditTheme: React.FunctionComponent = () => {
 
   const onSubmit = async () => {
     if (!theme.names.fr) {
+      enqueueSnackbar("Le thème 'fr' ne peut pas être vide.", {
+        variant: "error",
+      });
       return;
     }
     setLoading(true);
@@ -147,6 +153,9 @@ const AdminEditTheme: React.FunctionComponent = () => {
         },
       });
       if (response.error) {
+        enqueueSnackbar("Une erreur inconnue est survenue...", {
+          variant: "error",
+        });
         console.error(response.error);
         return;
       }
@@ -174,9 +183,15 @@ const AdminEditTheme: React.FunctionComponent = () => {
           console.error(resp2.error);
         }
       }
+      enqueueSnackbar("Thème mis à jour avec succès!", {
+        variant: "success",
+      });
       queryCache.invalidateQueries("themes");
       router.push("/admin/themes");
     } catch (e) {
+      enqueueSnackbar("Une erreur inconnue est survenue...", {
+        variant: "error",
+      });
       console.error(e);
     }
     setLoading(false);
@@ -196,117 +211,119 @@ const AdminEditTheme: React.FunctionComponent = () => {
           {theme.names.fr}
         </Typography>
       </Breadcrumbs>
-      <AdminTile title="Modifier le thème">
-        <div style={{ padding: "1rem" }}>
-          <Typography variant="h3" color="textPrimary">
-            Noms du thème :
-          </Typography>
-          <NameInput value={theme.names.fr || ""} onChange={onNameInputChange("fr")} />
-          {selectedLanguages.map((languageIndex, index) => (
-            <NameInput
-              key={languages[languageIndex].value}
-              value={theme.names[languages[languageIndex].value] || ""}
-              language={languages[languageIndex]}
-              onDelete={onDeleteLanguage(index)}
-              onChange={onNameInputChange(languages[languageIndex].value)}
-              canDelete
-            />
-          ))}
-          {availableLanguages.length > 0 && (
-            <Button
-              variant="outlined"
-              onClick={() => {
-                setShowModal(true);
-              }}
-            >
-              Ajouter une langue
-            </Button>
-          )}
+      <NoSsr>
+        <AdminTile title="Modifier le thème">
+          <div style={{ padding: "1rem" }}>
+            <Typography variant="h3" color="textPrimary">
+              Noms du thème :
+            </Typography>
+            <NameInput value={theme.names.fr || ""} onChange={onNameInputChange("fr")} />
+            {selectedLanguages.map((languageIndex, index) => (
+              <NameInput
+                key={languages[languageIndex].value}
+                value={theme.names[languages[languageIndex].value] || ""}
+                language={languages[languageIndex]}
+                onDelete={onDeleteLanguage(index)}
+                onChange={onNameInputChange(languages[languageIndex].value)}
+                canDelete
+              />
+            ))}
+            {availableLanguages.length > 0 && (
+              <Button
+                variant="outlined"
+                onClick={() => {
+                  setShowModal(true);
+                }}
+              >
+                Ajouter une langue
+              </Button>
+            )}
 
-          <Typography variant="h3" color="textPrimary" style={{ marginTop: "2rem" }}>
-            Image :
-          </Typography>
-          <div style={{ marginTop: "0.5rem" }}>{imageSrc && <img width="300px" src={imageSrc} />}</div>
-          <Button variant="outlined" color="secondary" component="label" startIcon={<CloudUploadIcon />} style={{ marginTop: "0.5rem" }}>
-            {imageSrc ? "Changer d'image" : "Choisir une image"}
-            <input ref={inputRef} type="file" style={{ display: "none" }} onChange={onImageInputChange} accept="image/*" />
-          </Button>
-          {imageSrc && (
-            <Button
-              variant="outlined"
-              color="secondary"
-              component="label"
-              style={{ marginTop: "0.5rem", marginLeft: "0.5rem" }}
-              onClick={() => {
-                setImageBlob(null);
-                setTheme({ ...theme, image: null });
-              }}
-            >
-              {"Supprimer l'image"}
+            <Typography variant="h3" color="textPrimary" style={{ marginTop: "2rem" }}>
+              Image :
+            </Typography>
+            <div style={{ marginTop: "0.5rem" }}>{imageSrc && <img width="300px" src={imageSrc} />}</div>
+            <Button variant="outlined" color="secondary" component="label" startIcon={<CloudUploadIcon />} style={{ marginTop: "0.5rem" }}>
+              {imageSrc ? "Changer d'image" : "Choisir une image"}
+              <input ref={inputRef} type="file" style={{ display: "none" }} onChange={onImageInputChange} accept="image/*" />
             </Button>
-          )}
-          <div style={{ width: "100%", textAlign: "center", marginTop: "1rem" }}>
-            <Button color="secondary" variant="contained" onClick={onSubmit}>
-              Modifier le thème !
-            </Button>
-          </div>
-        </div>
-      </AdminTile>
-      <Button variant="outlined" style={{ marginTop: "1rem" }} onClick={goToPath("/admin/themes")}>
-        Retour
-      </Button>
-      <Backdrop className={classes.backdrop} open={loading}>
-        <CircularProgress color="inherit" />
-      </Backdrop>
-
-      {/* language modal */}
-      <Modal
-        open={showModal}
-        onClose={() => {
-          setShowModal(false);
-        }}
-        onConfirm={onAddLanguage}
-        confirmLabel="Ajouter"
-        cancelLabel="Annuler"
-        title="Ajouter une langue"
-        ariaLabelledBy="add-dialog"
-        ariaDescribedBy="add-dialog-desc"
-      >
-        {availableLanguages.length > 0 && (
-          <FormControl variant="outlined" style={{ minWidth: "15rem" }} className="mobile-full-width">
-            <InputLabel htmlFor="langage">Languages</InputLabel>
-            <Select
-              native
-              value={languageToAdd}
-              onChange={(event: React.ChangeEvent<HTMLSelectElement>) => {
-                setLanguageToAdd(parseInt(event.target.value, 10));
-              }}
-              label={"Langages"}
-              inputProps={{
-                name: "langage",
-                id: "langage",
-              }}
-            >
-              {availableLanguages.map((l, index) => (
-                <option value={index} key={l.value}>
-                  {l.label}
-                </option>
-              ))}
-            </Select>
-          </FormControl>
-        )}
-      </Modal>
-
-      {/* image modal */}
-      <Modal open={imageUrl !== null} onClose={onImageUrlClear} onConfirm={onSetImageBlob} confirmLabel="Valider" cancelLabel="Annuler" title="Redimensionner l'image" ariaLabelledBy="add-dialog" ariaDescribedBy="add-dialog-desc">
-        {imageUrl !== null && (
-          <div className="text-center">
-            <div style={{ width: "500px", height: "400px", marginBottom: "2rem" }}>
-              <ImgCroppie src={imageUrl} alt="Plan image" ref={croppieRef} imgWidth={420} imgHeight={308} />
+            {imageSrc && (
+              <Button
+                variant="outlined"
+                color="secondary"
+                component="label"
+                style={{ marginTop: "0.5rem", marginLeft: "0.5rem" }}
+                onClick={() => {
+                  setImageBlob(null);
+                  setTheme({ ...theme, image: null });
+                }}
+              >
+                {"Supprimer l'image"}
+              </Button>
+            )}
+            <div style={{ width: "100%", textAlign: "center", marginTop: "1rem" }}>
+              <Button color="secondary" variant="contained" onClick={onSubmit}>
+                Modifier le thème !
+              </Button>
             </div>
           </div>
-        )}
-      </Modal>
+        </AdminTile>
+        <Button variant="outlined" style={{ marginTop: "1rem" }} onClick={goToPath("/admin/themes")}>
+          Retour
+        </Button>
+        <Backdrop className={classes.backdrop} open={loading}>
+          <CircularProgress color="inherit" />
+        </Backdrop>
+
+        {/* language modal */}
+        <Modal
+          open={showModal}
+          onClose={() => {
+            setShowModal(false);
+          }}
+          onConfirm={onAddLanguage}
+          confirmLabel="Ajouter"
+          cancelLabel="Annuler"
+          title="Ajouter une langue"
+          ariaLabelledBy="add-dialog"
+          ariaDescribedBy="add-dialog-desc"
+        >
+          {availableLanguages.length > 0 && (
+            <FormControl variant="outlined" style={{ minWidth: "15rem" }} className="mobile-full-width">
+              <InputLabel htmlFor="langage">Languages</InputLabel>
+              <Select
+                native
+                value={languageToAdd}
+                onChange={(event: React.ChangeEvent<HTMLSelectElement>) => {
+                  setLanguageToAdd(parseInt(event.target.value, 10));
+                }}
+                label={"Langages"}
+                inputProps={{
+                  name: "langage",
+                  id: "langage",
+                }}
+              >
+                {availableLanguages.map((l, index) => (
+                  <option value={index} key={l.value}>
+                    {l.label}
+                  </option>
+                ))}
+              </Select>
+            </FormControl>
+          )}
+        </Modal>
+
+        {/* image modal */}
+        <Modal open={imageUrl !== null} onClose={onImageUrlClear} onConfirm={onSetImageBlob} confirmLabel="Valider" cancelLabel="Annuler" title="Redimensionner l'image" ariaLabelledBy="add-dialog" ariaDescribedBy="add-dialog-desc">
+          {imageUrl !== null && (
+            <div className="text-center">
+              <div style={{ width: "500px", height: "400px", marginBottom: "2rem" }}>
+                <ImgCroppie src={imageUrl} alt="Plan image" ref={croppieRef} imgWidth={420} imgHeight={308} />
+              </div>
+            </div>
+          )}
+        </Modal>
+      </NoSsr>
     </div>
   );
 };

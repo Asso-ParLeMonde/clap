@@ -24,16 +24,16 @@ const adminTabs: Tab[] = [
     path: "/admin/questions",
   },
   {
+    label: "Langues",
+    path: "/admin/languages",
+  },
+  {
     label: "Utilisateurs",
     path: "/admin/users",
   },
   {
     label: "Statistiques",
     path: "/admin/statistics",
-  },
-  {
-    label: "Langues",
-    path: "/admin/languages",
   },
 ];
 

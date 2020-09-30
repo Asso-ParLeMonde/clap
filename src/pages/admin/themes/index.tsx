@@ -1,4 +1,6 @@
 import { useRouter } from "next/router";
+import { useSnackbar } from "notistack";
+import { useQueryCache } from "react-query";
 import { ReactSortable } from "react-sortablejs";
 import React from "react";
 
@@ -6,6 +8,7 @@ import Button from "@material-ui/core/Button";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import IconButton from "@material-ui/core/IconButton";
 import MenuItem from "@material-ui/core/MenuItem";
+import NoSsr from "@material-ui/core/NoSsr";
 import Select from "@material-ui/core/Select";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
@@ -65,6 +68,8 @@ const StyledTableRow = withStyles(() =>
 const AdminThemes: React.FunctionComponent = () => {
   const classes = useTableStyles();
   const router = useRouter();
+  const queryCache = useQueryCache();
+  const { enqueueSnackbar } = useSnackbar();
   const { axiosLoggedRequest } = React.useContext(UserServiceContext);
   const { languages } = useLanguages();
   const { themes: defaultThemes, setThemes: setDefaultThemes } = useThemes({ isDefault: true });
@@ -116,9 +121,17 @@ const AdminThemes: React.FunctionComponent = () => {
         },
       });
       if (response.error) {
+        enqueueSnackbar("Une erreur inconnue est survenue...", {
+          variant: "error",
+        });
+        queryCache.invalidateQueries("themes");
         console.error(response.error);
       }
     } catch (e) {
+      enqueueSnackbar("Une erreur inconnue est survenue...", {
+        variant: "error",
+      });
+      queryCache.invalidateQueries("themes");
       console.error(e);
     }
   };
@@ -137,8 +150,15 @@ const AdminThemes: React.FunctionComponent = () => {
       url: `/themes/${defaultThemes[deleteIndex].id}`,
     });
     if (response.error) {
+      enqueueSnackbar("Une erreur inconnue est survenue...", {
+        variant: "error",
+      });
       console.error(response.error);
+      return;
     }
+    enqueueSnackbar("Thème supprimé avec succès!", {
+      variant: "success",
+    });
     const themes = [...defaultThemes];
     themes.splice(deleteIndex, 1);
     setDefaultThemes(themes);
@@ -154,141 +174,143 @@ const AdminThemes: React.FunctionComponent = () => {
       <Typography variant="h1" color="primary">
         Thèmes
       </Typography>
-      <AdminTile
-        title="Liste des thèmes"
-        toolbarButton={
-          <Button component="a" href="/admin/themes/new" onClick={goToPath("/admin/themes/new")} style={{ flexShrink: 0 }} variant="contained" startIcon={<AddCircleIcon />}>
-            Ajouter un thème
-          </Button>
-        }
-      >
-        <TableContainer>
-          <Table aria-labelledby="themetabletitle" size="medium" aria-label="tout les thèmes">
-            {defaultThemes.length > 0 ? (
-              <>
+      <NoSsr>
+        <AdminTile
+          title="Liste des thèmes"
+          toolbarButton={
+            <Button component="a" href="/admin/themes/new" onClick={goToPath("/admin/themes/new")} style={{ flexShrink: 0 }} variant="contained" startIcon={<AddCircleIcon />}>
+              Ajouter un thème
+            </Button>
+          }
+        >
+          <TableContainer>
+            <Table aria-labelledby="themetabletitle" size="medium" aria-label="tout les thèmes">
+              {defaultThemes.length > 0 ? (
+                <>
+                  <TableHead style={{ borderBottom: "1px solid white" }} className={classes.toolbar}>
+                    <TableRow>
+                      <TableCell style={{ color: "white", fontWeight: "bold" }}>Ordre</TableCell>
+                      <TableCell style={{ color: "white", fontWeight: "bold" }}>
+                        Nom{" "}
+                        <span style={{ marginLeft: "2rem" }}>
+                          (
+                          <Select value={selectedLanguage} color="secondary" style={{ color: "white" }} onChange={onLanguageChange}>
+                            {languages.map((l) => (
+                              <MenuItem key={l.value} value={l.value}>
+                                {l.label.toLowerCase()}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </span>
+                        )
+                      </TableCell>
+                      <TableCell style={{ color: "white", fontWeight: "bold" }}>Image</TableCell>
+                      <TableCell style={{ color: "white", fontWeight: "bold" }} align="right">
+                        Actions
+                      </TableCell>
+                    </TableRow>
+                  </TableHead>
+
+                  <ReactSortable tag={"tbody"} list={defaultThemes} setList={setThemesOrder} animation={100} handle=".theme-index">
+                    {defaultThemes.map((t, index) => (
+                      <StyledTableRow key={t.id}>
+                        <TableCell padding="none" className="theme-index">
+                          <div style={{ display: "flex", alignItems: "center", cursor: "grab", marginLeft: "8px" }}>
+                            <DragIndicatorIcon />
+                            {index}
+                          </div>
+                        </TableCell>
+                        <TableCell style={{ color: t.names[selectedLanguage] ? "inherit" : "grey" }}>{t.names[selectedLanguage] || `${t.names.fr} (non traduit)`}</TableCell>
+                        <TableCell style={{ padding: "0 16px" }} padding="none">
+                          {t.image ? <img style={{ display: "table-cell" }} height="40" src={t.image.path} /> : "Aucune image"}
+                        </TableCell>
+                        <TableCell align="right" padding="none" style={{ minWidth: "96px" }}>
+                          <Tooltip title="Modifier">
+                            <IconButton aria-label="edit" onClick={goToPath(`/admin/themes/edit/${t.id}`)}>
+                              <EditIcon />
+                            </IconButton>
+                          </Tooltip>
+                          <Tooltip title="Supprimer">
+                            <IconButton
+                              aria-label="delete"
+                              onClick={() => {
+                                setDeleteIndex(index);
+                              }}
+                            >
+                              <DeleteIcon />
+                            </IconButton>
+                          </Tooltip>
+                        </TableCell>
+                      </StyledTableRow>
+                    ))}
+                    {/* <TablePagination rowsPerPageOptions={[5, 10, 25]} count={themes.length} rowsPerPage={rowsPerPage} page={page} onChangePage={handleChangePage} onChangeRowsPerPage={handleChangeRowsPerPage} /> */}
+                  </ReactSortable>
+                </>
+              ) : (
+                <TableBody>
+                  <TableRow>
+                    <TableCell colSpan={4} align="center">
+                      Cette liste est vide !{" "}
+                      <Link href="/admin/themes/new" onClick={goToPath("/admin/themes/new")} color="secondary">
+                        Ajouter un thème ?
+                      </Link>
+                    </TableCell>
+                  </TableRow>
+                </TableBody>
+              )}
+            </Table>
+          </TableContainer>
+        </AdminTile>
+        <Modal
+          open={deleteIndex !== null}
+          onClose={() => {
+            setDeleteIndex(null);
+          }}
+          onConfirm={onDeleteTheme}
+          confirmLabel="Supprimer"
+          cancelLabel="Annuler"
+          title="Supprimer le thème ?"
+          error={true}
+          ariaLabelledBy="delete-dialog-title"
+          ariaDescribedBy="delete-dialog-description"
+          fullWidth
+        >
+          <DialogContentText id="delete-dialog-description">
+            Voulez-vous vraiment supprimer le thème <strong>{deleteIndex !== null && defaultThemes[deleteIndex].names.fr}</strong> ?
+          </DialogContentText>
+        </Modal>
+
+        {userThemes.length > 0 && (
+          <AdminTile title="Thèmes des utilisateurs" style={{ marginTop: "2rem" }}>
+            <TableContainer>
+              <Table aria-labelledby="themetabletitle" size="medium" aria-label="tout les thèmes">
                 <TableHead style={{ borderBottom: "1px solid white" }} className={classes.toolbar}>
                   <TableRow>
-                    <TableCell style={{ color: "white", fontWeight: "bold" }}>Ordre</TableCell>
-                    <TableCell style={{ color: "white", fontWeight: "bold" }}>
-                      Nom{" "}
-                      <span style={{ marginLeft: "2rem" }}>
-                        (
-                        <Select value={selectedLanguage} color="secondary" style={{ color: "white" }} onChange={onLanguageChange}>
-                          {languages.map((l) => (
-                            <MenuItem key={l.value} value={l.value}>
-                              {l.label.toLowerCase()}
-                            </MenuItem>
-                          ))}
-                        </Select>
-                      </span>
-                      )
-                    </TableCell>
-                    <TableCell style={{ color: "white", fontWeight: "bold" }}>Image</TableCell>
+                    <TableCell style={{ color: "white", fontWeight: "bold" }}>Nom</TableCell>
                     <TableCell style={{ color: "white", fontWeight: "bold" }} align="right">
                       Actions
                     </TableCell>
                   </TableRow>
                 </TableHead>
-
-                <ReactSortable tag={"tbody"} list={defaultThemes} setList={setThemesOrder} animation={100} handle=".theme-index">
-                  {defaultThemes.map((t, index) => (
+                <TableBody>
+                  {userThemes.map((t, index) => (
                     <StyledTableRow key={t.id}>
-                      <TableCell padding="none" className="theme-index">
-                        <div style={{ display: "flex", alignItems: "center", cursor: "grab", marginLeft: "8px" }}>
-                          <DragIndicatorIcon />
-                          {index}
-                        </div>
-                      </TableCell>
-                      <TableCell style={{ color: t.names[selectedLanguage] ? "inherit" : "grey" }}>{t.names[selectedLanguage] || `${t.names.fr} (non traduit)`}</TableCell>
-                      <TableCell style={{ padding: "0 16px" }} padding="none">
-                        {t.image ? <img style={{ display: "table-cell" }} height="40" src={t.image.path} /> : "Aucune image"}
-                      </TableCell>
+                      <TableCell>{t.names.fr}</TableCell>
                       <TableCell align="right" padding="none">
-                        <Tooltip title="Modifier">
-                          <IconButton aria-label="edit" onClick={goToPath(`/admin/themes/edit/${t.id}`)}>
-                            <EditIcon />
-                          </IconButton>
-                        </Tooltip>
-                        <Tooltip title="Supprimer">
-                          <IconButton
-                            aria-label="delete"
-                            onClick={() => {
-                              setDeleteIndex(index);
-                            }}
-                          >
-                            <DeleteIcon />
+                        <Tooltip title="Valider le thème">
+                          <IconButton aria-label="valider" onClick={validateTheme(t.id, index)}>
+                            <CheckIcon />
                           </IconButton>
                         </Tooltip>
                       </TableCell>
                     </StyledTableRow>
                   ))}
-                  {/* <TablePagination rowsPerPageOptions={[5, 10, 25]} count={themes.length} rowsPerPage={rowsPerPage} page={page} onChangePage={handleChangePage} onChangeRowsPerPage={handleChangeRowsPerPage} /> */}
-                </ReactSortable>
-              </>
-            ) : (
-              <TableBody>
-                <TableRow>
-                  <TableCell colSpan={4} align="center">
-                    Cette liste est vide !{" "}
-                    <Link href="/admin/themes/new" onClick={goToPath("/admin/themes/new")} color="secondary">
-                      Ajouter un thème ?
-                    </Link>
-                  </TableCell>
-                </TableRow>
-              </TableBody>
-            )}
-          </Table>
-        </TableContainer>
-      </AdminTile>
-      <Modal
-        open={deleteIndex !== null}
-        onClose={() => {
-          setDeleteIndex(null);
-        }}
-        onConfirm={onDeleteTheme}
-        confirmLabel="Supprimer"
-        cancelLabel="Annuler"
-        title="Supprimer le thème ?"
-        error={true}
-        ariaLabelledBy="delete-dialog-title"
-        ariaDescribedBy="delete-dialog-description"
-        fullWidth
-      >
-        <DialogContentText id="delete-dialog-description">
-          Voulez-vous vraiment supprimer le thème <strong>{deleteIndex !== null && defaultThemes[deleteIndex].names.fr}</strong> ?
-        </DialogContentText>
-      </Modal>
-
-      {userThemes.length > 0 && (
-        <AdminTile title="Thèmes des utilisateurs" style={{ marginTop: "2rem" }}>
-          <TableContainer>
-            <Table aria-labelledby="themetabletitle" size="medium" aria-label="tout les thèmes">
-              <TableHead style={{ borderBottom: "1px solid white" }} className={classes.toolbar}>
-                <TableRow>
-                  <TableCell style={{ color: "white", fontWeight: "bold" }}>Nom</TableCell>
-                  <TableCell style={{ color: "white", fontWeight: "bold" }} align="right">
-                    Actions
-                  </TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {userThemes.map((t, index) => (
-                  <StyledTableRow key={t.id}>
-                    <TableCell>{t.names.fr}</TableCell>
-                    <TableCell align="right" padding="none">
-                      <Tooltip title="Valider le thème">
-                        <IconButton aria-label="valider" onClick={validateTheme(t.id, index)}>
-                          <CheckIcon />
-                        </IconButton>
-                      </Tooltip>
-                    </TableCell>
-                  </StyledTableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </AdminTile>
-      )}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </AdminTile>
+        )}
+      </NoSsr>
     </div>
   );
 };

@@ -1,4 +1,5 @@
 import { useRouter } from "next/router";
+import { useSnackbar } from "notistack";
 import { useQueryCache } from "react-query";
 import React from "react";
 
@@ -44,6 +45,7 @@ const AdminNewScenario: React.FunctionComponent = () => {
   const classes = useStyles();
   const router = useRouter();
   const queryCache = useQueryCache();
+  const { enqueueSnackbar } = useSnackbar();
   const { axiosLoggedRequest } = React.useContext(UserServiceContext);
   const { languages } = useLanguages();
   const languagesMap = React.useMemo(() => languages.reduce((acc: { [key: string]: number }, language: Language, index: number) => ({ ...acc, [language.value]: index }), {}), [languages]);
@@ -107,7 +109,9 @@ const AdminNewScenario: React.FunctionComponent = () => {
   const onSubmit = async () => {
     const usedLanguages = Object.keys(scenario.names).filter((key) => key !== "default");
     if (scenario.themeId === -1 || usedLanguages.length === 0) {
-      // TODO show error
+      enqueueSnackbar(scenario.themeId === -1 ? "Le thème n'est pas choisit!" : "Le nom du scénario ne peut pas être vide.", {
+        variant: "error",
+      });
       return;
     }
     const firstScenario: Scenario = {
@@ -121,7 +125,9 @@ const AdminNewScenario: React.FunctionComponent = () => {
       questionsCount: 0,
     };
     if (!firstScenario.name) {
-      // TODO show error
+      enqueueSnackbar("Le nom du scénario ne peut pas être vide.", {
+        variant: "error",
+      });
       return;
     }
     setLoading(true);
@@ -131,12 +137,18 @@ const AdminNewScenario: React.FunctionComponent = () => {
       data: firstScenario,
     });
     if (response.error) {
+      enqueueSnackbar("Une erreur inconnue est survenue...", {
+        variant: "error",
+      });
       setLoading(false);
       return;
     }
     if (usedLanguages.length === 1) {
       setLoading(false);
       queryCache.invalidateQueries("scenarios");
+      enqueueSnackbar("Scénario créé avec succès!", {
+        variant: "success",
+      });
       router.push("/admin/scenarios");
       return;
     }
@@ -159,6 +171,9 @@ const AdminNewScenario: React.FunctionComponent = () => {
     }
     await Promise.all(responses);
     setLoading(false);
+    enqueueSnackbar("Scénario créé avec succès!", {
+      variant: "success",
+    });
     queryCache.invalidateQueries("scenarios");
     router.push("/admin/scenarios");
   };

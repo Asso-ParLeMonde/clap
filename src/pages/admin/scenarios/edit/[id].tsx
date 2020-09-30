@@ -1,5 +1,6 @@
 import type { AxiosRequestConfig } from "axios";
 import { useRouter } from "next/router";
+import { useSnackbar } from "notistack";
 import { useQueryCache } from "react-query";
 import React from "react";
 
@@ -14,6 +15,7 @@ import FormControl from "@material-ui/core/FormControl";
 import IconButton from "@material-ui/core/IconButton";
 import InputLabel from "@material-ui/core/InputLabel";
 import Link from "@material-ui/core/Link";
+import NoSsr from "@material-ui/core/NoSsr";
 import Select from "@material-ui/core/Select";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
@@ -67,6 +69,7 @@ const getDeleteRequest = (scenario: GroupedScenario, language: string): AxiosReq
 const AdminEditScenario: React.FunctionComponent = () => {
   const classes = useStyles();
   const router = useRouter();
+  const { enqueueSnackbar } = useSnackbar();
   const scenarioId = React.useMemo(() => parseInt(getQueryString(router.query.id), 10) || 0, [router]);
   const queryCache = useQueryCache();
   const { axiosLoggedRequest } = React.useContext(UserServiceContext);
@@ -146,7 +149,9 @@ const AdminEditScenario: React.FunctionComponent = () => {
   const onSubmit = async () => {
     const usedLanguages = Object.keys(scenario.names).filter((key) => key !== "default");
     if (scenario.id === -1 || usedLanguages.length === 0) {
-      // TODO show error
+      enqueueSnackbar("Le nom du scénario ne peut pas être vide.", {
+        variant: "error",
+      });
       return;
     }
     setLoading(true);
@@ -161,6 +166,9 @@ const AdminEditScenario: React.FunctionComponent = () => {
     }
     await Promise.all(responses);
     setLoading(false);
+    enqueueSnackbar("Scénario modifié avec succès!", {
+      variant: "success",
+    });
     queryCache.invalidateQueries("scenarios");
     router.push("/admin/scenarios");
   };
@@ -174,92 +182,94 @@ const AdminEditScenario: React.FunctionComponent = () => {
           </Typography>
         </Link>
         <Typography variant="h1" color="textPrimary">
-          TODO scenario name
+          {scenario.names.default || "Modifier un scenario"}
         </Typography>
       </Breadcrumbs>
-      <AdminTile title="Modifier un scénario">
-        <div style={{ padding: "1rem" }}>
-          <Typography variant="h3" color="textPrimary">
-            Scénario :
-          </Typography>
-          {selectedLanguages.map((languageIndex, index) => (
-            <Card key={languages[languageIndex].value} variant="outlined" style={{ margin: "8px 0" }}>
-              <CardActions>
-                <div style={{ marginLeft: "8px", fontWeight: "bold" }}>{languages[languageIndex].label}</div>
-                {selectedLanguages.length > 1 && (
-                  <IconButton style={{ marginLeft: "auto" }} size="small" onClick={onDeleteLanguage(index)}>
-                    <Close />
-                  </IconButton>
-                )}
-              </CardActions>
-              <CardContent style={{ paddingTop: "0" }}>
-                <TextField label="Nom" value={scenario.names[languages[languageIndex].value] || ""} onChange={onNameInputChange(languages[languageIndex].value)} color="secondary" fullWidth />
-                <TextField style={{ marginTop: "8px" }} label="Description" value={scenario.descriptions[languages[languageIndex].value] || ""} onChange={onDescInputChange(languages[languageIndex].value)} color="secondary" multiline fullWidth />
-              </CardContent>
-            </Card>
-          ))}
-          {availableLanguages.length > 0 && (
-            <Button
-              variant="outlined"
-              onClick={() => {
-                setShowModal(true);
-              }}
-            >
-              Ajouter une langue
-            </Button>
-          )}
+      <NoSsr>
+        <AdminTile title="Modifier un scénario">
+          <div style={{ padding: "1rem" }}>
+            <Typography variant="h3" color="textPrimary">
+              Scénario :
+            </Typography>
+            {selectedLanguages.map((languageIndex, index) => (
+              <Card key={languages[languageIndex].value} variant="outlined" style={{ margin: "8px 0" }}>
+                <CardActions>
+                  <div style={{ marginLeft: "8px", fontWeight: "bold" }}>{languages[languageIndex].label}</div>
+                  {selectedLanguages.length > 1 && (
+                    <IconButton style={{ marginLeft: "auto" }} size="small" onClick={onDeleteLanguage(index)}>
+                      <Close />
+                    </IconButton>
+                  )}
+                </CardActions>
+                <CardContent style={{ paddingTop: "0" }}>
+                  <TextField label="Nom" value={scenario.names[languages[languageIndex].value] || ""} onChange={onNameInputChange(languages[languageIndex].value)} color="secondary" fullWidth />
+                  <TextField style={{ marginTop: "8px" }} label="Description" value={scenario.descriptions[languages[languageIndex].value] || ""} onChange={onDescInputChange(languages[languageIndex].value)} color="secondary" multiline fullWidth />
+                </CardContent>
+              </Card>
+            ))}
+            {availableLanguages.length > 0 && (
+              <Button
+                variant="outlined"
+                onClick={() => {
+                  setShowModal(true);
+                }}
+              >
+                Ajouter une langue
+              </Button>
+            )}
 
-          <div style={{ width: "100%", textAlign: "center", marginTop: "1rem" }}>
-            <Button color="secondary" variant="contained" onClick={onSubmit}>
-              Modifier le scénario !
-            </Button>
+            <div style={{ width: "100%", textAlign: "center", marginTop: "1rem" }}>
+              <Button color="secondary" variant="contained" onClick={onSubmit}>
+                Modifier le scénario !
+              </Button>
+            </div>
           </div>
-        </div>
-      </AdminTile>
-      <Button variant="outlined" style={{ marginTop: "1rem" }} onClick={goToPath("/admin/scenarios")}>
-        Retour
-      </Button>
-      <Backdrop className={classes.backdrop} open={loading}>
-        <CircularProgress color="inherit" />
-      </Backdrop>
+        </AdminTile>
+        <Button variant="outlined" style={{ marginTop: "1rem" }} onClick={goToPath("/admin/scenarios")}>
+          Retour
+        </Button>
+        <Backdrop className={classes.backdrop} open={loading}>
+          <CircularProgress color="inherit" />
+        </Backdrop>
 
-      {/* language modal */}
-      <Modal
-        open={showModal}
-        onClose={() => {
-          setShowModal(false);
-        }}
-        onConfirm={onAddLanguage}
-        confirmLabel="Ajouter"
-        cancelLabel="Annuler"
-        title="Ajouter une langue"
-        ariaLabelledBy="add-dialog"
-        ariaDescribedBy="add-dialog-desc"
-      >
-        {availableLanguages.length > 0 && (
-          <FormControl variant="outlined" style={{ minWidth: "15rem" }} className="mobile-full-width">
-            <InputLabel htmlFor="langage">Languages</InputLabel>
-            <Select
-              native
-              value={languageToAdd}
-              onChange={(event: React.ChangeEvent<HTMLSelectElement>) => {
-                setLanguageToAdd(parseInt(event.target.value, 10));
-              }}
-              label={"Langages"}
-              inputProps={{
-                name: "langage",
-                id: "langage",
-              }}
-            >
-              {availableLanguages.map((l, index) => (
-                <option value={index} key={l.value}>
-                  {l.label}
-                </option>
-              ))}
-            </Select>
-          </FormControl>
-        )}
-      </Modal>
+        {/* language modal */}
+        <Modal
+          open={showModal}
+          onClose={() => {
+            setShowModal(false);
+          }}
+          onConfirm={onAddLanguage}
+          confirmLabel="Ajouter"
+          cancelLabel="Annuler"
+          title="Ajouter une langue"
+          ariaLabelledBy="add-dialog"
+          ariaDescribedBy="add-dialog-desc"
+        >
+          {availableLanguages.length > 0 && (
+            <FormControl variant="outlined" style={{ minWidth: "15rem" }} className="mobile-full-width">
+              <InputLabel htmlFor="langage">Languages</InputLabel>
+              <Select
+                native
+                value={languageToAdd}
+                onChange={(event: React.ChangeEvent<HTMLSelectElement>) => {
+                  setLanguageToAdd(parseInt(event.target.value, 10));
+                }}
+                label={"Langages"}
+                inputProps={{
+                  name: "langage",
+                  id: "langage",
+                }}
+              >
+                {availableLanguages.map((l, index) => (
+                  <option value={index} key={l.value}>
+                    {l.label}
+                  </option>
+                ))}
+              </Select>
+            </FormControl>
+          )}
+        </Modal>
+      </NoSsr>
     </div>
   );
 };

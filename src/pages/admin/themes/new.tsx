@@ -1,4 +1,5 @@
 import { useRouter } from "next/router";
+import { useSnackbar } from "notistack";
 import { useQueryCache } from "react-query";
 import React from "react";
 
@@ -36,6 +37,7 @@ const useStyles = makeStyles((theme: MaterialTheme) =>
 const AdminNewTheme: React.FunctionComponent = () => {
   const classes = useStyles();
   const router = useRouter();
+  const { enqueueSnackbar } = useSnackbar();
   const queryCache = useQueryCache();
   const { languages } = useLanguages();
   const languagesMap = languages.reduce((acc: { [key: string]: number }, language: Language, index: number) => ({ ...acc, [language.value]: index }), {});
@@ -108,6 +110,9 @@ const AdminNewTheme: React.FunctionComponent = () => {
 
   const onSubmit = async () => {
     if (!theme.names.fr) {
+      enqueueSnackbar("Le thème 'fr' ne peut pas être vide.", {
+        variant: "error",
+      });
       return;
     }
     setLoading(true);
@@ -120,6 +125,9 @@ const AdminNewTheme: React.FunctionComponent = () => {
         },
       });
       if (response.error) {
+        enqueueSnackbar("Une erreur inconnue est survenue...", {
+          variant: "error",
+        });
         console.error(response.error);
         return;
       }
@@ -137,9 +145,15 @@ const AdminNewTheme: React.FunctionComponent = () => {
           console.error(resp2.error);
         }
       }
+      enqueueSnackbar("Thème créé avec succès!", {
+        variant: "success",
+      });
       queryCache.invalidateQueries("themes");
       router.push("/admin/themes");
     } catch (e) {
+      enqueueSnackbar("Une erreur inconnue est survenue...", {
+        variant: "error",
+      });
       console.error(e);
     }
     setLoading(false);

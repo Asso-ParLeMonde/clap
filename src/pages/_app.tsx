@@ -5,9 +5,10 @@ import "react-html5-camera-photo/build/css/index.css";
 import "src/styles/globals.css";
 import "src/styles/user.css";
 
-import App from "next/app";
 import type { AppProps, AppInitialProps, AppContext } from "next/app";
+import App from "next/app";
 import Head from "next/head";
+import { SnackbarProvider } from "notistack";
 import NProgress from "nprogress";
 import { ReactQueryDevtools } from "react-query-devtools";
 import { QueryCache, ReactQueryCacheProvider } from "react-query";
@@ -132,15 +133,23 @@ const MyApp: React.FunctionComponent<AppProps> & {
       </Head>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <ReactQueryCacheProvider queryCache={queryCache}>
-          <translationContext.Provider value={{ t, currentLocale }}>
-            <UserServiceProvider user={user} csrfToken={csrfToken}>
-              {content}
-            </UserServiceProvider>
-          </translationContext.Provider>
-          {/* Dev only, it won't appear after build for prod. */}
-          <ReactQueryDevtools />
-        </ReactQueryCacheProvider>
+        <SnackbarProvider
+          maxSnack={3}
+          anchorOrigin={{
+            vertical: "top",
+            horizontal: "center",
+          }}
+        >
+          <ReactQueryCacheProvider queryCache={queryCache}>
+            <translationContext.Provider value={{ t, currentLocale }}>
+              <UserServiceProvider user={user} csrfToken={csrfToken}>
+                {content}
+              </UserServiceProvider>
+            </translationContext.Provider>
+            {/* Dev only, it won't appear after build for prod. */}
+            <ReactQueryDevtools />
+          </ReactQueryCacheProvider>
+        </SnackbarProvider>
       </ThemeProvider>
     </>
   );

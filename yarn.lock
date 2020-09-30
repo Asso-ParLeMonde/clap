@@ -4479,7 +4479,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"clsx@npm:^1.0.4":
+"clsx@npm:^1.0.4, clsx@npm:^1.1.0":
   version: 1.1.1
   resolution: "clsx@npm:1.1.1"
   checksum: d8ae10ac0546da19fe8c9516886f6582a64a382cf4d09ea7d36d5287cafbdab1192ab249adc2cdf0310e0b0aeac4f4142cf7c738c98d9cb68c19ba24b6f673d5
@@ -7230,7 +7230,7 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
-"hoist-non-react-statics@npm:^3.3.2":
+"hoist-non-react-statics@npm:^3.3.0, hoist-non-react-statics@npm:^3.3.2":
   version: 3.3.2
   resolution: "hoist-non-react-statics@npm:3.3.2"
   dependencies:
@@ -9556,6 +9556,20 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
+"notistack@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "notistack@npm:1.0.0"
+  dependencies:
+    clsx: ^1.1.0
+    hoist-non-react-statics: ^3.3.0
+  peerDependencies:
+    "@material-ui/core": ^4.0.0
+    react: ^16.8.0
+    react-dom: ^16.8.0
+  checksum: c02380a1456c9ce1d8cdb01512b4ec2d35e79b7ec0c3e3c757edafd005e077cd238ff5a5e10a60692f8bdc14c16959fea5419fba798c72a0ec74033875d81180
+  languageName: node
+  linkType: hard
+
 "npm-bundled@npm:^1.0.1":
   version: 1.1.1
   resolution: "npm-bundled@npm:1.1.1"
@@ -10030,6 +10044,7 @@ fsevents@~2.1.2:
     mysql: ^2.18.1
     next: 9.5.2
     nodemon: ^2.0.4
+    notistack: ^1.0.0
     nprogress: ^0.2.0
     pg: ^8.3.2
     prettier: ^2.0.5
