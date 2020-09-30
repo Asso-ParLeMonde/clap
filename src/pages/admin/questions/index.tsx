@@ -104,6 +104,10 @@ const AdminQuestions: React.FunctionComponent = () => {
     // TODO save in backend
   };
 
+  const setQuestionsFunction = (f: (questions: Question[]) => Question[]) => {
+    setQuestions(f(questions));
+  };
+
   const selectLanguage = (
     <span style={{ marginLeft: "2rem" }}>
       (
@@ -203,6 +207,7 @@ const AdminQuestions: React.FunctionComponent = () => {
                         onClick={() => {
                           setCreateModalOpen(true);
                         }}
+                        style={{ cursor: "pointer" }}
                         color="secondary"
                       >
                         Ajouter une question ?
@@ -221,6 +226,8 @@ const AdminQuestions: React.FunctionComponent = () => {
           scenarioId={selectedArgs.scenarioId}
           languageCode={selectedArgs.languageCode}
           open={createModalOpen}
+          setQuestions={setQuestionsFunction}
+          order={Math.max(...questions.map((q) => q.index)) + 1}
         />
       </NoSsr>
     </div>

@@ -44,8 +44,8 @@ export const useQuestionRequests = (): { getDefaultQuestions(args: { isDefault?:
       }
       const url: string = `/questions${serializeToQueryUrl(args)}`;
       const response =
-        (queryCache.getQueryData(["questions", args]) as { error?: unknown; data: Question[] }) ||
-        (await queryCache.fetchQuery(["questions", args], async () =>
+        (queryCache.getQueryData(["questions", "user-default", args]) as { error?: unknown; data: Question[] }) ||
+        (await queryCache.fetchQuery(["questions", "user-default", args], async () =>
           axiosLoggedRequest({
             method: "GET",
             url,
