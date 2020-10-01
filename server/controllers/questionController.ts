@@ -27,6 +27,17 @@ function getOptions(req: Request): { isDefault?: boolean; scenarioId?: number; l
   return where;
 }
 
+async function updateQuestionOrder(questionId: number, newOrder: number, userType: UserType): Promise<void> {
+  const question: Question | undefined = await getRepository(Question).findOne(questionId);
+  if (question === undefined || (question.isDefault && userType < UserType.PLMO_ADMIN)) {
+    return;
+  }
+  const updatedQuestion = new Question();
+  updatedQuestion.id = questionId;
+  updatedQuestion.index = newOrder;
+  await getRepository(Question).save(updatedQuestion);
+}
+
 export class QuestionController extends Controller {
   constructor() {
     super("questions");
@@ -36,6 +47,7 @@ export class QuestionController extends Controller {
   public async getQuestions(req: Request, res: Response): Promise<void> {
     const options = {
       where: getOptions(req),
+      order: { isDefault: "DESC" as const, index: "ASC" as const },
     };
     const questions = await getRepository(Question).find(options);
     res.sendJSON(questions);
@@ -86,6 +98,19 @@ export class QuestionController extends Controller {
 
     await getRepository(Question).save(question);
     res.sendJSON(question);
+  }
+
+  @put({ path: "/update-order", userType: UserType.CLASS })
+  public async editThemesOrder(req: Request, res: Response): Promise<void> {
+    const questionsOrderPromises: Array<Promise<void>> = [];
+    const questionsOrder: [number] = req.body.order || [];
+
+    for (let order = 0; order < questionsOrder.length; order++) {
+      questionsOrderPromises.push(updateQuestionOrder(questionsOrder[order], order, req.user?.type || UserType.CLASS));
+    }
+
+    await Promise.all(questionsOrderPromises);
+    res.status(204).send();
   }
 
   @put({ path: "/:id", userType: UserType.CLASS })

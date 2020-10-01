@@ -1,3 +1,5 @@
+import { useSnackbar } from "notistack";
+import { useQueryCache } from "react-query";
 import { ReactSortable } from "react-sortablejs";
 import React from "react";
 
@@ -24,6 +26,9 @@ import EditIcon from "@material-ui/icons/Edit";
 
 import { AdminTile } from "src/components/admin/AdminTile";
 import { CreateQuestionModal } from "src/components/admin/questions/CreateQuestionModal";
+import { DeleteQuestionModal } from "src/components/admin/questions/DeleteQuestionModal";
+import { EditQuestionModal } from "src/components/admin/questions/EditQuestionModal";
+import { UserServiceContext } from "src/services/UserService";
 import { useLanguages } from "src/services/useLanguages";
 import { useQuestions } from "src/services/useQuestions";
 import { useScenarios } from "src/services/useScenarios";
@@ -65,6 +70,9 @@ const StyledTableRow = withStyles(() =>
 
 const AdminQuestions: React.FunctionComponent = () => {
   const classes = useTableStyles();
+  const queryCache = useQueryCache();
+  const { enqueueSnackbar } = useSnackbar();
+  const { axiosLoggedRequest } = React.useContext(UserServiceContext);
   const { languages } = useLanguages();
   const { scenarios } = useScenarios({ isDefault: true });
   const groupedScenarios = groupScenarios(scenarios);
@@ -80,12 +88,16 @@ const AdminQuestions: React.FunctionComponent = () => {
   });
   const { questions, setQuestions } = useQuestions(selectedArgs);
   const [createModalOpen, setCreateModalOpen] = React.useState<boolean>(false);
+  const [editQuestionIndex, setEditQuestionIndex] = React.useState<number>(-1);
+  const [deleteQuestionIndex, setDeleteQuestionIndex] = React.useState<number>(-1);
 
   const onSelectScenario = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const scenarioId = parseInt(event.target.value, 10);
     const scenarioLanguages = Object.keys(groupedScenarios.find((s) => s.id === scenarioId)?.names || {}).filter((key) => key !== "default");
     if (scenarioLanguages.length === 0) {
-      // TODO show error
+      enqueueSnackbar("Une erreur inconnue est survenue...", {
+        variant: "error",
+      });
       return;
     }
     setAvailableLanguages(languages.filter((l) => scenarioLanguages.includes(l.value)));
@@ -96,12 +108,34 @@ const AdminQuestions: React.FunctionComponent = () => {
     setSelectedArgs((s) => ({ ...s, languageCode: event.target.value }));
   };
 
-  const setQuestionsOrder = (newQuestions: Question[]) => {
+  const setQuestionsOrder = async (newQuestions: Question[]) => {
     if (questions.map((q) => q.id).join(",") === newQuestions.map((q) => q.id).join(",")) {
       return;
     }
     setQuestions(newQuestions);
-    // TODO save in backend
+    const order = newQuestions.map((q) => q.id);
+    try {
+      const response = await axiosLoggedRequest({
+        method: "PUT",
+        url: "/questions/update-order",
+        data: {
+          order,
+        },
+      });
+      if (response.error) {
+        enqueueSnackbar("Une erreur inconnue est survenue...", {
+          variant: "error",
+        });
+        queryCache.invalidateQueries("questions");
+        console.error(response.error);
+      }
+    } catch (e) {
+      enqueueSnackbar("Une erreur inconnue est survenue...", {
+        variant: "error",
+      });
+      queryCache.invalidateQueries("questions");
+      console.error(e);
+    }
   };
 
   const setQuestionsFunction = (f: (questions: Question[]) => Question[]) => {
@@ -132,7 +166,7 @@ const AdminQuestions: React.FunctionComponent = () => {
           <div style={{ padding: "8px 16px 16px 16px" }}>
             <FormControl fullWidth color="secondary">
               <InputLabel id="demo-simple-select-label">Choisir le scénario</InputLabel>
-              <Select labelId="demo-simple-select-label" id="demo-simple-select" value={selectedArgs.scenarioId} onChange={onSelectScenario}>
+              <Select labelId="demo-simple-select-label" id="demo-simple-select" value={selectedArgs.scenarioId || ""} onChange={onSelectScenario}>
                 {groupedScenarios.map((s) => (
                   <MenuItem value={s.id} key={s.id}>
                     {s.names.default}
@@ -184,12 +218,22 @@ const AdminQuestions: React.FunctionComponent = () => {
                         <TableCell>{q.question}</TableCell>
                         <TableCell align="right" padding="none" style={{ minWidth: "96px" }}>
                           <Tooltip title="Modifier">
-                            <IconButton aria-label="edit" onClick={() => {}}>
+                            <IconButton
+                              aria-label="edit"
+                              onClick={() => {
+                                setEditQuestionIndex(index);
+                              }}
+                            >
                               <EditIcon />
                             </IconButton>
                           </Tooltip>
                           <Tooltip title="Supprimer">
-                            <IconButton aria-label="delete" onClick={() => {}}>
+                            <IconButton
+                              aria-label="delete"
+                              onClick={() => {
+                                setDeleteQuestionIndex(index);
+                              }}
+                            >
                               <DeleteIcon />
                             </IconButton>
                           </Tooltip>
@@ -228,6 +272,20 @@ const AdminQuestions: React.FunctionComponent = () => {
           open={createModalOpen}
           setQuestions={setQuestionsFunction}
           order={Math.max(...questions.map((q) => q.index)) + 1}
+        />
+        <EditQuestionModal
+          question={editQuestionIndex !== -1 ? questions[editQuestionIndex] || null : null}
+          setQuestions={setQuestionsFunction}
+          onClose={() => {
+            setEditQuestionIndex(-1);
+          }}
+        />
+        <DeleteQuestionModal
+          question={deleteQuestionIndex !== -1 ? questions[deleteQuestionIndex] || null : null}
+          setQuestions={setQuestionsFunction}
+          onClose={() => {
+            setDeleteQuestionIndex(-1);
+          }}
         />
       </NoSsr>
     </div>
