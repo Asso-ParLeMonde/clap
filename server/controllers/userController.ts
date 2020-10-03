@@ -1,7 +1,7 @@
 import * as argon2 from "argon2";
 import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
-import { getRepository } from "typeorm";
+import { getRepository, Like, FindManyOptions } from "typeorm";
 
 // import { sendMail, Email } from "../emails";
 import { Invite } from "../entities/invite";
@@ -13,8 +13,8 @@ import { Controller, del, get, post, put } from "./controller";
 const secret: string = process.env.APP_SECRET || "";
 
 function updateUser(user: User, req: Request): void {
-  if (req.body.managerFirstName) user.managerFirstName = req.body.managerFirstName;
-  if (req.body.managerLastName) user.managerLastName = req.body.managerLastName;
+  // if (req.body.managerFirstName) user.managerFirstName = req.body.managerFirstName;
+  // if (req.body.managerLastName) user.managerLastName = req.body.managerLastName;
   if (req.body.email) user.email = req.body.email;
   if (req.body.level) user.level = req.body.level;
   if (req.body.pseudo) user.pseudo = req.body.pseudo;
@@ -36,9 +36,41 @@ export class UserController extends Controller {
   }
 
   @get()
-  public async getUsers(_: Request, res: Response): Promise<void> {
-    const users: User[] = await getRepository(User).find();
+  public async getUsers(req: Request, res: Response): Promise<void> {
+    const queryParams: FindManyOptions<User> = {
+      order: {
+        id: "ASC",
+      },
+    };
+    if (req.query.limit !== undefined) {
+      queryParams.take = parseInt(req.query.limit as string, 10);
+      if (req.query.page !== undefined && queryParams.take !== 0) {
+        queryParams.skip = queryParams.take * (parseInt(req.query.page as string, 10) - 1);
+      }
+    }
+    let direction: "ASC" | "DESC" = "ASC";
+    if (req.query.sort !== undefined) {
+      direction = req.query.sort === "DESC" || req.query.sort === "desc" ? "DESC" : "ASC";
+    }
+    if (req.query.order !== undefined || req.query.orderBy !== undefined) {
+      const orderBy = (req.query.order as string) || (req.query.orderBy as string);
+      if (orderBy === "id" || orderBy === "pseudo" || orderBy === "email" || orderBy === "level" || orderBy === "school") {
+        queryParams.order = {
+          [orderBy]: direction,
+        };
+      }
+    }
+    if (req.query.search) {
+      queryParams.where = [{ pseudo: Like(`%${req.query.search}%`) }, { email: Like(`%${req.query.search}%`) }, { school: Like(`%${req.query.search}%`) }, { level: Like(`%${req.query.search}%`) }];
+    }
+    const users: User[] = await getRepository(User).find(queryParams);
     res.sendJSON(users.map((u) => u.userWithoutPassword()));
+  }
+
+  @get({ path: "/count" })
+  public async getUserCount(_: Request, res: Response): Promise<void> {
+    const userCount: number = await getRepository(User).count();
+    res.sendJSON({ userCount });
   }
 
   @get({ path: "/:id" })

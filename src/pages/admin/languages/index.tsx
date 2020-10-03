@@ -1,3 +1,5 @@
+import { useSnackbar } from "notistack";
+import { useQueryCache } from "react-query";
 import React from "react";
 
 import Button from "@material-ui/core/Button";
@@ -18,7 +20,12 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import GetAppIcon from "@material-ui/icons/GetApp";
 
 import { AdminTile } from "src/components/admin/AdminTile";
+import { AddLanguageModal } from "src/components/admin/languages/AddLanguageModal";
+import { DeleteLanguageModal } from "src/components/admin/languages/DeleteLanguageModal";
+import { UploadLanguageModal } from "src/components/admin/languages/UploadLanguageModal";
+import { UserServiceContext } from "src/services/UserService";
 import { useLanguages } from "src/services/useLanguages";
+import type { Language } from "types/models/language.type";
 
 const useTableStyles = makeStyles((theme: MaterialTheme) =>
   createStyles({
@@ -53,8 +60,37 @@ const StyledTableRow = withStyles(() =>
 )(TableRow);
 
 const AdminLanguages: React.FunctionComponent = () => {
+  const queryCache = useQueryCache();
   const classes = useTableStyles();
+  const { enqueueSnackbar } = useSnackbar();
+  const { axiosLoggedRequest } = React.useContext(UserServiceContext);
   const { languages } = useLanguages();
+  const [isAddModalOpen, setIsAddModalOpen] = React.useState<boolean>(false);
+  const [uploadLanguageIndex, setUploadLanguageIndex] = React.useState<number>(-1);
+  const [deleteLanguageIndex, setDeleteLanguageIndex] = React.useState<number>(-1);
+
+  const setLanguages = React.useCallback(
+    (f: (ll: Language[]) => Language[]) => {
+      queryCache.setQueryData(["languages"], f(languages));
+    },
+    [languages, queryCache],
+  );
+
+  const onDownload = (l: Language) => async (event: React.MouseEvent) => {
+    event.preventDefault();
+    const response = await axiosLoggedRequest({
+      method: "GET",
+      url: `/languages/${l.value}/po`,
+    });
+    if (response.error) {
+      enqueueSnackbar("Une erreur inconnue est survenue...", {
+        variant: "error",
+      });
+      return;
+    }
+    window.open(`/${response.data.url}`);
+  };
+
   return (
     <div style={{ paddingBottom: "2rem" }}>
       <Typography variant="h1" color="primary">
@@ -64,7 +100,14 @@ const AdminLanguages: React.FunctionComponent = () => {
         <AdminTile
           title="Liste des langues"
           toolbarButton={
-            <Button onClick={() => {}} style={{ flexShrink: 0 }} variant="contained" startIcon={<AddCircleIcon />}>
+            <Button
+              onClick={() => {
+                setIsAddModalOpen(true);
+              }}
+              style={{ flexShrink: 0 }}
+              variant="contained"
+              startIcon={<AddCircleIcon />}
+            >
               Ajouter une langue
             </Button>
           }
@@ -82,7 +125,7 @@ const AdminLanguages: React.FunctionComponent = () => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {languages.map((l) => (
+                  {languages.map((l, index) => (
                     <StyledTableRow key={l.value}>
                       <TableCell style={{ maxWidth: "2rem" }}>
                         <strong>{l.value.toUpperCase()}</strong>
@@ -90,18 +133,28 @@ const AdminLanguages: React.FunctionComponent = () => {
                       <TableCell>{l.label}</TableCell>
                       <TableCell align="right" padding="none" style={{ minWidth: "96px" }}>
                         <Tooltip title="Télécharger le fichier des traductions (.po)">
-                          <IconButton aria-label="edit" onClick={() => {}}>
+                          <IconButton aria-label="edit" onClick={onDownload(l)}>
                             <GetAppIcon />
                           </IconButton>
                         </Tooltip>
                         <Tooltip title="Uploader le fichier des traductions">
-                          <IconButton aria-label="edit" onClick={() => {}}>
+                          <IconButton
+                            aria-label="edit"
+                            onClick={() => {
+                              setUploadLanguageIndex(index);
+                            }}
+                          >
                             <BackupIcon />
                           </IconButton>
                         </Tooltip>
                         {l.value !== "fr" && (
                           <Tooltip title="Supprimer">
-                            <IconButton aria-label="delete" onClick={() => {}}>
+                            <IconButton
+                              aria-label="delete"
+                              onClick={() => {
+                                setDeleteLanguageIndex(index);
+                              }}
+                            >
                               <DeleteIcon />
                             </IconButton>
                           </Tooltip>
@@ -116,7 +169,13 @@ const AdminLanguages: React.FunctionComponent = () => {
                 <TableRow>
                   <TableCell colSpan={3} align="center">
                     Cette liste est vide !{" "}
-                    <Link onClick={() => {}} style={{ cursor: "pointer" }} color="secondary">
+                    <Link
+                      onClick={() => {
+                        setIsAddModalOpen(true);
+                      }}
+                      style={{ cursor: "pointer" }}
+                      color="secondary"
+                    >
                       Ajouter une langue ?
                     </Link>
                   </TableCell>
@@ -125,6 +184,26 @@ const AdminLanguages: React.FunctionComponent = () => {
             )}
           </Table>
         </AdminTile>
+        <AddLanguageModal
+          open={isAddModalOpen}
+          onClose={() => {
+            setIsAddModalOpen(false);
+          }}
+          setLanguages={setLanguages}
+        />
+        <UploadLanguageModal
+          language={uploadLanguageIndex === -1 ? null : languages[uploadLanguageIndex] || null}
+          onClose={() => {
+            setUploadLanguageIndex(-1);
+          }}
+        />
+        <DeleteLanguageModal
+          language={deleteLanguageIndex === -1 ? null : languages[deleteLanguageIndex] || null}
+          onClose={() => {
+            setDeleteLanguageIndex(-1);
+          }}
+          setLanguages={setLanguages}
+        />
       </NoSsr>
     </div>
   );

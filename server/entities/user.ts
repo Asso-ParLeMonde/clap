@@ -12,11 +12,11 @@ export class User implements UserInterface {
   @Column({ type: "varchar", length: 2 })
   public languageCode: string;
 
-  @Column({ type: "varchar", length: 50, default: "" })
-  public managerLastName: string;
+  // @Column({ type: "varchar", length: 50, default: "" })
+  // public managerLastName: string;
 
-  @Column({ type: "varchar", length: 50, default: "" })
-  public managerFirstName: string;
+  // @Column({ type: "varchar", length: 50, default: "" })
+  // public managerFirstName: string;
 
   @Column({ type: "varchar", length: 150, unique: true })
   public email: string;

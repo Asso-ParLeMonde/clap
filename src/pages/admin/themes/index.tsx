@@ -77,17 +77,6 @@ const AdminThemes: React.FunctionComponent = () => {
   const [deleteIndex, setDeleteIndex] = React.useState<number | null>(null);
   const [selectedLanguage, setSelectedLanguage] = React.useState<string>("fr");
 
-  // const [page, setPage] = React.useState<number>(0);
-  // const [rowsPerPage, setRowsPerPage] = React.useState<number>(5);
-
-  // const handleChangePage = (_event: unknown, newPage: number) => {
-  //   setPage(newPage);
-  // };
-
-  // const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //   setRowsPerPage(parseInt(event.target.value, 10));
-  //   setPage(0);
-  // };
   const validateTheme = (themeId: number | string, themeIndex: number) => async () => {
     const response = await axiosLoggedRequest({
       method: "PUT",
@@ -243,7 +232,6 @@ const AdminThemes: React.FunctionComponent = () => {
                         </TableCell>
                       </StyledTableRow>
                     ))}
-                    {/* <TablePagination rowsPerPageOptions={[5, 10, 25]} count={themes.length} rowsPerPage={rowsPerPage} page={page} onChangePage={handleChangePage} onChangeRowsPerPage={handleChangeRowsPerPage} /> */}
                   </ReactSortable>
                 </>
               ) : (

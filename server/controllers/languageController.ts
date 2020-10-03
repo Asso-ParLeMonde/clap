@@ -18,7 +18,7 @@ export class LanguageController extends Controller {
 
   @get({ path: "/:id" })
   public async getLanguage(req: Request, res: Response, next: NextFunction): Promise<void> {
-    const id: number = parseInt(req.params.id, 10) || 0;
+    const id: string = req.params.id || "";
     const language: Language | undefined = await getRepository(Language).findOne(id);
     if (language === undefined) {
       next(); // will send 404 error
@@ -38,7 +38,7 @@ export class LanguageController extends Controller {
 
   @put({ path: "/:id" })
   public async editLanguage(req: Request, res: Response, next: NextFunction): Promise<void> {
-    const id: number = parseInt(req.params.id, 10) || 0;
+    const id: string = req.params.id || "";
     const language: Language | undefined = await getRepository(Language).findOne(id);
     if (language === undefined) {
       next();
@@ -51,19 +51,19 @@ export class LanguageController extends Controller {
   }
 
   @del({ path: "/:id" })
-  public async deleteLanguage(req: Request, res: Response, next: NextFunction): Promise<void> {
-    const deleteOperations = [];
+  public async deleteLanguage(req: Request, res: Response): Promise<void> {
+    // const deleteOperations = [];
     // const putOperations = [];
 
-    const id: number = parseInt(req.params.id, 10) || 0;
-    const language: Language | undefined = await getRepository(Language).findOne(id);
-    if (language === undefined) {
-      next(); // will send 404 error
-      return;
-    }
+    const id: string = req.params.id || "";
+    await getRepository(Language).delete(id);
+    // if (language === undefined) {
+    //   next(); // will send 404 error
+    //   return;
+    // }
 
     // Language
-    deleteOperations.push(getRepository(Language).delete(id));
+    // deleteOperations.push(getRepository(Language).delete(id));
 
     // // Questions
     // const questions = await getRepository(Question).find({ where: { languageCode: language.value } });
@@ -85,7 +85,7 @@ export class LanguageController extends Controller {
     //   putOperations.push(getCustomRepository(ThemeRepository).saveWithLabels(theme, labels));
     // }
 
-    await Promise.all(deleteOperations);
+    // await Promise.all(deleteOperations);
     // await Promise.all(putOperations);
 
     res.status(204).send();

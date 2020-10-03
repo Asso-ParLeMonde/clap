@@ -397,3 +397,11 @@
   grid-row: 1 / 1;
   grid-column: 1 / 1;
 }
+
+.MuiTableSortLabel-root.MuiTableSortLabel-active {
+  color: white !important;
+}
+
+.MuiTableSortLabel-root.MuiTableSortLabel-active.MuiTableSortLabel-root.MuiTableSortLabel-active .MuiTableSortLabel-icon {
+  color: white !important;
+}

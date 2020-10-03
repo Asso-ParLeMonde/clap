@@ -7,8 +7,8 @@ export enum UserType {
 export interface User {
   id: number;
   languageCode: string;
-  managerLastName: string;
-  managerFirstName: string;
+  // managerLastName: string;
+  // managerFirstName: string;
   email: string;
   level: string;
   pseudo: string;
