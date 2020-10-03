@@ -1,3 +1,4 @@
+import { useRouter } from "next/router";
 import React from "react";
 
 import Button from "@material-ui/core/Button";
@@ -19,6 +20,9 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 
 import { AdminTile } from "src/components/admin/AdminTile";
+import { DeleteUserModal } from "src/components/admin/users/DeleteUserModal";
+import { InviteUserModal } from "src/components/admin/users/InviteUserModal";
+import { UserServiceContext } from "src/services/UserService";
 import { useUsers, UserArgs } from "src/services/useUsers";
 
 const useTableStyles = makeStyles((theme: MaterialTheme) =>
@@ -72,11 +76,20 @@ const userTypeNames = {
 
 const AdminUsers: React.FunctionComponent = () => {
   const classes = useTableStyles();
+  const router = useRouter();
   const [args, setArgs] = React.useState<UserArgs>({
     page: 1,
     limit: 10,
   });
+  const { user: currentUser } = React.useContext(UserServiceContext);
   const { users, count } = useUsers(args);
+  const [deleteIndex, setDeleteIndex] = React.useState<number>(-1);
+  const [inviteOpen, setInviteOpen] = React.useState<boolean>(false);
+
+  const goToPath = (path: string) => (event: React.MouseEvent) => {
+    event.preventDefault();
+    router.push(path);
+  };
 
   const handleChangePage = (_event: unknown, newPage: number) => {
     setArgs({ ...args, page: newPage + 1 });
@@ -87,11 +100,15 @@ const AdminUsers: React.FunctionComponent = () => {
 
   const onHeaderClick = (name: "id" | "email" | "pseudo" | "school" | "level") => () => {
     if (args.order === name) {
-      setArgs({ ...args, sort: args.sort === "asc" ? "desc" : "asc" });
+      setArgs({ ...args, page: 1, sort: args.sort === "asc" ? "desc" : "asc" });
     } else {
-      setArgs({ ...args, sort: "asc", order: name });
+      setArgs({ ...args, page: 1, sort: "asc", order: name });
     }
   };
+
+  const closeInviteOpen = React.useCallback(() => {
+    setInviteOpen(false);
+  }, []);
 
   return (
     <div style={{ paddingBottom: "2rem" }}>
@@ -102,7 +119,14 @@ const AdminUsers: React.FunctionComponent = () => {
         <AdminTile
           title="Liste des utilisateurs"
           toolbarButton={
-            <Button onClick={() => {}} style={{ flexShrink: 0 }} variant="contained" startIcon={<AddCircleIcon />}>
+            <Button
+              onClick={() => {
+                setInviteOpen(true);
+              }}
+              style={{ flexShrink: 0 }}
+              variant="contained"
+              startIcon={<AddCircleIcon />}
+            >
               Inviter un utilisateur
             </Button>
           }
@@ -143,7 +167,7 @@ const AdminUsers: React.FunctionComponent = () => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {users.map((user) => (
+                  {users.map((user, index) => (
                     <StyledTableRow key={user.id}>
                       <TableCell>{user.pseudo}</TableCell>
                       <TableCell>{user.email}</TableCell>
@@ -154,15 +178,22 @@ const AdminUsers: React.FunctionComponent = () => {
                       </TableCell>
                       <TableCell align="right" padding="none" style={{ minWidth: "96px" }}>
                         <Tooltip title="Modifier">
-                          <IconButton aria-label="edit" onClick={() => {}}>
+                          <IconButton aria-label="edit" onClick={goToPath(`/admin/users/edit/${user.id}`)}>
                             <EditIcon />
                           </IconButton>
                         </Tooltip>
-                        <Tooltip title="Supprimer">
-                          <IconButton aria-label="delete" onClick={() => {}}>
-                            <DeleteIcon />
-                          </IconButton>
-                        </Tooltip>
+                        {user.id !== currentUser.id && (
+                          <Tooltip title="Supprimer">
+                            <IconButton
+                              aria-label="delete"
+                              onClick={() => {
+                                setDeleteIndex(index);
+                              }}
+                            >
+                              <DeleteIcon />
+                            </IconButton>
+                          </Tooltip>
+                        )}
                       </TableCell>
                     </StyledTableRow>
                   ))}
@@ -182,6 +213,13 @@ const AdminUsers: React.FunctionComponent = () => {
             )}
           </Table>
         </AdminTile>
+        <InviteUserModal open={inviteOpen} onClose={closeInviteOpen} />
+        <DeleteUserModal
+          user={deleteIndex === -1 ? null : users[deleteIndex] || null}
+          onClose={() => {
+            setDeleteIndex(-1);
+          }}
+        />
       </NoSsr>
     </div>
   );

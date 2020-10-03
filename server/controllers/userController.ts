@@ -16,10 +16,10 @@ function updateUser(user: User, req: Request): void {
   // if (req.body.managerFirstName) user.managerFirstName = req.body.managerFirstName;
   // if (req.body.managerLastName) user.managerLastName = req.body.managerLastName;
   if (req.body.email) user.email = req.body.email;
-  if (req.body.level) user.level = req.body.level;
+  if (req.body.level !== undefined) user.level = req.body.level;
   if (req.body.pseudo) user.pseudo = req.body.pseudo;
   if (req.body.languageCode) user.languageCode = req.body.languageCode;
-  if (req.body.school) user.school = req.body.school;
+  if (req.body.school !== undefined) user.school = req.body.school;
 }
 
 async function getUser(req: Request): Promise<User | undefined> {

@@ -36,14 +36,19 @@ const userTabs = [
     path: "/my-videos",
     icon: <MoviesLogo />,
   },
+  // {
+  //   label: "inspiration",
+  //   path: "/inspiration",
+  //   icon: <LightLogo />,
+  // },
   {
-    label: "inspiration",
-    path: "/inspiration",
-    icon: <LightLogo />,
+    icon: <SettingsLogo />,
+    label: "settings",
+    path: "/settings",
   },
   {
     label: "my_account",
-    path: "/settings",
+    path: "/my-account",
     icon: <AccountCircleIcon />,
   },
 ];
