@@ -14,4 +14,6 @@ export interface User {
   pseudo: string;
   school: string;
   type: UserType;
+  password?: string;
+  passwordConfirm?: string;
 }

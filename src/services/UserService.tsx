@@ -13,8 +13,8 @@ interface UserServiceContextValue {
   login(username: string, password: string, remember: boolean): UserServiceFunc;
   axiosLoggedRequest(req: AxiosRequestConfig): Promise<AxiosReturnType>;
   signup(user: User, inviteCode?: string): UserServiceFunc;
-  updatePassword(user: User): UserServiceFunc;
-  verifyEmail(user: User): UserServiceFunc;
+  updatePassword(user: Partial<User>): UserServiceFunc;
+  verifyEmail(user: Partial<User>): UserServiceFunc;
   logout(): Promise<void>;
 }
 
@@ -103,6 +103,7 @@ export const UserServiceProvider: React.FunctionComponent<UserServiceProviderPro
         errorCode: response.data.errorCode || 0,
       };
     }
+    setUser(response.data.user || null);
     return {
       success: true,
       errorCode: 0,
@@ -115,7 +116,7 @@ export const UserServiceProvider: React.FunctionComponent<UserServiceProviderPro
    * @param user
    * @returns {Promise<{success: boolean, errorCode: number}>}
    */
-  const updatePassword = async (user: User): Promise<{ success: boolean; errorCode: number }> => {
+  const updatePassword = async (user: Partial<User>): Promise<{ success: boolean; errorCode: number }> => {
     const response = await axiosRequest({
       method: "POST",
       headers,
@@ -130,6 +131,7 @@ export const UserServiceProvider: React.FunctionComponent<UserServiceProviderPro
         errorCode: response.data.errorCode || 0,
       };
     }
+    setUser(response.data.user || null);
     return {
       success: true,
       errorCode: 0,
@@ -142,7 +144,7 @@ export const UserServiceProvider: React.FunctionComponent<UserServiceProviderPro
    * @param user
    * @returns {Promise<{success: boolean, errorCode: number}>}
    */
-  const verifyEmail = async (user: User): Promise<{ success: boolean; errorCode: number }> => {
+  const verifyEmail = async (user: Partial<User>): Promise<{ success: boolean; errorCode: number }> => {
     const response = await axiosRequest({
       method: "POST",
       headers,
@@ -157,6 +159,7 @@ export const UserServiceProvider: React.FunctionComponent<UserServiceProviderPro
         errorCode: response.data.errorCode || 0,
       };
     }
+    setUser(response.data.user || null);
     return {
       success: true,
       errorCode: 0,
