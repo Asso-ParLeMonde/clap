@@ -5,6 +5,7 @@ import React from "react";
 import Button from "@material-ui/core/Button";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import Hidden from "@material-ui/core/Hidden";
+import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 
 import { Inverted } from "src/components/Inverted";
@@ -14,6 +15,7 @@ import { QuestionCard } from "src/components/create/QuestionCard";
 import { Steps } from "src/components/create/Steps";
 import { ThemeLink } from "src/components/create/ThemeLink";
 import { useTranslation } from "src/i18n/useTranslation";
+import { UserServiceContext } from "src/services/UserService";
 import { ProjectServiceContext } from "src/services/useProject";
 import { useQuestionRequests } from "src/services/useQuestions";
 import type { Question } from "types/models/question.type";
@@ -21,9 +23,12 @@ import type { Question } from "types/models/question.type";
 const QuestionChoice: React.FunctionComponent = () => {
   const router = useRouter();
   const { t, currentLocale } = useTranslation();
+  const { isLoggedIn, axiosLoggedRequest } = React.useContext(UserServiceContext);
   const { project, updateProject } = React.useContext(ProjectServiceContext);
   const { getDefaultQuestions } = useQuestionRequests();
   const [deleteIndex, setDeleteIndex] = React.useState<number | null>(null);
+  const [showSaveModal, setShowSaveModal] = React.useState<boolean>(false);
+  const [hasError, setHasError] = React.useState<boolean>(false);
 
   const setQuestions = React.useCallback(
     (questions: Question[] | null) => {
@@ -65,12 +70,6 @@ const QuestionChoice: React.FunctionComponent = () => {
     router.push(`/create/2-questions-choice/new`);
   };
 
-  const handleNext = (event: React.MouseEvent) => {
-    event.preventDefault();
-    // TODO: ssave project?
-    router.push(`/create/3-storyboard-and-filming-schedule`);
-  };
-
   const handleEdit = (index: number) => (event: React.MouseEvent) => {
     event.preventDefault();
     router.push(`/create/2-questions-choice/edit?question=${index}`);
@@ -93,6 +92,40 @@ const QuestionChoice: React.FunctionComponent = () => {
       });
     }
     setDeleteIndex(null);
+  };
+
+  const onShowSaveModalClose = (save: boolean = false) => async () => {
+    event.preventDefault();
+    if (save && !project.title) {
+      setHasError(true);
+      return;
+    }
+    if (save) {
+      const response = await axiosLoggedRequest({
+        method: "POST",
+        url: "/projects",
+        data: project,
+      });
+      if (!response.error) {
+        updateProject(response.data);
+      }
+    }
+    router.push(`/create/3-storyboard-and-filming-schedule`);
+  };
+
+  const updateProjectTitle = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setHasError(false);
+    updateProject({ title: event.target.value });
+  };
+
+  const handleNext = (event: React.MouseEvent) => {
+    event.preventDefault();
+    if (isLoggedIn && project.id === -1) {
+      updateProject({ title: "" });
+      setShowSaveModal(true);
+      return;
+    }
+    router.push(`/create/3-storyboard-and-filming-schedule`);
   };
 
   const toDeleteQuestion = project.questions !== null && deleteIndex !== null && deleteIndex < project.questions.length ? project.questions[deleteIndex].question : "";
@@ -164,6 +197,42 @@ const QuestionChoice: React.FunctionComponent = () => {
             &quot;{toDeleteQuestion}&quot; ?
           </DialogContentText>
         </Modal>
+
+        {isLoggedIn && (
+          <Modal
+            open={showSaveModal}
+            title={t("project_save_title")}
+            cancelLabel={t("project_save_cancel")}
+            confirmLabel={t("project_save_confirm")}
+            onClose={onShowSaveModalClose(false)}
+            onConfirm={onShowSaveModalClose(true)}
+            noCloseOutsideModal
+            ariaLabelledBy="save-project-title"
+            ariaDescribedBy="save-project-form"
+            fullWidth
+          >
+            <div id="save-project-form">
+              <p>{t("project_save_desc")}</p>
+              <form className="project-form" noValidate autoComplete="off" style={{ margin: "1rem 0" }}>
+                <TextField
+                  id="project-name"
+                  name="project-name"
+                  type="text"
+                  color="secondary"
+                  label={t("project_save_label")}
+                  value={project.title || ""}
+                  onChange={updateProjectTitle}
+                  variant="outlined"
+                  size="small"
+                  className={hasError ? "shake" : ""}
+                  error={hasError}
+                  helperText={hasError ? t("signup_required") : ""}
+                  fullWidth
+                />
+              </form>
+            </div>
+          </Modal>
+        )}
       </div>
     </div>
   );

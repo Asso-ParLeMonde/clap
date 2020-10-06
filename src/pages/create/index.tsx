@@ -1,9 +1,7 @@
-import classnames from "classnames";
 import { useRouter } from "next/router";
 import React from "react";
 
 import Typography from "@material-ui/core/Typography";
-import { makeStyles } from "@material-ui/core/styles";
 
 import { Inverted } from "src/components/Inverted";
 import { Trans } from "src/components/Trans";
@@ -12,16 +10,7 @@ import { UserServiceContext } from "src/services/UserService";
 import { ProjectServiceContext } from "src/services/useProject";
 import { useThemes } from "src/services/useThemes";
 
-const useStyles = makeStyles((theme) => ({
-  container: {
-    [theme.breakpoints.down(600)]: {
-      gridTemplateColumns: "1fr 1fr",
-    },
-  },
-}));
-
 const Create: React.FunctionComponent = () => {
-  const classes = useStyles();
   const router = useRouter();
   const { updateProject } = React.useContext(ProjectServiceContext);
   const { isLoggedIn } = React.useContext(UserServiceContext);
@@ -43,7 +32,7 @@ const Create: React.FunctionComponent = () => {
           Sur quel <Inverted>thème</Inverted> sera votre vidéo ?
         </Trans>
       </Typography>
-      <div className={classnames(classes.container, "theme-cards-container")}>
+      <div className="theme-cards-container">
         <div key="new">
           <ThemeCard onClick={handleThemeClick(-1)} />
         </div>

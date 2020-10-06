@@ -7,7 +7,7 @@ import type { Theme } from "types/models/theme.type";
 import { UserServiceContext } from "./UserService";
 
 const DEFAULT_PROJECT: Project = {
-  id: 0,
+  id: -1,
   title: "",
   date: new Date(),
   user: null,
@@ -27,7 +27,7 @@ interface ProjectServiceProviderProps {
 export const ProjectServiceContext = React.createContext<ProjectServiceContextValue>(undefined);
 
 export const ProjectServiceProvider: React.FunctionComponent<ProjectServiceProviderProps> = ({ children }: ProjectServiceProviderProps) => {
-  const { axiosLoggedRequest } = React.useContext(UserServiceContext);
+  const { isLoggedIn, axiosLoggedRequest } = React.useContext(UserServiceContext);
   const [project, setProject] = React.useState<Project | null>(null);
 
   const getDefaultProject = React.useCallback(async (): Promise<Project> => {
@@ -39,6 +39,9 @@ export const ProjectServiceProvider: React.FunctionComponent<ProjectServiceProvi
       if (path.slice(0, 26) === "/create/2-questions-choice" || path.slice(0, 41) === "/create/3-storyboard-and-filming-schedule" || path.slice(0, 24) === "/create/4-to-your-camera") {
         try {
           defaultProject = JSON.parse(localStorage.getItem("lastProject") || null) || null;
+          if (defaultProject.id !== -1 && !isLoggedIn) {
+            defaultProject = DEFAULT_PROJECT;
+          }
         } catch (e) {
           console.error(e);
         }
@@ -63,7 +66,7 @@ export const ProjectServiceProvider: React.FunctionComponent<ProjectServiceProvi
       }
     }
     return defaultProject;
-  }, [axiosLoggedRequest]);
+  }, [isLoggedIn, axiosLoggedRequest]);
 
   // on init set project
   React.useEffect(() => {

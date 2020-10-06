@@ -7,3 +7,4 @@ export { ThemesController } from "./themeController";
 export { ScenariosController } from "./scenarioController";
 export { UserController } from "./userController";
 export { PlanController } from "./planController";
+export { ProjectController } from "./projectController";
