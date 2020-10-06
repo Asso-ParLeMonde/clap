@@ -5,11 +5,11 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Dialog from "@material-ui/core/Dialog";
-import { withStyles } from "@material-ui/core/styles";
+import { withStyles, Theme as MaterialTheme } from "@material-ui/core/styles";
 
 import { useTranslation } from "src/i18n/useTranslation";
 
-const RedButton = withStyles((theme) => ({
+const RedButton = withStyles((theme: MaterialTheme) => ({
   root: {
     color: theme.palette.error.contrastText,
     background: theme.palette.error.light,
