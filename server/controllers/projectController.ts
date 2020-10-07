@@ -115,6 +115,7 @@ export class ProjectController extends Controller {
       return;
     }
 
+    project.questions = project.questions.sort((q1, q2) => q1.index - q2.index || q1.id - q2.id);
     const getQuestionWithPlansPromises: Array<Promise<Question>> = [];
     for (const question of project.questions) {
       getQuestionWithPlansPromises.push(question.getPlans());

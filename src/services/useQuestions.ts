@@ -34,7 +34,12 @@ export const useQuestions = (args: { isDefault?: boolean; scenarioId?: string | 
   };
 };
 
-export const useQuestionRequests = (): { getDefaultQuestions(args: { isDefault?: boolean; scenarioId: string | number | null; languageCode?: string }): Promise<Question[]> } => {
+export const useQuestionRequests = (): {
+  getDefaultQuestions(args: { isDefault?: boolean; scenarioId: string | number | null; languageCode?: string }): Promise<Question[]>;
+  addQuestion(question: Question & { projectId: number }): Promise<Question | null>;
+  editQuestion(question: Question): Promise<void>;
+  updateOrder(questions: Question[]): Promise<void>;
+} => {
   const queryCache = useQueryCache();
   const { axiosLoggedRequest } = React.useContext(UserServiceContext);
   const getDefaultQuestions = React.useCallback(
@@ -59,5 +64,47 @@ export const useQuestionRequests = (): { getDefaultQuestions(args: { isDefault?:
     [queryCache, axiosLoggedRequest],
   );
 
-  return { getDefaultQuestions };
+  const addQuestion = React.useCallback(
+    async (question: Question & { projectId: number }) => {
+      const response = await axiosLoggedRequest({
+        url: `/questions`,
+        method: "POST",
+        data: question,
+      });
+      if (response.error) {
+        return null;
+      }
+      return response.data;
+    },
+    [axiosLoggedRequest],
+  );
+
+  const editQuestion = React.useCallback(
+    async (question: Question) => {
+      if (!question.id) {
+        return;
+      }
+      await axiosLoggedRequest({
+        url: `/questions/${question.id}`,
+        method: "PUT",
+        data: question,
+      });
+    },
+    [axiosLoggedRequest],
+  );
+
+  const updateOrder = React.useCallback(
+    async (questions: Question[]) => {
+      await axiosLoggedRequest({
+        method: "PUT",
+        url: "/questions/update-order",
+        data: {
+          order: questions.filter((q) => q.id).map((q) => q.id),
+        },
+      });
+    },
+    [axiosLoggedRequest],
+  );
+
+  return { getDefaultQuestions, addQuestion, editQuestion, updateOrder };
 };

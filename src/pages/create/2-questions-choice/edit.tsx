@@ -13,12 +13,14 @@ import { Steps } from "src/components/create/Steps";
 import { ThemeLink } from "src/components/create/ThemeLink";
 import { useTranslation } from "src/i18n/useTranslation";
 import { ProjectServiceContext } from "src/services/useProject";
+import { useQuestionRequests } from "src/services/useQuestions";
 import { getQueryString } from "src/util";
 
 const QuestionEdit: React.FunctionComponent = () => {
   const router = useRouter();
   const { t } = useTranslation();
   const { project, updateProject } = React.useContext(ProjectServiceContext);
+  const { editQuestion } = useQuestionRequests();
   const [hasError, setHasError] = React.useState<boolean>(false);
   const [question, setQuestion] = React.useState<string>("");
   const questionId = parseInt(getQueryString(router.query.question) || "-1", 10);
@@ -55,7 +57,9 @@ const QuestionEdit: React.FunctionComponent = () => {
     updateProject({
       questions,
     });
-    // TODO if project is created
+    if (project !== null && project.id !== null && project.id !== -1) {
+      await editQuestion(questions[questionId]);
+    }
     router.push(`/create/2-questions-choice`);
   };
 

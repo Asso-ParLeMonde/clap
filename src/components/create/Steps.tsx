@@ -17,6 +17,8 @@ import { ProjectServiceContext } from "src/services/useProject";
 import { getQueryString } from "src/util";
 import type { Project } from "types/models/project.type";
 
+import { ProjectTitle } from "./ProjectTitle";
+
 const steps = [
   {
     name: (t: tFunction, activeStep: number, project: Project) => (activeStep > 0 ? project.scenario?.name || t("step1") : t("step1")),
@@ -87,14 +89,14 @@ export const Steps: React.FunctionComponent<StepsProps> = ({ activeStep }: Steps
     }
   };
 
-  // const handleProjectTitleClick = () => {
-  //   router.push(`/create/edit-project/${project.id}`);
-  // };
+  const handleProjectTitleClick = () => {
+    router.push(`/my-videos/edit/${project.id}`);
+  };
 
   return (
     <div>
       <Hidden smDown>
-        {/* {activeStep > 0 && <ProjectTitle onClick={handleProjectTitleClick} />} */}
+        {activeStep > 0 && <ProjectTitle onClick={handleProjectTitleClick} />}
         <Stepper activeStep={activeStep} alternativeLabel>
           {steps.map((step, index) => (
             <Step key={step.name(t, activeStep, project)} style={{ cursor: "pointer" }} onClick={handleBack(index)}>
@@ -117,7 +119,7 @@ export const Steps: React.FunctionComponent<StepsProps> = ({ activeStep }: Steps
           }
           nextButton={null}
         />
-        {/* {activeStep > 0 && <ProjectTitle onClick={handleProjectTitleClick} smaller />} */}
+        {activeStep > 0 && <ProjectTitle onClick={handleProjectTitleClick} smaller />}
       </Hidden>
     </div>
   );

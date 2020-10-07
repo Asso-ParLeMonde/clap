@@ -25,18 +25,21 @@ const QuestionChoice: React.FunctionComponent = () => {
   const { t, currentLocale } = useTranslation();
   const { isLoggedIn, axiosLoggedRequest } = React.useContext(UserServiceContext);
   const { project, updateProject } = React.useContext(ProjectServiceContext);
-  const { getDefaultQuestions } = useQuestionRequests();
+  const { getDefaultQuestions, updateOrder } = useQuestionRequests();
   const [deleteIndex, setDeleteIndex] = React.useState<number | null>(null);
   const [showSaveModal, setShowSaveModal] = React.useState<boolean>(false);
   const [hasError, setHasError] = React.useState<boolean>(false);
 
   const setQuestions = React.useCallback(
     (questions: Question[] | null) => {
+      if (questions !== null && isLoggedIn && project !== null && project.id !== -1 && project.id !== null) {
+        if (questions.map((q) => q.id).join(",") !== project.questions.map((q) => q.id).join(",")) updateOrder(questions).catch();
+      }
       updateProject({
-        questions,
+        questions: questions === null ? null : questions.map((q, i) => ({ ...q, index: i })),
       });
     },
-    [updateProject],
+    [isLoggedIn, project, updateProject, updateOrder],
   );
 
   const getQuestions = React.useCallback(async () => {

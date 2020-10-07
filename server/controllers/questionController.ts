@@ -32,10 +32,7 @@ async function updateQuestionOrder(questionId: number, newOrder: number, userTyp
   if (question === undefined || (question.isDefault && userType < UserType.PLMO_ADMIN)) {
     return;
   }
-  const updatedQuestion = new Question();
-  updatedQuestion.id = questionId;
-  updatedQuestion.index = newOrder;
-  await getRepository(Question).save(updatedQuestion);
+  await getRepository(Question).update(questionId, { index: newOrder });
 }
 
 export class QuestionController extends Controller {

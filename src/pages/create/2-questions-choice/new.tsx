@@ -13,10 +13,13 @@ import { Steps } from "src/components/create/Steps";
 import { ThemeLink } from "src/components/create/ThemeLink";
 import { useTranslation } from "src/i18n/useTranslation";
 import { ProjectServiceContext } from "src/services/useProject";
+import { useQuestionRequests } from "src/services/useQuestions";
+import type { Question } from "types/models/question.type";
 
 const QuestionNew: React.FunctionComponent = () => {
   const router = useRouter();
   const { t } = useTranslation();
+  const { addQuestion } = useQuestionRequests();
   const { project, updateProject } = React.useContext(ProjectServiceContext);
   const [hasError, setHasError] = React.useState<boolean>(false);
   const [newQuestion, setNewQuestion] = React.useState<string>("");
@@ -42,27 +45,35 @@ const QuestionNew: React.FunctionComponent = () => {
     }
 
     const questions = [...project.questions];
-    questions.push({
-      id: Math.max(...questions.map((q) => q.id)) + 1,
+    let newQ: Question | null = {
+      id: 0,
       isDefault: false,
       question: newQuestion,
       scenarioId: project.scenario.id,
       languageCode: project.scenario.languageCode,
       index: questions.length,
-      plans: [
-        {
-          id: 0,
-          index: 0,
-          description: "",
-          image: null,
-          url: null,
-        },
-      ],
-    });
+    };
+    if (project !== null && project.id !== null && project.id !== -1) {
+      newQ = await addQuestion({ ...newQ, projectId: project.id });
+      if (newQ === null) {
+        return;
+      }
+    } else {
+      newQ.id = Math.max(...questions.map((q) => q.id)) + 1;
+    }
+    newQ.plans = [
+      {
+        id: 0,
+        index: 0,
+        description: "",
+        image: null,
+        url: null,
+      },
+    ];
+    questions.push(newQ);
     updateProject({
       questions,
     });
-    // TODO save if projectid is not null??
     router.push(`/create/2-questions-choice`);
   };
 

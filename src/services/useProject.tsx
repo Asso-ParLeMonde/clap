@@ -1,3 +1,4 @@
+import { useRouter } from "next/router";
 import qs from "query-string";
 import React from "react";
 
@@ -27,6 +28,7 @@ interface ProjectServiceProviderProps {
 export const ProjectServiceContext = React.createContext<ProjectServiceContextValue>(undefined);
 
 export const ProjectServiceProvider: React.FunctionComponent<ProjectServiceProviderProps> = ({ children }: ProjectServiceProviderProps) => {
+  const router = useRouter();
   const { isLoggedIn, axiosLoggedRequest } = React.useContext(UserServiceContext);
   const [project, setProject] = React.useState<Project | null>(null);
 
@@ -34,20 +36,44 @@ export const ProjectServiceProvider: React.FunctionComponent<ProjectServiceProvi
     let defaultProject: Project = DEFAULT_PROJECT;
     if (typeof window !== "undefined") {
       const path = window.location.pathname;
+      const locationParams = qs.parse(window.location.search);
 
       // take last project for part 2, 3 and 4.
-      if (path.slice(0, 26) === "/create/2-questions-choice" || path.slice(0, 41) === "/create/3-storyboard-and-filming-schedule" || path.slice(0, 24) === "/create/4-to-your-camera") {
+      if (locationParams.project || locationParams.projectId) {
+        const response = await axiosLoggedRequest({
+          method: "GET",
+          url: `/projects/${locationParams.project || locationParams.projectId}`,
+        });
+        if (!response.error) {
+          defaultProject = response.data;
+          for (let i = 0, n = (defaultProject.questions || []).length; i < n; i++) {
+            // todo: post requests here
+            if (!defaultProject.questions[i].plans || defaultProject.questions[i].plans.length === 0) {
+              defaultProject.questions[i].plans = [
+                {
+                  id: 0,
+                  index: 0,
+                  description: "",
+                  image: null,
+                  url: null,
+                },
+              ];
+            }
+          }
+        } else {
+          defaultProject = null;
+        }
+      } else if (path.slice(0, 26) === "/create/2-questions-choice" || path.slice(0, 41) === "/create/3-storyboard-and-filming-schedule" || path.slice(0, 24) === "/create/4-to-your-camera") {
         try {
           defaultProject = JSON.parse(localStorage.getItem("lastProject") || null) || null;
           if (defaultProject.id !== -1 && !isLoggedIn) {
-            defaultProject = DEFAULT_PROJECT;
+            defaultProject = null;
           }
         } catch (e) {
           console.error(e);
         }
       } else {
         // look for location params.
-        const locationParams = qs.parse(window.location.search);
         if (locationParams.themeId !== undefined) {
           let theme: Theme | null = null;
           if (locationParams.themeId.slice(0, 5) === "local") {
@@ -64,18 +90,27 @@ export const ProjectServiceProvider: React.FunctionComponent<ProjectServiceProvi
           defaultProject.theme = theme;
         }
       }
+
+      if (path.slice(0, 7) === "/create" && defaultProject === null) {
+        router.push("/create");
+      }
     }
-    return defaultProject;
-  }, [isLoggedIn, axiosLoggedRequest]);
+    return defaultProject || DEFAULT_PROJECT;
+  }, [router, isLoggedIn, axiosLoggedRequest]);
 
   // on init set project
   React.useEffect(() => {
-    if (project === null) {
-      getDefaultProject()
-        .then((p) => setProject(p))
-        .catch();
+    if (router.pathname.slice(0, 7) !== "/create") {
+      localStorage.removeItem("lastProject");
+      setProject(null);
+    } else {
+      if (project === null) {
+        getDefaultProject()
+          .then((p) => setProject(p))
+          .catch();
+      }
     }
-  }, [getDefaultProject, project]);
+  }, [router.pathname, getDefaultProject, project]);
 
   const updateProject = (newProject: Partial<Project>): void => {
     if (project === null) return;

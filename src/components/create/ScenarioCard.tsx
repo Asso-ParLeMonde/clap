@@ -31,7 +31,7 @@ export const ScenarioCard: React.FunctionComponent<ScenarioCardProps> = ({ scena
   const handleClick = (event: React.MouseEvent) => {
     event.preventDefault();
     if (!isNew) {
-      updateProject({ scenario, questions: null });
+      updateProject({ scenario, questions: null, id: -1 });
     }
     onClick(path);
   };
