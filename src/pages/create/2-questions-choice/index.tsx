@@ -16,8 +16,10 @@ import { Steps } from "src/components/create/Steps";
 import { ThemeLink } from "src/components/create/ThemeLink";
 import { useTranslation } from "src/i18n/useTranslation";
 import { UserServiceContext } from "src/services/UserService";
+import { usePlanRequests } from "src/services/usePlans";
 import { ProjectServiceContext } from "src/services/useProject";
 import { useQuestionRequests } from "src/services/useQuestions";
+import type { Plan } from "types/models/plan.type";
 import type { Question } from "types/models/question.type";
 
 const QuestionChoice: React.FunctionComponent = () => {
@@ -25,7 +27,8 @@ const QuestionChoice: React.FunctionComponent = () => {
   const { t, currentLocale } = useTranslation();
   const { isLoggedIn, axiosLoggedRequest } = React.useContext(UserServiceContext);
   const { project, updateProject } = React.useContext(ProjectServiceContext);
-  const { getDefaultQuestions, updateOrder } = useQuestionRequests();
+  const { getDefaultQuestions, updateOrder, deleteQuestion } = useQuestionRequests();
+  const { addPlan } = usePlanRequests();
   const [deleteIndex, setDeleteIndex] = React.useState<number | null>(null);
   const [showSaveModal, setShowSaveModal] = React.useState<boolean>(false);
   const [hasError, setHasError] = React.useState<boolean>(false);
@@ -89,6 +92,9 @@ const QuestionChoice: React.FunctionComponent = () => {
       if (questions === null) {
         return;
       }
+      if (isLoggedIn && project !== null && project.id !== -1 && project.id !== null) {
+        await deleteQuestion(questions[deleteIndex]);
+      }
       questions.splice(deleteIndex, 1);
       updateProject({
         questions,
@@ -110,7 +116,21 @@ const QuestionChoice: React.FunctionComponent = () => {
         data: project,
       });
       if (!response.error) {
-        updateProject(response.data);
+        const questions: Question[] = response.data.questions;
+        const requests: Promise<Plan | null>[] = [];
+        for (let i = 0, n = questions.length; i < n; i++) {
+          requests.push(addPlan(questions[i].id));
+        }
+        const plans: Array<Plan | null> = await Promise.all(requests);
+        for (let i = 0, n = plans.length; i < n; i++) {
+          if (plans[i] === null) {
+            return;
+          }
+          if (questions[i]) {
+            questions[i].plans = [plans[i]];
+          }
+        }
+        updateProject({ ...response.data, questions });
       }
     }
     router.push(`/create/3-storyboard-and-filming-schedule`);

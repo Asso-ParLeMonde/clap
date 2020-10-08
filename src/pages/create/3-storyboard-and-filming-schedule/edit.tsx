@@ -22,7 +22,7 @@ import type { Question } from "types/models/question.type";
 const PlanEdit: React.FunctionComponent = () => {
   const router = useRouter();
   const { t } = useTranslation();
-  const { uploadPlanImage } = usePlanRequests();
+  const { uploadPlanImage, updatePlan } = usePlanRequests();
   const { project, updateProject } = React.useContext(ProjectServiceContext);
   const [showEditPlan, setShowEditPlan] = React.useState<boolean>(false);
 
@@ -45,6 +45,10 @@ const PlanEdit: React.FunctionComponent = () => {
     }
     question.plans[planIndex].description = (event.target.value || "").slice(0, 2000);
     updateQuestion(questionIndex, question);
+  };
+  const handleDescriptionBlur = async (event: React.FocusEvent<HTMLTextAreaElement>) => {
+    const plan = question.plans[planIndex];
+    await updatePlan({ ...plan, description: (event.target.value || "").slice(0, 2000) });
   };
 
   const handleBack = (event: React.MouseEvent) => {
@@ -87,7 +91,7 @@ const PlanEdit: React.FunctionComponent = () => {
               <TextField
                 value={question.plans[planIndex].description || ""}
                 onChange={handleDescriptionChange}
-                // onBlur={handleSaveDescription} // backend save
+                onBlur={handleDescriptionBlur}
                 required
                 multiline
                 placeholder={t("part3_plan_desc_placeholder")}

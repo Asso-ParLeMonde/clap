@@ -46,27 +46,13 @@ export const ProjectServiceProvider: React.FunctionComponent<ProjectServiceProvi
         });
         if (!response.error) {
           defaultProject = response.data;
-          for (let i = 0, n = (defaultProject.questions || []).length; i < n; i++) {
-            // todo: post requests here
-            if (!defaultProject.questions[i].plans || defaultProject.questions[i].plans.length === 0) {
-              defaultProject.questions[i].plans = [
-                {
-                  id: 0,
-                  index: 0,
-                  description: "",
-                  image: null,
-                  url: null,
-                },
-              ];
-            }
-          }
         } else {
           defaultProject = null;
         }
       } else if (path.slice(0, 26) === "/create/2-questions-choice" || path.slice(0, 41) === "/create/3-storyboard-and-filming-schedule" || path.slice(0, 24) === "/create/4-to-your-camera") {
         try {
           defaultProject = JSON.parse(localStorage.getItem("lastProject") || null) || null;
-          if (defaultProject.id !== -1 && !isLoggedIn) {
+          if (defaultProject !== null && defaultProject.id !== -1 && !isLoggedIn) {
             defaultProject = null;
           }
         } catch (e) {
@@ -106,7 +92,10 @@ export const ProjectServiceProvider: React.FunctionComponent<ProjectServiceProvi
     } else {
       if (project === null) {
         getDefaultProject()
-          .then((p) => setProject(p))
+          .then((p) => {
+            setProject(p);
+            localStorage.setItem("lastProject", JSON.stringify(p));
+          })
           .catch();
       }
     }

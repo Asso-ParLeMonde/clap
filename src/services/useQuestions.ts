@@ -39,6 +39,7 @@ export const useQuestionRequests = (): {
   addQuestion(question: Question & { projectId: number }): Promise<Question | null>;
   editQuestion(question: Question): Promise<void>;
   updateOrder(questions: Question[]): Promise<void>;
+  deleteQuestion: (question: Question) => Promise<void>;
 } => {
   const queryCache = useQueryCache();
   const { axiosLoggedRequest } = React.useContext(UserServiceContext);
@@ -57,7 +58,7 @@ export const useQuestionRequests = (): {
           }),
         ));
       if (!response.error) {
-        return response.data;
+        return response.data.map((q: Question) => ({ ...q, isDefault: false }));
       }
       return [];
     },
@@ -106,5 +107,18 @@ export const useQuestionRequests = (): {
     [axiosLoggedRequest],
   );
 
-  return { getDefaultQuestions, addQuestion, editQuestion, updateOrder };
+  const deleteQuestion = React.useCallback(
+    async (question: Question) => {
+      if (!question.id) {
+        return;
+      }
+      await axiosLoggedRequest({
+        method: "DELETE",
+        url: `/questions/${question.id}`,
+      });
+    },
+    [axiosLoggedRequest],
+  );
+
+  return { getDefaultQuestions, addQuestion, editQuestion, updateOrder, deleteQuestion };
 };

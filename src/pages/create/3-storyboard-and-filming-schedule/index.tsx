@@ -13,14 +13,19 @@ import { Scene } from "src/components/create/Scene";
 import { Steps } from "src/components/create/Steps";
 import { ThemeLink } from "src/components/create/ThemeLink";
 import { useTranslation } from "src/i18n/useTranslation";
+import { UserServiceContext } from "src/services/UserService";
+import { usePlanRequests } from "src/services/usePlans";
 import { ProjectServiceContext } from "src/services/useProject";
 import { getQuestions } from "src/util";
+import type { Plan } from "types/models/plan.type";
 import type { Question } from "types/models/question.type";
 
 const PlanAll: React.FunctionComponent = () => {
   const router = useRouter();
   const { t } = useTranslation();
+  const { isLoggedIn } = React.useContext(UserServiceContext);
   const { project, updateProject } = React.useContext(ProjectServiceContext);
+  const { addPlan, deletePlan } = usePlanRequests();
   const [deleteIndexes, setDeleteIndexes] = React.useState<{ questionIndex: number; planIndex: number; showNumber: number } | null>(null);
 
   const questions = getQuestions(project);
@@ -37,22 +42,32 @@ const PlanAll: React.FunctionComponent = () => {
     updateProject({ questions });
   };
 
-  const handleAddPlan = (index: number) => (event: React.MouseEvent) => {
+  const handleAddPlan = (index: number) => async (event: React.MouseEvent) => {
     event.preventDefault();
     const plans = questions[index].plans || [];
-    plans.push({
-      id: 0,
-      index: plans.length,
-      description: "",
-      image: null,
-      url: null,
-    });
+    let plan: Plan | null = null;
+    if (isLoggedIn && project !== null && project.id !== -1 && project.id !== null) {
+      plan = await addPlan(questions[index].id, plans.length);
+    } else {
+      plan = {
+        id: 0,
+        index: plans.length,
+        description: "",
+        image: null,
+        url: null,
+      };
+    }
+    if (plan === null) {
+      return;
+    }
+    plans.push(plan);
     updateQuestion(index, { plans });
   };
 
-  const handleDeletePlan = (questionIndex: number) => (planIndex: number) => (event: React.MouseEvent) => {
+  const handleDeletePlan = (questionIndex: number) => (planIndex: number) => async (event: React.MouseEvent) => {
     event.preventDefault();
     event.stopPropagation();
+    await deletePlan(questions[questionIndex].plans[planIndex].id);
     setDeleteIndexes({
       questionIndex,
       planIndex,

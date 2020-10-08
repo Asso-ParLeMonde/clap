@@ -1,9 +1,14 @@
 import React from "react";
 
+import type { Plan } from "types/models/plan.type";
+
 import { UserServiceContext } from "./UserService";
 import { ProjectServiceContext } from "./useProject";
 
 interface PlanRequests {
+  addPlan(questionId: number, index?: number): Promise<Plan | null>;
+  updatePlan(plan: Plan): Promise<void>;
+  deletePlan(planId: number): Promise<void>;
   uploadPlanImage(questionIndex: number, planIndex: number, imageBlob: Blob): Promise<void>;
 }
 
@@ -85,7 +90,58 @@ export const usePlanRequests = (): PlanRequests => {
     [isLoggedIn, project, updateProject, uploadImage, uploadTemporaryImage],
   );
 
+  const addPlan = React.useCallback(
+    async (questionId: number, index: number = 0) => {
+      const response = await axiosLoggedRequest({
+        method: "POST",
+        url: "/plans",
+        data: {
+          index,
+          questionId,
+        },
+      });
+      if (response.error) {
+        return null;
+      }
+      return response.data;
+    },
+    [axiosLoggedRequest],
+  );
+
+  const updatePlan = React.useCallback(
+    async (plan: Plan) => {
+      if (!plan.id) {
+        return;
+      }
+      await axiosLoggedRequest({
+        method: "PUT",
+        url: `/plans/${plan.id}`,
+        data: {
+          description: plan.description,
+          index: plan.index,
+        },
+      });
+    },
+    [axiosLoggedRequest],
+  );
+
+  const deletePlan = React.useCallback(
+    async (planId: number) => {
+      if (!planId) {
+        return;
+      }
+      await axiosLoggedRequest({
+        method: "DELETE",
+        url: `/plans/${planId}`,
+      });
+    },
+    [axiosLoggedRequest],
+  );
+
   return {
     uploadPlanImage,
+    addPlan,
+    updatePlan,
+    deletePlan,
   };
 };

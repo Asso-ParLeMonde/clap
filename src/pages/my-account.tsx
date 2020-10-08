@@ -1,20 +1,20 @@
 import React from "react";
 
-import Backdrop from "@material-ui/core/Backdrop";
-import Breadcrumbs from "@material-ui/core/Breadcrumbs";
+// import Backdrop from "@material-ui/core/Backdrop";
+// import Breadcrumbs from "@material-ui/core/Breadcrumbs";
 import Button from "@material-ui/core/Button";
-import CircularProgress from "@material-ui/core/CircularProgress";
+// import CircularProgress from "@material-ui/core/CircularProgress";
 import Divider from "@material-ui/core/Divider";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import FormControl from "@material-ui/core/FormControl";
+// import FormControlLabel from "@material-ui/core/FormControlLabel";
+// import FormControl from "@material-ui/core/FormControl";
 import Link from "@material-ui/core/Link";
-import NoSsr from "@material-ui/core/NoSsr";
-import RadioGroup from "@material-ui/core/RadioGroup";
-import Radio from "@material-ui/core/Radio";
+// import NoSsr from "@material-ui/core/NoSsr";
+// import RadioGroup from "@material-ui/core/RadioGroup";
+// import Radio from "@material-ui/core/Radio";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
-import { makeStyles, createStyles, withStyles, Theme as MaterialTheme } from "@material-ui/core/styles";
-import NavigateNextIcon from "@material-ui/icons/NavigateNext";
+import { /* makeStyles, createStyles, */ withStyles, Theme as MaterialTheme } from "@material-ui/core/styles";
+// import NavigateNextIcon from "@material-ui/icons/NavigateNext";
 import Alert from "@material-ui/lab/Alert";
 
 import { Modal } from "src/components/Modal";
@@ -22,14 +22,14 @@ import { useTranslation } from "src/i18n/useTranslation";
 import { UserServiceContext } from "src/services/UserService";
 import type { User } from "types/models/user.type";
 
-const useStyles = makeStyles((theme: MaterialTheme) =>
-  createStyles({
-    backdrop: {
-      zIndex: theme.zIndex.drawer + 1,
-      color: "#fff",
-    },
-  }),
-);
+// const useStyles = makeStyles((theme: MaterialTheme) =>
+//   createStyles({
+//     backdrop: {
+//       zIndex: theme.zIndex.drawer + 1,
+//       color: "#fff",
+//     },
+//   }),
+// );
 
 const RedButton = withStyles((theme: MaterialTheme) => ({
   root: {
@@ -48,11 +48,11 @@ const RedButtonBis = withStyles((theme) => ({
 }))(Button);
 
 const Account: React.FunctionComponent = () => {
-  const classes = useStyles();
+  // const classes = useStyles();
   const { t } = useTranslation();
-  const { user, logout, axiosLoggedRequest } = React.useContext(UserServiceContext);
+  const { user, logout /*, axiosLoggedRequest */ } = React.useContext(UserServiceContext);
   const [updatedUser, setUpdatedUser] = React.useState<User | null>(null);
-  const [loading, setLoading] = React.useState<boolean>(false);
+  // const [loading, setLoading] = React.useState<boolean>(false);
   const [showModal, setShowModal] = React.useState<number>(-1);
 
   const openModal = (n: number) => () => {

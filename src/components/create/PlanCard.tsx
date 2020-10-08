@@ -31,7 +31,7 @@ interface PlanCardProps {
 export const PlanCard: React.FunctionComponent<PlanCardProps> = ({ plan, questionIndex, planIndex, showNumber, canDelete = false, handleClick = () => {}, handleDelete = () => {} }: PlanCardProps) => {
   const { t } = useTranslation();
   const buttonStyle: React.CSSProperties = { width: "100%", height: "100%" };
-  if (plan.url !== null) {
+  if (plan.url) {
     buttonStyle.backgroundImage = `url('${plan.url}')`;
     buttonStyle.backgroundPosition = "center"; /* Center the image */
     buttonStyle.backgroundRepeat = "no-repeat"; /* Do not repeat the image */
