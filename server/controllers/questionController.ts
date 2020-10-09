@@ -64,7 +64,7 @@ export class QuestionController extends Controller {
     res.sendJSON(question);
   }
 
-  @post(/* { userType: UserType.CLASS } */)
+  @post({ userType: UserType.CLASS })
   public async addQuestion(req: Request, res: Response): Promise<void> {
     const scenarioId = parseInt(req.body.scenarioId || "", 10) || 0;
     const languageCode = req.body.languageCode || "";

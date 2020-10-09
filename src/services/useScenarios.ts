@@ -7,6 +7,7 @@ import type { Scenario } from "types/models/scenario.type";
 
 export const useScenarios = (
   args: {
+    getQuestionsCount?: boolean;
     user?: boolean;
     isDefault?: boolean;
     languageCode?: string;

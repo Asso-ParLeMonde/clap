@@ -1,7 +1,11 @@
+// eslint-disable-next-line
+import { config } from "dotenv";
+config();
+
+// eslint-disable-next-line
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import cors from "cors";
-import { config } from "dotenv";
 import express, { Response, Router } from "express";
 import helmet from "helmet";
 import morgan from "morgan";
@@ -14,12 +18,10 @@ import { crsfProtection } from "./middlewares/csrfCheck";
 import { handleErrors } from "./middlewares/handleErrors";
 import { removeTrailingSlash } from "./middlewares/trailingSlash";
 import { routes } from "./routes/routes";
+import { getLocales } from "./translations/getLocales";
 import { connectToDatabase } from "./utils/database";
-import { getLocales } from "./utils/getLocales";
 import { logger } from "./utils/logger";
 import { normalizePort, onError, getDefaultDirectives } from "./utils/server";
-
-config();
 
 const dev = process.env.NODE_ENV !== "production";
 const frontendHandler = next({ dev });
@@ -81,6 +83,8 @@ async function startApp() {
     res.redirect("/admin/themes");
   });
   app.use(`/static/images`, express.static(path.join(__dirname, "./static/images")));
+  app.use(`/static/temp-images`, express.static(path.join(__dirname, "./static/temp-images")));
+  app.use(`/static/pdf`, express.static(path.join(__dirname, "./static/pdf")));
   app.use(express.static(path.join(__dirname, "../../public"))); // app.js is located at ./dist/server and public at ./public
   app.get("/_next/*", (req, res) => {
     handle(req, res).catch((e) => console.error(e));

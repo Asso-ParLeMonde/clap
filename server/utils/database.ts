@@ -1,7 +1,11 @@
+import * as argon2 from "argon2";
 import mysql from "mysql";
 import path from "path";
 import { Client } from "pg";
-import { Connection, createConnection, ConnectionOptions, EntityManager } from "typeorm";
+import { Connection, createConnection, ConnectionOptions, getRepository, EntityManager } from "typeorm";
+
+import { Language } from "../entities/language";
+import { User, UserType } from "../entities/user";
 
 import { logger } from "./logger";
 import { sleep } from "./utils";
@@ -46,7 +50,7 @@ const getDBConfig = (): ConnectionOptions => {
 
   return {
     charset: "utf8mb4_unicode_ci",
-    logging: true,
+    logging: !(process.env.NODE_ENV === "production"),
     entities: [path.join(__dirname, "../entities/*.js")],
     migrations: [path.join(__dirname, "../migration/**/*.js")],
     subscribers: [],
@@ -77,8 +81,8 @@ async function createMySQLDB(): Promise<void> {
       timezone: "utc",
       user: process.env.DB_USER,
     });
-
-    await query("CREATE DATABASE IF NOT EXISTS PLMO CHARACTER SET = 'utf8mb4' COLLATE = 'utf8mb4_unicode_ci';", connection);
+    const dbName: string = process.env.DB_NAME || "plmo";
+    await query(`CREATE DATABASE IF NOT EXISTS ${dbName} CHARACTER SET = 'utf8mb4' COLLATE = 'utf8mb4_unicode_ci';`, connection);
     logger.info("Database PLMO created!");
   } catch (e) {
     logger.error(e);
@@ -122,18 +126,62 @@ async function createPostgresDB(): Promise<void> {
 
 async function createSequences(connection: Connection): Promise<void> {
   await connection.transaction(async (manager: EntityManager) => {
-    await manager.query(`CREATE SEQUENCE IF NOT EXISTS SCENARIO_SEQUENCE START WITH 1 INCREMENT BY 1`);
+    if (process.env.DB_TYPE && process.env.DB_TYPE === "postgres") {
+      await manager.query(`CREATE SEQUENCE IF NOT EXISTS SCENARIO_SEQUENCE START WITH 1 INCREMENT BY 1`);
+    } else {
+      await manager.query(`CREATE TABLE sequence (id INT NOT NULL)`);
+      await manager.query(`INSERT INTO sequence VALUES (0)`);
+    }
   });
+}
+
+async function createFrenchLanguage(): Promise<void> {
+  const count = await getRepository(Language).count({ where: { value: "fr" } });
+  if (count > 0) {
+    return;
+  }
+  const language = new Language();
+  language.label = "Français";
+  language.value = "fr";
+  await getRepository(Language).save(language);
+  logger.info("Language fr created!");
+}
+
+async function createSuperAdminUser(): Promise<void> {
+  const count = await getRepository(User).count();
+  if (count > 0) {
+    return;
+  }
+  const user = new User();
+  user.email = "plmo.admin@parlemonde.com";
+  user.pseudo = "PLMO1_admin";
+  user.level = "";
+  user.school = "Asso Par Le Monde";
+  user.languageCode = "fr";
+  user.type = UserType.PLMO_ADMIN;
+  user.passwordHash = await argon2.hash("Admin1234");
+  user.accountRegistration = 0;
+  await getRepository(User).save(user);
+  logger.info("Super user Admin created!");
 }
 
 export async function connectToDatabase(tries: number = 10): Promise<Connection | null> {
   if (tries === 0) {
     return null;
   }
-  let connection: Connection | null = null;
   try {
-    connection = await createConnection(getDBConfig());
+    const connection = await createConnection(getDBConfig());
+    try {
+      await createSequences(connection);
+    } catch (e) {
+      /**/
+    }
+    await createFrenchLanguage();
+    await createSuperAdminUser();
+    return connection;
   } catch (e) {
+    logger.error(e);
+    logger.info("Could not connect to database. Retry in 10 seconds...");
     if ((e.message || "").split(":")[0] === "ER_BAD_DB_ERROR") {
       await createMySQLDB();
     } else if (e.code && e.code === "3D000") {
@@ -143,15 +191,8 @@ export async function connectToDatabase(tries: number = 10): Promise<Connection 
         logger.info("Could not create database...");
         return null;
       }
-    } else {
-      logger.info(e);
-      logger.info("Could not connect to database. Retry in 10 seconds...");
-      await sleep(10000);
     }
-    connection = await connectToDatabase(tries - 1);
+    await sleep(10000);
+    return connectToDatabase(tries - 1);
   }
-  if (connection !== null) {
-    await createSequences(connection);
-  }
-  return connection;
 }

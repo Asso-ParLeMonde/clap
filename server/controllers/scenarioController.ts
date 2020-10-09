@@ -4,7 +4,7 @@ import { getRepository, getCustomRepository } from "typeorm";
 import { ScenarioRepository } from "../customRepositories/scenarioRepository";
 import { Scenario } from "../entities/scenario";
 import { Theme } from "../entities/theme";
-import { User } from "../entities/user";
+import { User, UserType } from "../entities/user";
 
 import { Controller, get, post, put, del } from "./controller";
 
@@ -24,6 +24,24 @@ export class ScenariosController extends Controller {
   @get()
   public async getScenarios(req: Request, res: Response): Promise<void> {
     const { query } = req;
+    // USER ONLY
+    if (query.getQuestionsCount && query.themeId !== undefined) {
+      const p: { themeId: number; languageCode?: string; isDefault?: boolean; userId?: number } = { themeId: parseInt(query.themeId as string) || 0 };
+      if (query.languageCode !== undefined) {
+        p.languageCode = query.languageCode as string;
+      }
+      if (query.isDefault !== undefined) {
+        p.isDefault = query.isDefault === "true";
+      }
+      if ((query.user !== undefined || query.userId !== undefined) && req.user !== undefined) {
+        p.userId = req.user.id;
+      }
+      const s: Scenario[] = await getCustomRepository(ScenarioRepository).findWithQuestionsCount(p);
+      res.sendJSON(s);
+      return;
+    }
+
+    // ADMIN QUERY
     const params: Array<{ isDefault?: boolean; user?: { id: number }; languageCode?: string; theme?: { id: number } }> = [];
     if (query.isDefault !== undefined) {
       params.push({ isDefault: query.isDefault === "true" || query.isDefault === "" });
@@ -75,7 +93,7 @@ export class ScenariosController extends Controller {
     }
   }
 
-  @post(/* { userType: UserType.CLASS } */)
+  @post({ userType: UserType.CLASS })
   public async addScenario(req: Request, res: Response): Promise<void> {
     const scenario: Scenario = new Scenario(); // create a new scenario
     scenario.description = req.body.description || "";
@@ -97,7 +115,7 @@ export class ScenariosController extends Controller {
     res.sendJSON(scenario);
   }
 
-  @put({ path: "/:id" /*, userType: UserType.CLASS */ })
+  @put({ path: "/:id", userType: UserType.CLASS })
   public async updateScenario(req: Request, res: Response, next: NextFunction): Promise<void> {
     const { id, languageCode } = getIDs(req.params.id);
     const scenario = await getRepository(Scenario).findOne({ where: { id, languageCode: languageCode || "fr" } });
@@ -120,14 +138,14 @@ export class ScenariosController extends Controller {
     res.sendJSON(scenario);
   }
 
-  @del({ path: "/:id" /*, userType: UserType.CLASS */ })
+  @del({ path: "/:id", userType: UserType.CLASS })
   public async deleteScenario(req: Request, res: Response): Promise<void> {
     const { id, languageCode } = getIDs(req.params.id);
     if (languageCode === null) {
-      await getRepository(Scenario).delete({ id, languageCode: languageCode || "fr" });
+      await getRepository(Scenario).delete({ id });
     } else {
+      await getRepository(Scenario).delete({ id, languageCode: languageCode || "fr" });
     }
-    await getRepository(Scenario).delete({ id, languageCode: languageCode || "fr" });
     res.status(204).send();
   }
 }

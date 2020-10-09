@@ -1,5 +1,8 @@
 import { Request } from "express";
 import fs from "fs";
+import QRCode from "qrcode";
+
+import { logger } from "./logger";
 
 /**
  * Pause the program for x milliseconds.
@@ -39,4 +42,14 @@ export function generateTemporaryPassword(length: number): string {
 
 export function getBase64File(path: string): string {
   return fs.readFileSync(path).toString("base64");
+}
+
+export async function getQRCodeURL(url: string): Promise<string> {
+  try {
+    return await QRCode.toDataURL(url);
+  } catch (err) {
+    logger.error("Could not generate QRCode url...");
+    logger.error(err);
+    return "";
+  }
 }

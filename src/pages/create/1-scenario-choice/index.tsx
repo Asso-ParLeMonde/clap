@@ -19,6 +19,7 @@ const ScenarioChoice: React.FunctionComponent = () => {
   const { isLoggedIn } = React.useContext(UserServiceContext);
   const { project } = React.useContext(ProjectServiceContext);
   const { scenarios } = useScenarios({
+    getQuestionsCount: true,
     user: isLoggedIn,
     isDefault: true,
     languageCode: currentLocale,

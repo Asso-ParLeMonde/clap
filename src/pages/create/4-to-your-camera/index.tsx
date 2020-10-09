@@ -13,6 +13,7 @@ import { Trans } from "src/components/Trans";
 import { Steps } from "src/components/create/Steps";
 import { ThemeLink } from "src/components/create/ThemeLink";
 import { useTranslation } from "src/i18n/useTranslation";
+import { UserServiceContext } from "src/services/UserService";
 import { ProjectServiceContext } from "src/services/useProject";
 
 const useStyles = makeStyles((theme) => ({
@@ -24,13 +25,33 @@ const useStyles = makeStyles((theme) => ({
 
 const ToCamera: React.FunctionComponent = () => {
   const classes = useStyles();
-  const { t } = useTranslation();
+  const { t, currentLocale } = useTranslation();
+  const { axiosLoggedRequest } = React.useContext(UserServiceContext);
   const { project } = React.useContext(ProjectServiceContext);
   const canvasRef = React.useRef<HTMLCanvasElement | null>(null);
   const [isLoading] = React.useState<boolean>(false);
 
   const generatePDF = async () => {
-    // TODO
+    event.preventDefault();
+    // setIsLoading(true);
+    const response = await axiosLoggedRequest({
+      method: "POST",
+      url: "/projects/pdf",
+      data: {
+        projectId: project.id,
+        themeId: project.theme.id,
+        themeName: project.theme.names[currentLocale] || project.theme.names.fr || "",
+        scenarioId: project.scenario.id,
+        scenarioName: project.scenario.name,
+        scenarioDescription: "",
+        questions: project.questions,
+        languageCode: currentLocale,
+      },
+    });
+    // setIsLoading(false);
+    if (!response.error) {
+      window.open(`/static/pdf/${response.data.url}`);
+    }
   };
 
   // generate qr-code

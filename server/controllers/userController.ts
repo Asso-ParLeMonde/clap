@@ -35,7 +35,7 @@ export class UserController extends Controller {
     super("users");
   }
 
-  @get()
+  @get({ userType: UserType.PLMO_ADMIN })
   public async getUsers(req: Request, res: Response): Promise<void> {
     const queryParams: FindManyOptions<User> = {
       order: {
@@ -67,7 +67,7 @@ export class UserController extends Controller {
     res.sendJSON(users.map((u) => u.userWithoutPassword()));
   }
 
-  @get({ path: "/count" })
+  @get({ path: "/count", userType: UserType.PLMO_ADMIN })
   public async getUserCount(_: Request, res: Response): Promise<void> {
     const userCount: number = await getRepository(User).count();
     res.sendJSON({ userCount });
@@ -167,7 +167,7 @@ export class UserController extends Controller {
     res.status(204).send();
   }
 
-  @get({ path: "/invite" })
+  @get({ path: "/invite", userType: UserType.PLMO_ADMIN })
   public async getInviteCode(_: Request, res: Response): Promise<void> {
     const invite = new Invite();
     invite.token = generateTemporaryPassword(20);

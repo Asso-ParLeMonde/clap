@@ -5,10 +5,11 @@ import { getRepository, getManager } from "typeorm";
 import { Plan } from "../entities/plan";
 import { Project } from "../entities/project";
 import { Question } from "../entities/question";
+import { Scenario } from "../entities/scenario";
+import { Theme } from "../entities/theme";
 import { UserType } from "../entities/user";
 import { AppError, ErrorCode } from "../middlewares/handleErrors";
-
-// import { htmlToPDF, PDF } from "../pdf";
+import { htmlToPDF, PDF } from "../pdf";
 
 import { Controller, post, put, get, del } from "./controller";
 
@@ -38,57 +39,57 @@ export class ProjectController extends Controller {
     super("projects");
   }
 
-  // @post({ path: "/pdf" })
-  // public async getProjectPDF(req: Request, res: Response): Promise<void> {
-  //   const languageCode: string = req.body.languageCode || "fr";
-  //   let theme: Theme | undefined = await getRepository(Theme).findOne(parseInt(req.body.themeId, 10) || 0);
-  //   const project: Project | undefined = await getRepository(Project).findOne(req.body.projectId || 0);
-  //   let scenario: Scenario | undefined = await getRepository(Scenario).findOne({
-  //     where: {
-  //       id: req.body.scenarioId || 0,
-  //       languageCode,
-  //     },
-  //   });
-  //   if (theme === undefined) {
-  //     if (req.body.themeName !== undefined) {
-  //       theme = new Theme();
-  //       theme.names = {
-  //         fr: req.body.themeName,
-  //       };
-  //     } else {
-  //       throw new AppError("Invalid data", ErrorCode.INVALID_DATA);
-  //     }
-  //   }
-  //   if (scenario === undefined) {
-  //     if (req.body.scenarioName !== undefined && req.body.scenarioDescription !== undefined) {
-  //       scenario = new Scenario();
-  //       scenario.name = req.body.scenarioName;
-  //       scenario.description = req.body.scenarioDescription;
-  //     } else {
-  //       throw new AppError("Invalid data", ErrorCode.INVALID_DATA);
-  //     }
-  //   }
+  @post({ path: "/pdf" })
+  public async getProjectPDF(req: Request, res: Response): Promise<void> {
+    const languageCode: string = req.body.languageCode || "fr";
+    let theme: Theme | undefined = await getRepository(Theme).findOne(parseInt(req.body.themeId, 10) || 0);
+    const project: Project | undefined = await getRepository(Project).findOne(req.body.projectId || 0);
+    let scenario: Scenario | undefined = await getRepository(Scenario).findOne({
+      where: {
+        id: req.body.scenarioId || 0,
+        languageCode,
+      },
+    });
+    if (theme === undefined) {
+      if (req.body.themeName !== undefined) {
+        theme = new Theme();
+        theme.names = {
+          fr: req.body.themeName,
+        };
+      } else {
+        throw new AppError("Invalid data", ErrorCode.INVALID_DATA);
+      }
+    }
+    if (scenario === undefined) {
+      if (req.body.scenarioName !== undefined && req.body.scenarioDescription !== undefined) {
+        scenario = new Scenario();
+        scenario.name = req.body.scenarioName;
+        scenario.description = req.body.scenarioDescription;
+      } else {
+        throw new AppError("Invalid data", ErrorCode.INVALID_DATA);
+      }
+    }
 
-  //   const questions: Question[] = getQuestionsFromBody(req);
+    const questions: Question[] = getQuestionsFromBody(req);
 
-  //   const url = await htmlToPDF(
-  //     PDF.PLAN_DE_TOURNAGE,
-  //     {
-  //       themeName: theme.names[req.body.languageCode || "fr"] || theme.names.fr,
-  //       scenarioName: scenario.name,
-  //       scenarioDescription: scenario.description,
-  //       pseudo: req.user !== undefined ? req.user.pseudo : undefined,
-  //       questions,
-  //       projectId: project !== undefined ? project.id : null,
-  //       projectTitle: project !== undefined ? project.title : null,
-  //     },
-  //     req.body.languageCode || undefined,
-  //   );
-  //   //For PDF Download statistics
-  //   const pdfEntry = new PDFDownload();
-  //   await getRepository(PDFDownload).save(pdfEntry);
-  //   res.sendJSON({ url: "TODO" });
-  // }
+    const url = await htmlToPDF(
+      PDF.PLAN_DE_TOURNAGE,
+      {
+        themeName: theme.names[req.body.languageCode || "fr"] || theme.names.fr,
+        scenarioName: scenario.name,
+        scenarioDescription: scenario.description,
+        pseudo: req.user !== undefined ? req.user.pseudo : undefined,
+        questions,
+        projectId: project !== undefined ? project.id : null,
+        projectTitle: project !== undefined ? project.title : null,
+      },
+      req.body.languageCode || undefined,
+    );
+    //For PDF Download statistics
+    // const pdfEntry = new PDFDownload();
+    // await getRepository(PDFDownload).save(pdfEntry);
+    res.sendJSON({ url });
+  }
 
   @get({ userType: UserType.CLASS })
   public async getProjects(req: Request, res: Response): Promise<void> {
