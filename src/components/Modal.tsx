@@ -33,6 +33,7 @@ interface ModalProps {
   maxWidth?: false | "sm" | "xs" | "md" | "lg" | "xl";
   noCloseOutsideModal?: boolean;
   error?: boolean;
+  disabled?: boolean;
 }
 
 export const Modal: React.FunctionComponent<ModalProps> = ({
@@ -49,6 +50,7 @@ export const Modal: React.FunctionComponent<ModalProps> = ({
   noCloseOutsideModal = false,
   maxWidth = "sm",
   error = false,
+  disabled = false,
 }: ModalProps) => {
   const { t } = useTranslation();
   return (
@@ -60,12 +62,12 @@ export const Modal: React.FunctionComponent<ModalProps> = ({
           {cancelLabel || t("cancel")}
         </Button>
         {onConfirm !== null && error && (
-          <RedButton onClick={onConfirm} variant="contained">
+          <RedButton onClick={onConfirm} disabled={disabled} variant="contained">
             {confirmLabel || t("yes")}
           </RedButton>
         )}
         {onConfirm !== null && !error && (
-          <Button onClick={onConfirm} color="secondary" variant="contained">
+          <Button onClick={onConfirm} disabled={disabled} color="secondary" variant="contained">
             {confirmLabel || t("yes")}
           </Button>
         )}

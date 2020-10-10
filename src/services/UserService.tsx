@@ -16,6 +16,8 @@ interface UserServiceContextValue {
   updatePassword(user: Partial<User>): UserServiceFunc;
   verifyEmail(user: Partial<User>): UserServiceFunc;
   logout(): Promise<void>;
+  deleteAccount(): Promise<boolean>;
+  setUser: (value: React.SetStateAction<User>) => void;
 }
 
 export const UserServiceContext = React.createContext<UserServiceContextValue>(undefined);
@@ -79,6 +81,20 @@ export const UserServiceProvider: React.FunctionComponent<UserServiceProviderPro
     });
     setUser(null);
     router.push("/create");
+  };
+
+  const deleteAccount = async (): Promise<boolean> => {
+    const response = await axiosRequest({
+      method: "DELETE",
+      headers,
+      url: `users/${user.id}`,
+    });
+    if (response.error) {
+      return false;
+    }
+    setUser(null);
+    router.push("/create");
+    return true;
   };
 
   /**
@@ -200,6 +216,8 @@ export const UserServiceProvider: React.FunctionComponent<UserServiceProviderPro
         updatePassword,
         verifyEmail,
         logout,
+        deleteAccount,
+        setUser,
       }}
     >
       {children}

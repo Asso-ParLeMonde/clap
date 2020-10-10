@@ -5,7 +5,11 @@ import { getRepository, Like, FindManyOptions } from "typeorm";
 
 // import { sendMail, Email } from "../emails";
 import { Invite } from "../entities/invite";
+import { Project } from "../entities/project";
+import { Scenario } from "../entities/scenario";
+import { Theme } from "../entities/theme";
 import { User, UserType } from "../entities/user";
+import { AppError, ErrorCode } from "../middlewares/handleErrors";
 import { isPasswordValid, generateTemporaryPassword } from "../utils/utils";
 
 import { Controller, del, get, post, put } from "./controller";
@@ -27,7 +31,7 @@ async function getUser(req: Request): Promise<User | undefined> {
   if (req.user === undefined || (id !== req.user.id && req.user.type < UserType.PLMO_ADMIN)) {
     return undefined;
   }
-  return id === req.user.id ? req.user : await getRepository(User).findOne(id);
+  return await getRepository(User).findOne(id);
 }
 
 export class UserController extends Controller {
@@ -156,14 +160,34 @@ export class UserController extends Controller {
       user.type = req.body.type;
     }
     updateUser(user, req);
+    if (req.body.password && req.body.oldPassword) {
+      if (isPasswordValid(req.body.password) && (await argon2.verify(user.passwordHash, req.body.oldPassword))) {
+        user.passwordHash = await argon2.hash(req.body.password);
+      } else {
+        throw new AppError("Invalid password or old password", ErrorCode.INVALID_PASSWORD);
+      }
+    }
     await getRepository(User).save(user);
     res.sendJSON(user.userWithoutPassword()); // send updated user
   }
 
-  @del({ path: "/:id" })
+  @del({ path: "/:id", userType: UserType.CLASS })
   public async deleteUser(req: Request, res: Response): Promise<void> {
     const id: number = parseInt(req.params.id, 10) || 0;
+    if (req.user === undefined || (id !== req.user.id && req.user.type < UserType.PLMO_ADMIN)) {
+      res.status(204).send();
+      return;
+    }
+    // will delete project with their questions and plans
+    await getRepository(Project).delete({ user: { id } });
+    await getRepository(Scenario).delete({ user: { id }, isDefault: false });
+    await getRepository(Theme).delete({ user: { id }, isDefault: false });
     await getRepository(User).delete(id);
+    if (id === req.user.id) {
+      // logout
+      res.cookie("access-token", "", { maxAge: 0, expires: new Date(0), httpOnly: true });
+      res.cookie("refresh-token", "", { maxAge: 0, expires: new Date(0), httpOnly: true });
+    }
     res.status(204).send();
   }
 
