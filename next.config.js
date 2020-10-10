@@ -1,5 +1,7 @@
 /* eslint-disable */
-module.exports = {
+const withPWA = require("next-pwa");
+
+module.exports = withPWA({
   distDir: "./dist/next",
   poweredByHeader: false,
   webpack: (config) => {
@@ -9,4 +11,7 @@ module.exports = {
     });
     return config;
   },
-};
+  pwa: {
+    disable: process.env.NODE_ENV !== "production",
+  },
+});

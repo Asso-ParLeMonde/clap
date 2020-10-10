@@ -50,7 +50,7 @@ const getDBConfig = (): ConnectionOptions => {
 
   return {
     charset: "utf8mb4_unicode_ci",
-    logging: !(process.env.NODE_ENV === "production"),
+    logging: process.env.NODE_ENV !== "production",
     entities: [path.join(__dirname, "../entities/*.js")],
     migrations: [path.join(__dirname, "../migration/**/*.js")],
     subscribers: [],

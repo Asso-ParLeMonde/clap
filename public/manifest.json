@@ -1,9 +1,21 @@
 {
-  "short_name": "Par Le monde",
-  "name": "Par Le monde",
-  "icons": [],
-  "start_url": ".",
+  "short_name": "Clap!",
+  "name": "Clap!",
+  "icons": [
+    {
+      "src": "/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "start_url": "/create",
   "display": "standalone",
+  "orientation": "portrait",
   "theme_color": "#6065fc",
   "background_color": "#ffffff"
 }

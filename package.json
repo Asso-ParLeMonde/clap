@@ -6,9 +6,11 @@
     "dev": "nodemon",
     "copy:templates": "yarn cpx 'server/pdf/templates/*' 'dist/server/pdf/templates' && yarn cpx 'server/emails/templates/*' 'dist/server/emails/templates'",
     "copy:swagger": "yarn cpx \"server/**/*.yaml\" dist/server",
-    "build-ts": "tsc --project tsconfig.server.json && yarn copy:templates && yarn copy:swagger",
-    "start-dev": "yarn build-ts && node dist/server/app.js",
-    "build": "rm -rf dist && next build && yarn build-ts",
+    "copy:pwa": "yarn cpx dist/next/workbox-*.js public && yarn cpx dist/next/sw.js public",
+    "build:next": "next build && yarn copy:pwa",
+    "build:server": "tsc --project tsconfig.server.json && yarn copy:templates && yarn copy:swagger",
+    "start-dev": "yarn build:server && node dist/server/app.js",
+    "build": "rm -rf dist && NODE_ENV=production yarn build:next && yarn build:server",
     "start": "NODE_ENV=production node dist/server/app.js"
   },
   "dependencies": {
@@ -37,6 +39,7 @@
     "multer": "^1.4.2",
     "mysql": "^2.18.1",
     "next": "9.5.2",
+    "next-pwa": "^3.1.5",
     "notistack": "^1.0.0",
     "nprogress": "^0.2.0",
     "pg": "^8.3.2",

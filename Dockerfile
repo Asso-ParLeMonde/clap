@@ -26,6 +26,7 @@ COPY tsconfig.json ./
 COPY tsconfig.server.json ./
 
 # Build sources
+ENV NODE_ENV production
 RUN yarn build
 
 # STAGE 2 - Docker server
