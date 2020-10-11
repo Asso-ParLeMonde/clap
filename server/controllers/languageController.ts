@@ -3,8 +3,10 @@ import { getRepository } from "typeorm";
 
 import { Language } from "../entities/language";
 import { UserType } from "../entities/user";
+import { uploadFile } from "../fileUpload";
+import { fileToTranslations } from "../translations";
 
-import { Controller, del, get, post, put } from "./controller";
+import { Controller, del, get, post, put, oneFile } from "./controller";
 
 export class LanguageController extends Controller {
   constructor() {
@@ -53,42 +55,26 @@ export class LanguageController extends Controller {
 
   @del({ path: "/:id", userType: UserType.PLMO_ADMIN })
   public async deleteLanguage(req: Request, res: Response): Promise<void> {
-    // const deleteOperations = [];
-    // const putOperations = [];
-
     const id: string = req.params.id || "";
     await getRepository(Language).delete(id);
-    // if (language === undefined) {
-    //   next(); // will send 404 error
-    //   return;
-    // }
-
-    // Language
-    // deleteOperations.push(getRepository(Language).delete(id));
-
-    // // Questions
-    // const questions = await getRepository(Question).find({ where: { languageCode: language.value } });
-    // for (const question of questions) {
-    //   deleteOperations.push(getRepository(Question).delete(question));
-    // }
-
-    // // Scenarios
-    // const scenarios: Scenario[] = await getRepository(Scenario).find({ where: { languageCode: language.value } });
-    // for (const scenario of scenarios) {
-    //   deleteOperations.push(getRepository(Scenario).delete(scenario));
-    // }
-
-    // // Themes
-    // const themes: Theme[] = await getCustomRepository(ThemeRepository).findAll({ isDefault: null, userId: null });
-    // for (const theme of themes) {
-    //   const labels: { [key: string]: string } = req.body.names || {};
-    //   delete labels[language.value];
-    //   putOperations.push(getCustomRepository(ThemeRepository).saveWithLabels(theme, labels));
-    // }
-
-    // await Promise.all(deleteOperations);
-    // await Promise.all(putOperations);
-
     res.status(204).send();
+  }
+
+  @oneFile({ path: "/:value/po", userType: UserType.PLMO_ADMIN })
+  public async addPOTranslations(req: Request, res: Response, next: NextFunction): Promise<void> {
+    if (!req.file.buffer) {
+      next();
+      return;
+    }
+    const value = (req.params.value || "").slice(0, 2);
+    const language: Language | undefined = await getRepository(Language).findOne({ where: { value } });
+    if (language === undefined) {
+      next();
+      return;
+    }
+
+    const newTranslations = await fileToTranslations(req.file.buffer);
+    await uploadFile(`locales/${language.value}.json`, Buffer.from(JSON.stringify(newTranslations), "utf-8"));
+    res.sendJSON({ success: true });
   }
 }

@@ -47,13 +47,13 @@ export function getDefaultDirectives(): { [directiveName: string]: Iterable<stri
     "default-src": ["'self'"],
     "base-uri": ["'self'"],
     "block-all-mixed-content": [],
-    "font-src": ["'self'", "https:", "data:"],
+    "font-src": ["'self'"],
     "frame-ancestors": ["'self'"],
-    "img-src": ["'self'", "http:", "data:", "blob:"], // todo, use 's' for prod
+    "img-src": ["'self'", "http:", "https:", "data:", "blob:"],
     "object-src": ["'none'"],
     "script-src": ["'self'"],
     "script-src-attr": ["'none'"],
-    "style-src": ["'self'", "https:", "'unsafe-inline'"],
+    "style-src": ["'self'", "'unsafe-inline'"],
     "media-src": ["*", "data:"],
     "upgrade-insecure-requests": [],
   };

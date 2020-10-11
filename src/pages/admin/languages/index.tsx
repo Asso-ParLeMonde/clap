@@ -78,17 +78,7 @@ const AdminLanguages: React.FunctionComponent = () => {
 
   const onDownload = (l: Language) => async (event: React.MouseEvent) => {
     event.preventDefault();
-    const response = await axiosLoggedRequest({
-      method: "GET",
-      url: `/languages/${l.value}/po`,
-    });
-    if (response.error) {
-      enqueueSnackbar("Une erreur inconnue est survenue...", {
-        variant: "error",
-      });
-      return;
-    }
-    window.open(`/${response.data.url}`);
+    window.open(`/api/locales/${l.value}.po`);
   };
 
   return (

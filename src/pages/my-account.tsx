@@ -2,24 +2,20 @@ import { useSnackbar } from "notistack";
 import React from "react";
 
 import Backdrop from "@material-ui/core/Backdrop";
-// import Breadcrumbs from "@material-ui/core/Breadcrumbs";
 import Button from "@material-ui/core/Button";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Divider from "@material-ui/core/Divider";
 import IconButton from "@material-ui/core/IconButton";
-// import NoSsr from "@material-ui/core/NoSsr";
 import InputAdornment from "@material-ui/core/InputAdornment";
-// import FormControlLabel from "@material-ui/core/FormControlLabel";
-// import FormControl from "@material-ui/core/FormControl";
 import Link from "@material-ui/core/Link";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles, createStyles, withStyles, Theme as MaterialTheme } from "@material-ui/core/styles";
 import { Visibility, VisibilityOff } from "@material-ui/icons";
-// import NavigateNextIcon from "@material-ui/icons/NavigateNext";
 import Alert from "@material-ui/lab/Alert";
 
 import { Modal } from "src/components/Modal";
+import { Trans } from "src/components/Trans";
 import { useTranslation } from "src/i18n/useTranslation";
 import { UserServiceContext } from "src/services/UserService";
 import { axiosRequest } from "src/util/axiosRequest";
@@ -150,11 +146,11 @@ const Account: React.FunctionComponent = () => {
     });
     setLoading(false);
     if (response.error) {
-      enqueueSnackbar("Une erreur est survenue...", {
+      enqueueSnackbar(t("unknown_error"), {
         variant: "error",
       });
     } else {
-      enqueueSnackbar("Compte mis à jour!", {
+      enqueueSnackbar(t("account_updated"), {
         variant: "success",
       });
       setUser({ ...user, ...data });
@@ -167,12 +163,12 @@ const Account: React.FunctionComponent = () => {
     const success = await deleteAccount();
     setLoading(false);
     if (!success) {
-      enqueueSnackbar("Une erreur est survenue...", {
+      enqueueSnackbar(t("unknown_error"), {
         variant: "error",
       });
       setShowModal(-1);
     } else {
-      enqueueSnackbar("Compte supprimé!", {
+      enqueueSnackbar(t("account_deleted"), {
         variant: "success",
       });
     }
@@ -182,84 +178,84 @@ const Account: React.FunctionComponent = () => {
     <div>
       <div className="text-center">
         <Typography color="primary" variant="h1">
-          Mon compte
+          {t("my_account")}
         </Typography>
       </div>
       <div style={{ maxWidth: "800px", margin: "auto", paddingBottom: "2rem" }}>
-        <Typography variant="h2">Mes identifiants de connexion</Typography>
+        <Typography variant="h2">{t("account_connexion_title")}</Typography>
         <div style={{ marginTop: "0.5rem" }}>
           <label>
-            <strong>Pseudo : </strong>
+            <strong>{t("signup_pseudo")} : </strong>
           </label>
           {user.pseudo} -{" "}
           <Link style={{ cursor: "pointer" }} onClick={openModal(1)}>
-            Changer
+            {t("account_change_button")}
           </Link>
         </div>
         <div>
           <label>
-            <strong>Email : </strong>
+            <strong>{t("signup_email")} : </strong>
           </label>
           {user.email} -{" "}
           <Link style={{ cursor: "pointer" }} onClick={openModal(2)}>
-            Changer
+            {t("account_change_button")}
           </Link>
         </div>
         <Button style={{ marginTop: "0.8rem" }} className="mobile-full-width" onClick={openModal(3)} variant="contained" color="secondary" size="small">
-          Changer mon mot de passe
+          {t("account_password_change")}
         </Button>
         <Divider style={{ margin: "1rem 0 1.5rem" }} />
-        <Typography variant="h2">Mon école</Typography>
+        <Typography variant="h2">{t("account_school_title")}</Typography>
         <div style={{ marginTop: "0.5rem" }}>
           <label>
-            <strong>École : </strong>
+            <strong>{t("signup_school")} : </strong>
           </label>
-          {user.school || "Non renseignée"}
+          {user.school || t("account_unknown_school")}
         </div>
         <div>
           <label>
-            <strong>Niveau de la classe : </strong>
+            <strong>{t("signup_level")} : </strong>
           </label>
-          {user.level || "Non renseigné"}
+          {user.level || t("account_unknown_level")}
         </div>
         <Button style={{ marginTop: "0.8rem" }} className="mobile-full-width" onClick={openModal(4)} variant="contained" color="secondary" size="small">
-          Modifier
+          {t("edit")}
         </Button>
         <Divider style={{ margin: "1rem 0 1.5rem" }} />
-        <Typography variant="h2">Se déconnecter</Typography>
+        <Typography variant="h2">{t("logout_button")}</Typography>
         <RedButtonBis variant="outlined" className="mobile-full-width" onClick={logout} size="small">
           {t("logout_button")}
         </RedButtonBis>
         <Divider style={{ margin: "1rem 0 1.5rem" }} />
-        <Typography variant="h2">Mon compte</Typography>
+        <Typography variant="h2">{t("my_account")}</Typography>
         {/* <Button style={{ marginTop: "0.8rem" }} className="mobile-full-width" onClick={() => {}} variant="contained" color="secondary" size="small">
           Télécharger toutes mes données
         </Button> */}
         {/* <br /> */}
         <RedButton style={{ marginTop: "0.8rem" }} className="mobile-full-width" onClick={openModal(5)} variant="contained" color="secondary" size="small">
-          Supprimer mon compte
+          {t("account_delete_button")}
         </RedButton>
 
         <Modal
           open={showModal === 1 && updatedUser !== null}
           onClose={() => setShowModal(-1)}
           onConfirm={onSubmit("pseudo")}
-          confirmLabel="Modifier"
-          cancelLabel="Annuler"
-          title="Changer de pseudo"
+          confirmLabel={t("edit")}
+          cancelLabel={t("cancel")}
+          title={t("Changer de pseudo")}
           ariaLabelledBy="pseudo-dialog-title"
           ariaDescribedBy="pseudo-dialog-description"
           fullWidth
         >
           <div id="pseudo-dialog-description">
             <Alert severity="info" style={{ marginBottom: "1rem" }}>
-              Votre Pseudo est votre identifiant de connection.
+              {t("account_change_pseudo_info")}
             </Alert>
             <TextField
               fullWidth
               variant="outlined"
               value={updatedUser?.pseudo || ""}
-              label="Pseudo"
+              label={t("signup_pseudo")}
               onChange={onUserChange("pseudo")}
               onBlur={handleInputValidations("pseudo")}
               color="secondary"
@@ -272,22 +268,22 @@ const Account: React.FunctionComponent = () => {
           open={showModal === 2 && updatedUser !== null}
           onClose={() => setShowModal(-1)}
           onConfirm={onSubmit("email")}
-          confirmLabel="Modifier"
-          cancelLabel="Annuler"
-          title="Changer d'email"
+          confirmLabel={t("edit")}
+          cancelLabel={t("cancel")}
+          title={t("account_change_email")}
           ariaLabelledBy="email-dialog-title"
           ariaDescribedBy="email-dialog-description"
           fullWidth
         >
           <div id="email-dialog-description">
             <Alert severity="info" style={{ marginBottom: "1rem" }}>
-              Votre email est votre identifiant de connection.
+              {t("account_change_email_info")}
             </Alert>
             <TextField
               fullWidth
               variant="outlined"
               value={updatedUser?.email || ""}
-              label="Email"
+              label={t("signup_email")}
               onChange={onUserChange("email")}
               onBlur={handleInputValidations("email")}
               color="secondary"
@@ -300,9 +296,9 @@ const Account: React.FunctionComponent = () => {
           open={showModal === 3 && updatedUser !== null}
           onClose={() => setShowModal(-1)}
           onConfirm={onSubmit("password")}
-          confirmLabel="Modifier"
-          cancelLabel="Annuler"
-          title="Changer de mot de passe"
+          confirmLabel={t("edit")}
+          cancelLabel={t("cancel")}
+          title={t("account_change_password")}
           ariaLabelledBy="mdp-dialog-title"
           ariaDescribedBy="mdp-dialog-description"
           fullWidth
@@ -313,7 +309,7 @@ const Account: React.FunctionComponent = () => {
               color="secondary"
               id="password"
               name="password"
-              label={"Mot de passe actuel"}
+              label={t("account_current_password")}
               value={updatedUser?.oldPassword || ""}
               onChange={onUserChange("oldPassword")}
               variant="outlined"
@@ -340,7 +336,7 @@ const Account: React.FunctionComponent = () => {
               color="secondary"
               id="password"
               name="password"
-              label={"Nouveau mot de passe"}
+              label={t("account_new_password")}
               value={updatedUser?.password || ""}
               onChange={onUserChange("password")}
               onBlur={handleInputValidations("password")}
@@ -400,9 +396,9 @@ const Account: React.FunctionComponent = () => {
           open={showModal === 4 && updatedUser !== null}
           onClose={() => setShowModal(-1)}
           onConfirm={onSubmit("school")}
-          confirmLabel="Modifier"
-          cancelLabel="Annuler"
-          title="Modifier mes informations"
+          confirmLabel={t("edit")}
+          cancelLabel={t("cancel")}
+          title={t("account_change_school")}
           ariaLabelledBy="school-dialog-title"
           ariaDescribedBy="school-dialog-description"
           fullWidth
@@ -415,8 +411,8 @@ const Account: React.FunctionComponent = () => {
               InputLabelProps={{
                 shrink: true,
               }}
-              placeholder="Non renseignée"
-              label="École"
+              placeholder={t("account_unknown_school")}
+              label={t("signup_school")}
               onChange={onUserChange("school")}
               color="secondary"
             />
@@ -427,8 +423,8 @@ const Account: React.FunctionComponent = () => {
               InputLabelProps={{
                 shrink: true,
               }}
-              placeholder="Non renseigné"
-              label="Niveau de la classe"
+              placeholder={t("account_unknown_level")}
+              label={t("signup_level")}
               onChange={onUserChange("level")}
               color="secondary"
               style={{ marginTop: "1rem" }}
@@ -439,22 +435,24 @@ const Account: React.FunctionComponent = () => {
           open={showModal === 5 && updatedUser !== null}
           onClose={() => setShowModal(-1)}
           onConfirm={onDeleteAccount}
-          confirmLabel="Supprimer"
-          cancelLabel="Annuler"
-          title="Supprimer le compte"
+          confirmLabel={t("edit")}
+          cancelLabel={t("cancel")}
+          title={t("account_delete_button")}
           ariaLabelledBy="delete-dialog-title"
           ariaDescribedBy="delete-dialog-description"
-          disabled={deleteText.toLowerCase() !== "supprimer"}
+          disabled={deleteText.toLowerCase() !== t("account_delete_confirm").toLowerCase()}
           fullWidth
           error
         >
           <div id="delete-dialog-description">
             <Alert severity="error" style={{ marginBottom: "1rem" }}>
-              Attention! Êtes-vous sur de vouloir supprimer votre compte ? Cette action est <strong>irréversible</strong>.
+              <Trans i18nKey="account_delete_warning1">
+                Attention! Êtes-vous sur de vouloir supprimer votre compte ? Cette action est <strong>irréversible</strong>.
+              </Trans>
               <br />
-              {"Pour supprimer votre compte, veuillez taper '"}
-              <strong>supprimer</strong>
-              {"' ci-dessous et cliquez sur supprimer."}
+              <Trans i18nKey="account_delete_warning2" i18nParams={{ deleteConfirm: t("account_delete_confirm") }}>
+                Pour supprimer votre compte, veuillez taper <strong>supprimer</strong> ci-dessous et cliquez sur supprimer.
+              </Trans>
             </Alert>
             <TextField
               fullWidth
@@ -463,7 +461,7 @@ const Account: React.FunctionComponent = () => {
               InputLabelProps={{
                 shrink: true,
               }}
-              placeholder="Tapez 'supprimer' ici"
+              placeholder={t("account_delete_placeholder", { deleteConfirm: t("account_delete_confirm") })}
               label=""
               color="secondary"
               onChange={(event: React.ChangeEvent<HTMLInputElement>) => {

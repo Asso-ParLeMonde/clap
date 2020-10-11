@@ -2664,6 +2664,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/nodemailer@npm:^6":
+  version: 6.4.0
+  resolution: "@types/nodemailer@npm:6.4.0"
+  dependencies:
+    "@types/node": "*"
+  checksum: 490553de5408b30793246cdd1476885a26649d1403d9530a84730d87644aa515ad52a1eacda4f4fc2dcfd40762d737007fffbf1bf40ed62d628ae8ef04c8a87b
+  languageName: node
+  linkType: hard
+
 "@types/nprogress@npm:^0":
   version: 0.2.0
   resolution: "@types/nprogress@npm:0.2.0"
@@ -10295,6 +10304,13 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
+"nodemailer@npm:^6.4.13":
+  version: 6.4.13
+  resolution: "nodemailer@npm:6.4.13"
+  checksum: c5eeba3805bf94a3030b6ace5da62989d3d0cc170712d60700970e69d002a36a575bc9df339e8a336c3092a7ea777cae71b65135eeec146c3a568cd2f93a5b61
+  languageName: node
+  linkType: hard
+
 "nodemon@npm:^2.0.4":
   version: 2.0.4
   resolution: "nodemon@npm:2.0.4"
@@ -10862,6 +10878,7 @@ fsevents@~2.1.2:
     "@types/multer": ^1
     "@types/mysql": ^2
     "@types/node": ^14.0.27
+    "@types/nodemailer": ^6
     "@types/nprogress": ^0
     "@types/prettier": ^2
     "@types/pug": ^2.0.4
@@ -10909,6 +10926,7 @@ fsevents@~2.1.2:
     mysql: ^2.18.1
     next: 9.5.2
     next-pwa: ^3.1.5
+    nodemailer: ^6.4.13
     nodemon: ^2.0.4
     notistack: ^1.0.0
     nprogress: ^0.2.0
@@ -10924,6 +10942,7 @@ fsevents@~2.1.2:
     react-query: ^2.23.0
     react-query-devtools: ^2.5.1
     react-sortablejs: ^5.0.5
+    safe-buffer: ^5.2.1
     sharp: ^0.26.0
     sortablejs: 1.10.2
     ts-node: ^8.10.2
@@ -12699,7 +12718,7 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
-"safe-buffer@npm:>=5.1.0, safe-buffer@npm:^5.0.1, safe-buffer@npm:^5.1.0, safe-buffer@npm:^5.1.1, safe-buffer@npm:^5.1.2, safe-buffer@npm:^5.2.0, safe-buffer@npm:~5.2.0":
+"safe-buffer@npm:>=5.1.0, safe-buffer@npm:^5.0.1, safe-buffer@npm:^5.1.0, safe-buffer@npm:^5.1.1, safe-buffer@npm:^5.1.2, safe-buffer@npm:^5.2.0, safe-buffer@npm:^5.2.1, safe-buffer@npm:~5.2.0":
   version: 5.2.1
   resolution: "safe-buffer@npm:5.2.1"
   checksum: 0bb57f0d8f9d1fa4fe35ad8a2db1f83a027d48f2822d59ede88fd5cd4ddad83c0b497213feb7a70fbf90597a70c5217f735b0eb1850df40ce9b4ae81dd22b3f9

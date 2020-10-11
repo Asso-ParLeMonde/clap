@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 import { getRepository, MoreThan } from "typeorm";
 import { v4 as uuidv4 } from "uuid";
 
-// import { sendMail, Email } from "../emails";
+import { sendMail, Email } from "../emails";
 import { Token } from "../entities/token";
 import { User } from "../entities/user";
 import { AppError, ErrorCode } from "../middlewares/handleErrors";
@@ -89,7 +89,7 @@ export class LoginController extends Controller {
     await getRepository(User).save(user);
 
     // send mail with verification password
-    // await sendMail(Email.RESET_PASSWORD, user.mail, { resetCode: temporaryPassword }, req.body.languageCode || undefined);
+    await sendMail(Email.RESET_PASSWORD, user.email, { resetCode: temporaryPassword }, req.body.languageCode || undefined);
     res.sendJSON({ success: true });
   }
 
