@@ -1,18 +1,18 @@
 // eslint-disable-next-line
-import { config } from "dotenv";
-config();
-
-// eslint-disable-next-line
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import cors from "cors";
+// eslint-disable-next-line
+import { config } from "dotenv";
 import express, { Response, Router } from "express";
 import helmet from "helmet";
 import morgan from "morgan";
 import next from "next";
 import path from "path";
+import swaggerUi from "swagger-ui-express";
 import { Connection } from "typeorm";
 
+import { UserType } from "./entities/user";
 import { authenticate } from "./middlewares/authenticate";
 import { crsfProtection } from "./middlewares/csrfCheck";
 import { handleErrors } from "./middlewares/handleErrors";
@@ -22,6 +22,9 @@ import { getLocales } from "./translations/getLocales";
 import { connectToDatabase } from "./utils/database";
 import { logger } from "./utils/logger";
 import { normalizePort, onError, getDefaultDirectives } from "./utils/server";
+import { apiSpecs } from "./utils/swagger";
+
+config();
 
 const dev = process.env.NODE_ENV !== "production";
 const frontendHandler = next({ dev });
@@ -71,6 +74,24 @@ async function startApp() {
     res.status(404).send("Error 404 - Not found.");
   });
   app.use("/api", backRouter);
+  /* --- OpenAPI --- */
+  app.use(
+    "/api-docs", // eslint-disable-next-line
+    handleErrors(authenticate(undefined)), // @ts-ignore
+    (req, res, next) => {
+      if (!req.user) {
+        res.redirect("/login");
+        return;
+      }
+      if (req.user.type < UserType.PLMO_ADMIN) {
+        res.redirect("/create");
+        return;
+      }
+      next();
+    },
+    swaggerUi.serve,
+    swaggerUi.setup(apiSpecs),
+  );
 
   /* --- FRONTEND --- */
   app.get("/", (_req, res) => {

@@ -59,6 +59,8 @@
     "safe-buffer": "^5.2.1",
     "sharp": "^0.26.0",
     "sortablejs": "1.10.2",
+    "swagger-jsdoc": "^4.2.3",
+    "swagger-ui-express": "^4.1.4",
     "typeorm": "^0.2.25",
     "uuid": "^8.3.0",
     "winston": "^3.3.3"
@@ -92,6 +94,8 @@
     "@types/react": "^16.9.46",
     "@types/sharp": "^0",
     "@types/sortablejs": "^1.10.6",
+    "@types/swagger-jsdoc": "^3.0.2",
+    "@types/swagger-ui-express": "^4",
     "@types/uuid": "^8",
     "@types/webpack": "^4",
     "@typescript-eslint/eslint-plugin": "^3.9.0",

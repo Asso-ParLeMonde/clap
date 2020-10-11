@@ -74,6 +74,47 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@apidevtools/json-schema-ref-parser@npm:^9.0.6":
+  version: 9.0.6
+  resolution: "@apidevtools/json-schema-ref-parser@npm:9.0.6"
+  dependencies:
+    "@jsdevtools/ono": ^7.1.3
+    call-me-maybe: ^1.0.1
+    js-yaml: ^3.13.1
+  checksum: 120138e50195106d5cd5bf4a92c628d341096af69c3742552419974d2a0a95dc7e7c35c447c5bbf6e117126471c9eba1fbc6937e111584b8077c8c20e506b0de
+  languageName: node
+  linkType: hard
+
+"@apidevtools/openapi-schemas@npm:^2.0.4":
+  version: 2.0.4
+  resolution: "@apidevtools/openapi-schemas@npm:2.0.4"
+  checksum: 83ce121166698f5cd3b5d0175715f404cf7cbe8afea6966cb80b4e115751764582fbed2ae0586a57497c3201af1796b2fb1382d81c98542a9bc6a77f59febed0
+  languageName: node
+  linkType: hard
+
+"@apidevtools/swagger-methods@npm:^3.0.2":
+  version: 3.0.2
+  resolution: "@apidevtools/swagger-methods@npm:3.0.2"
+  checksum: 33e49da22dc6668e51aee11cc9634d3039a24da8e0e8edf7a889ff72e3882905ac222a8970be5e41918d66286e20027f849ff665a7f540563f887a5cec85befb
+  languageName: node
+  linkType: hard
+
+"@apidevtools/swagger-parser@npm:10.0.2":
+  version: 10.0.2
+  resolution: "@apidevtools/swagger-parser@npm:10.0.2"
+  dependencies:
+    "@apidevtools/json-schema-ref-parser": ^9.0.6
+    "@apidevtools/openapi-schemas": ^2.0.4
+    "@apidevtools/swagger-methods": ^3.0.2
+    "@jsdevtools/ono": ^7.1.3
+    call-me-maybe: ^1.0.1
+    z-schema: ^4.2.3
+  peerDependencies:
+    openapi-types: ">=7"
+  checksum: 7009a50e6cad6b7482687295784c79bd869f28a535631c82e3d6fe9ec4e33755867972922ba5cb480b6f62f7ac417d4837a8a5e62fd353c76209ee05608cda3d
+  languageName: node
+  linkType: hard
+
 "@arcanis/slice-ansi@npm:^1.0.2":
   version: 1.0.2
   resolution: "@arcanis/slice-ansi@npm:1.0.2"
@@ -1867,6 +1908,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@jsdevtools/ono@npm:^7.1.3":
+  version: 7.1.3
+  resolution: "@jsdevtools/ono@npm:7.1.3"
+  checksum: 0caf54c25db1e5bc7e7f0ccc4c6ff543067fe8d165bf3a1005381273c6e6bb68d03e12fa9a8ffbe99247293fc80a578c0d1afa69161bfba86ed6ff0c19319b88
+  languageName: node
+  linkType: hard
+
 "@material-ui/core@npm:^4.11.0":
   version: 4.11.0
   resolution: "@material-ui/core@npm:4.11.0"
@@ -2830,6 +2878,23 @@ __metadata:
   version: 0.1.2
   resolution: "@types/source-list-map@npm:0.1.2"
   checksum: 191f0e3b056b481e7a0bbb38f3d5b54b015556e38075726ca2637a35d3694df85cd16761b1b188729ac687a55aec3cbc2b07033ac090bcc13efe09ad10a3e935
+  languageName: node
+  linkType: hard
+
+"@types/swagger-jsdoc@npm:^3.0.2":
+  version: 3.0.2
+  resolution: "@types/swagger-jsdoc@npm:3.0.2"
+  checksum: c23017f78706c6189e2214d001c5d4afdce3197254fc31cd63fc40c0372b190cd69f879c9dd2564742f66162efaaca9bf58b3a092648e521167d72c5e2896dd6
+  languageName: node
+  linkType: hard
+
+"@types/swagger-ui-express@npm:^4":
+  version: 4.1.2
+  resolution: "@types/swagger-ui-express@npm:4.1.2"
+  dependencies:
+    "@types/express": "*"
+    "@types/serve-static": "*"
+  checksum: 999c83bffaa70fb63af7619ccb7bb3b26f15eff6f335b34b8a625bb7d234e5fe9ec2292f052cc3be77c9e21175313fecacad4e1ad49ee74fef46c36566e4e790
   languageName: node
   linkType: hard
 
@@ -4504,6 +4569,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"call-me-maybe@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "call-me-maybe@npm:1.0.1"
+  checksum: 07e1afb493ed945c6b053940881d46ece2ab04e1862e7cd8c483e8651e9831a70b31098e6be321a897b7e702d34b6417301280efda98c5e663a608baaf95d2f4
+  languageName: node
+  linkType: hard
+
 "callsites@npm:^3.0.0":
   version: 3.1.0
   resolution: "callsites@npm:3.1.0"
@@ -4957,7 +5029,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"commander@npm:^2.20.0":
+"commander@npm:6.1.0":
+  version: 6.1.0
+  resolution: "commander@npm:6.1.0"
+  checksum: ef1e310c3f430b84f8818ec9c6e5ce1b84909616eb2c1b1a79f646bc25fbca156eccf2ecf19f07e77a08dc519728d53d1300f94f3b2ad93de65add66044dfce6
+  languageName: node
+  linkType: hard
+
+"commander@npm:^2.20.0, commander@npm:^2.7.1":
   version: 2.20.3
   resolution: "commander@npm:2.20.3"
   checksum: b73428e97de7624323f81ba13f8ed9271de487017432d18b4da3f07cfc528ad754bbd199004bd5d14e0ccd67d1fdfe0ec8dbbd4c438b401df3c4cc387bfd1daa
@@ -5946,21 +6025,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"doctrine@npm:3.0.0, doctrine@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "doctrine@npm:3.0.0"
+  dependencies:
+    esutils: ^2.0.2
+  checksum: 2eae469bd2889ceee9892083a67340b3622568fe5290edce620e5d5ddab23d644b2a780e9a7c68ad9c8a62716a70c5e484402ac93a398fa78b54b7505592aa7f
+  languageName: node
+  linkType: hard
+
 "doctrine@npm:^2.1.0":
   version: 2.1.0
   resolution: "doctrine@npm:2.1.0"
   dependencies:
     esutils: ^2.0.2
   checksum: 4aa55e46757cc11bff8efa67cdb679dd89e87c954ea9d88fad5a9198cfe0a73748085503d29bebcb143487d720a759a6bbe81d6848c94da46a55c7a366b9834e
-  languageName: node
-  linkType: hard
-
-"doctrine@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "doctrine@npm:3.0.0"
-  dependencies:
-    esutils: ^2.0.2
-  checksum: 2eae469bd2889ceee9892083a67340b3622568fe5290edce620e5d5ddab23d644b2a780e9a7c68ad9c8a62716a70c5e484402ac93a398fa78b54b7505592aa7f
   languageName: node
   linkType: hard
 
@@ -7567,7 +7646,7 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
-"glob@npm:^7.0.3, glob@npm:^7.0.5, glob@npm:^7.1.2, glob@npm:^7.1.3, glob@npm:^7.1.4, glob@npm:^7.1.6":
+"glob@npm:7.1.6, glob@npm:^7.0.3, glob@npm:^7.0.5, glob@npm:^7.1.2, glob@npm:^7.1.3, glob@npm:^7.1.4, glob@npm:^7.1.6":
   version: 7.1.6
   resolution: "glob@npm:7.1.6"
   dependencies:
@@ -8795,7 +8874,7 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
-"js-yaml@npm:^3.10.0, js-yaml@npm:^3.13.1":
+"js-yaml@npm:3.14.0, js-yaml@npm:^3.10.0, js-yaml@npm:^3.13.1":
   version: 3.14.0
   resolution: "js-yaml@npm:3.14.0"
   dependencies:
@@ -9375,6 +9454,13 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
+"lodash.get@npm:^4.4.2":
+  version: 4.4.2
+  resolution: "lodash.get@npm:4.4.2"
+  checksum: 447e575e3caa5131ef44e5a0c135b1614f3c937d86b3be0568f9da7b0fd015010af3b6b4e41edf6e2698c9ce2dcc061ca71b31f274f799c991dceb018be16e4f
+  languageName: node
+  linkType: hard
+
 "lodash.has@npm:^4.5.2":
   version: 4.5.2
   resolution: "lodash.has@npm:4.5.2"
@@ -9393,6 +9479,13 @@ fsevents@~2.1.2:
   version: 3.0.3
   resolution: "lodash.isboolean@npm:3.0.3"
   checksum: e5b7a921f47759773266e66664e4a54f2438cc213fe336c5b96321d4328ebb2785e939bbcd07b29d5a20cdc6140d471abae1e94cdfb25937dc91ddc5150f41a0
+  languageName: node
+  linkType: hard
+
+"lodash.isequal@npm:^4.5.0":
+  version: 4.5.0
+  resolution: "lodash.isequal@npm:4.5.0"
+  checksum: 5b47e094641c18a915497343894c66f7da6aebb9aaa2a3fcc5643455aaf29d19df60ebbed664c8374fb959c8b4ce96810ee6becd8a71ac58c6c2ca8d29762947
   languageName: node
   linkType: hard
 
@@ -10993,6 +11086,8 @@ fsevents@~2.1.2:
     "@types/react": ^16.9.46
     "@types/sharp": ^0
     "@types/sortablejs": ^1.10.6
+    "@types/swagger-jsdoc": ^3.0.2
+    "@types/swagger-ui-express": ^4
     "@types/uuid": ^8
     "@types/webpack": ^4
     "@typescript-eslint/eslint-plugin": ^3.9.0
@@ -11052,6 +11147,8 @@ fsevents@~2.1.2:
     safe-buffer: ^5.2.1
     sharp: ^0.26.0
     sortablejs: 1.10.2
+    swagger-jsdoc: ^4.2.3
+    swagger-ui-express: ^4.1.4
     ts-node: ^8.10.2
     typeorm: ^0.2.25
     typescript: ^3.9.7
@@ -13907,6 +14004,48 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
+"swagger-jsdoc@npm:^4.2.3":
+  version: 4.2.3
+  resolution: "swagger-jsdoc@npm:4.2.3"
+  dependencies:
+    commander: 6.1.0
+    doctrine: 3.0.0
+    glob: 7.1.6
+    js-yaml: 3.14.0
+    swagger-parser: 10.0.2
+  bin:
+    swagger-jsdoc: bin/swagger-jsdoc.js
+  checksum: 77983fe8535511127b6c1218f502ab18f4ba291897bc772bc18361942d0c72b486c7b8aef729a7744c6018ad77c1f11b80926d19f2d2ed1acfd2d3c02e363fbb
+  languageName: node
+  linkType: hard
+
+"swagger-parser@npm:10.0.2":
+  version: 10.0.2
+  resolution: "swagger-parser@npm:10.0.2"
+  dependencies:
+    "@apidevtools/swagger-parser": 10.0.2
+  checksum: 072361451e49a88561e4b9e635927a85884e0ac6e8c5e684020362a4a63658004c78564f0bd9245b16998f98825cb2bb23f3a0bf77fa0ccdae31197d45cc8c98
+  languageName: node
+  linkType: hard
+
+"swagger-ui-dist@npm:^3.18.1":
+  version: 3.35.1
+  resolution: "swagger-ui-dist@npm:3.35.1"
+  checksum: 917f884a3d58422a01f48112514609bfddf1c2858718ba52170709885754365621edd5287e5455d5e5b60bb24bd9ca23ef22d7af540eec333183fe9124e92fd4
+  languageName: node
+  linkType: hard
+
+"swagger-ui-express@npm:^4.1.4":
+  version: 4.1.4
+  resolution: "swagger-ui-express@npm:4.1.4"
+  dependencies:
+    swagger-ui-dist: ^3.18.1
+  peerDependencies:
+    express: ">=4.0.0"
+  checksum: bbf95b5fcf67b7a51944bac0205a628f7dcabf290a7ca6ca7197274062fdd321fb9c3f7ff3716a9d0dec41359502096ccef56f6cedd277819c851c08e6f085d8
+  languageName: node
+  linkType: hard
+
 "table@npm:^5.2.3":
   version: 5.4.6
   resolution: "table@npm:5.4.6"
@@ -14810,6 +14949,13 @@ typescript@^3.9.7:
   languageName: node
   linkType: hard
 
+"validator@npm:^12.0.0":
+  version: 12.2.0
+  resolution: "validator@npm:12.2.0"
+  checksum: e5f79e631bf10873c5028f181fe1ec4d856d08dade447bf73a77c1afb548bb3385d11b09e358f5138d3550bedd3422bb36ec1ff85c1edc21f2df38da1e53a076
+  languageName: node
+  linkType: hard
+
 "vary@npm:^1, vary@npm:~1.1.2":
   version: 1.1.2
   resolution: "vary@npm:1.1.2"
@@ -15487,5 +15633,22 @@ typescript@^3.9.7:
   version: 3.1.1
   resolution: "yn@npm:3.1.1"
   checksum: bff63b80568d80c711670935427494dde47cdf97e8b04196b140ce0af519c81c5ee857eddad0caa8b422dd65aea0157bbfaacbb1546bebba623f0f383d5d9ae5
+  languageName: node
+  linkType: hard
+
+"z-schema@npm:^4.2.3":
+  version: 4.2.3
+  resolution: "z-schema@npm:4.2.3"
+  dependencies:
+    commander: ^2.7.1
+    lodash.get: ^4.4.2
+    lodash.isequal: ^4.5.0
+    validator: ^12.0.0
+  dependenciesMeta:
+    commander:
+      optional: true
+  bin:
+    z-schema: ./bin/z-schema
+  checksum: 2932b9530278336286d1c312271575c7995c6dbf90a25533d7bdb89e2c7413a94415b270b827098fe067fb84c9af4a6f1071c61badf4ea8690b1875b77aa7d15
   languageName: node
   linkType: hard
