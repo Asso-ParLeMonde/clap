@@ -1,4 +1,3 @@
-import { useSnackbar } from "notistack";
 import { useQueryCache } from "react-query";
 import React from "react";
 
@@ -23,7 +22,6 @@ import { AdminTile } from "src/components/admin/AdminTile";
 import { AddLanguageModal } from "src/components/admin/languages/AddLanguageModal";
 import { DeleteLanguageModal } from "src/components/admin/languages/DeleteLanguageModal";
 import { UploadLanguageModal } from "src/components/admin/languages/UploadLanguageModal";
-import { UserServiceContext } from "src/services/UserService";
 import { useLanguages } from "src/services/useLanguages";
 import type { Language } from "types/models/language.type";
 
@@ -62,8 +60,6 @@ const StyledTableRow = withStyles(() =>
 const AdminLanguages: React.FunctionComponent = () => {
   const queryCache = useQueryCache();
   const classes = useTableStyles();
-  const { enqueueSnackbar } = useSnackbar();
-  const { axiosLoggedRequest } = React.useContext(UserServiceContext);
   const { languages } = useLanguages();
   const [isAddModalOpen, setIsAddModalOpen] = React.useState<boolean>(false);
   const [uploadLanguageIndex, setUploadLanguageIndex] = React.useState<number>(-1);

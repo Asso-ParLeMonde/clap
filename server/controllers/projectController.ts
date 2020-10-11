@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { getRepository, getManager } from "typeorm";
 
-// import { PDFDownload } from "../entities/pdfDownload";
+import { PDFDownload } from "../entities/pdfDownload";
 import { Plan } from "../entities/plan";
 import { Project } from "../entities/project";
 import { Question } from "../entities/question";
@@ -86,8 +86,8 @@ export class ProjectController extends Controller {
       req.body.languageCode || undefined,
     );
     //For PDF Download statistics
-    // const pdfEntry = new PDFDownload();
-    // await getRepository(PDFDownload).save(pdfEntry);
+    const pdfEntry = new PDFDownload();
+    await getRepository(PDFDownload).save(pdfEntry);
     res.sendJSON({ url });
   }
 
