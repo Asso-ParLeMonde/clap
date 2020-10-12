@@ -8,7 +8,7 @@ import { logger } from "../utils/logger";
 
 import { getNodeMailer } from "./nodemailer";
 
-const frontUrl = process.env.FRONT_URL || "http://localhost:3000";
+const frontUrl = process.env.HOST_URL || "http://localhost:5000";
 let transporter: Mail | null = null;
 getNodeMailer()
   .then((t) => {

@@ -59,7 +59,7 @@ const ToCamera: React.FunctionComponent = () => {
     if (canvasRef.current === null || project.id === null) {
       return;
     }
-    const url = `https://par-le-monde-1.herokuapp.com/create/3-storyboard-and-filming-schedule?project=${project.id}`;
+    const url = `${process.env.NEXT_PUBLIC_HOST_URL}/create/3-storyboard-and-filming-schedule?project=${project.id}`;
     QRCode.toCanvas(canvasRef.current, url, (error?: Error) => {
       if (error) console.error(error);
     });

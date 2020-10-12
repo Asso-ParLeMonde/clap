@@ -5,11 +5,7 @@
  */
 import swaggerJSDoc from "swagger-jsdoc";
 
-let url: string = "http://localhost:5000/api";
-// prod
-if (process.env.BACKEND_URL) {
-  url = process.env.BACKEND_URL;
-}
+const url: string = `${process.env.HOST_URL || "http://localhost:5000"}/api`;
 
 const apiOptions: swaggerJSDoc.Options = {
   apis: ["./dist/server/utils/*.yaml", "./dist/server/controllers/*.yaml", "./dist/server/entities/*.yaml"],

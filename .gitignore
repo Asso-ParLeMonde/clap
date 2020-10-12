@@ -52,6 +52,7 @@ node_modules
 
 .minio-data
 .postgres-data
+.env.*
 
 public/sw.js
 public/workbox-*.js

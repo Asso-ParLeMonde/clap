@@ -32,7 +32,7 @@ export class LocalUtils extends Provider {
     if (provider !== "local") {
       return "";
     }
-    return `${process.env.IS_HEROKU ? "back" : "http://localhost:5000"}/${filePath}/${filename}.jpeg`;
+    return `${process.env.HOST_URL || "http://localhost:5000"}/${filePath}/${filename}.jpeg`;
   }
 
   public async getFile(filename: string): Promise<Buffer | null> {
