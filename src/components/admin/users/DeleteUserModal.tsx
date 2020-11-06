@@ -11,7 +11,7 @@ interface DeleteUserModalProps {
   onClose?(): void;
 }
 
-export const DeleteUserModal: React.FunctionComponent<DeleteUserModalProps> = ({ user = null, onClose = () => {} }) => {
+export const DeleteUserModal: React.FunctionComponent<DeleteUserModalProps> = ({ user = null, onClose = () => {} }: DeleteUserModalProps) => {
   const { enqueueSnackbar } = useSnackbar();
   const queryCache = useQueryCache();
   const { axiosLoggedRequest } = React.useContext(UserServiceContext);
