@@ -1,4 +1,18 @@
 language: node_js
 node_js:
   - 12
+services:
+  - docker
 install: yarn
+before_install:
+  - openssl aes-256-cbc -K $encrypted_eb6eb26fba1d_key -iv $encrypted_eb6eb26fba1d_iv
+    -in travis_deploy_rsa.enc -out travis_deploy_rsa -d
+  - eval "$(ssh-agent -s)"
+  - chmod 600 travis_deploy_rsa
+  - ssh-add travis_deploy_rsa
+deploy:
+  provider: script
+  skip_cleanup: true
+  script: ssh admin@ec2-15-237-33-39.eu-west-3.compute.amazonaws.com 'bash ./deploy.sh'
+  on:
+    branch: master
