@@ -13,6 +13,6 @@ before_install:
 deploy:
   provider: script
   skip_cleanup: true
-  script: ssh admin@ec2-15-237-33-39.eu-west-3.compute.amazonaws.com 'bash ./deploy.sh'
+  script: bash ./build.sh
   on:
     branch: master
