@@ -11,7 +11,10 @@
     "build:server": "tsc --project tsconfig.server.json && yarn copy:templates && yarn copy:swagger",
     "start-dev": "yarn build:server && node dist/server/app.js",
     "build": "rm -rf dist && NODE_ENV=production yarn build:next && yarn build:server",
-    "start": "NODE_ENV=production node dist/server/app.js"
+    "lint": "yarn eslint src && yarn eslint server",
+    "test-type": "yarn tsc -p .",
+    "start": "NODE_ENV=production node dist/server/app.js",
+    "test": "yarn test-type && yarn lint"
   },
   "dependencies": {
     "@google-cloud/storage": "^5.2.0",
