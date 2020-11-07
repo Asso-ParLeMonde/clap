@@ -28,6 +28,7 @@ jobs:
           eval "$(ssh-agent -s)"
           sudo chmod 600 ../private.key
           ssh-add ../private.key
+          rm -rf ~/.ssh/known_hosts
           echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
         shell: bash
         env:
