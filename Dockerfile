@@ -16,7 +16,7 @@ COPY public ./public
 COPY src ./src
 COPY server ./server
 COPY types ./types
-COPY .env ./
+# COPY .env ./
 COPY .eslintignore ./
 COPY .eslintrc.js ./
 COPY .prettierrc.js ./
