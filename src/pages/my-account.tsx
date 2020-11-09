@@ -5,9 +5,12 @@ import Backdrop from "@material-ui/core/Backdrop";
 import Button from "@material-ui/core/Button";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Divider from "@material-ui/core/Divider";
+import FormControl from "@material-ui/core/FormControl";
 import IconButton from "@material-ui/core/IconButton";
 import InputAdornment from "@material-ui/core/InputAdornment";
+import InputLabel from "@material-ui/core/InputLabel";
 import Link from "@material-ui/core/Link";
+import Select from "@material-ui/core/Select";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles, createStyles, withStyles, Theme as MaterialTheme } from "@material-ui/core/styles";
@@ -18,7 +21,9 @@ import { Modal } from "src/components/Modal";
 import { Trans } from "src/components/Trans";
 import { useTranslation } from "src/i18n/useTranslation";
 import { UserServiceContext } from "src/services/UserService";
+import { useLanguages } from "src/services/useLanguages";
 import { axiosRequest } from "src/util/axiosRequest";
+import { setCookie } from "src/util/cookies";
 import type { User } from "types/models/user.type";
 
 const useStyles = makeStyles((theme: MaterialTheme) =>
@@ -74,7 +79,8 @@ const RedButtonBis = withStyles((theme) => ({
 
 const Account: React.FunctionComponent = () => {
   const classes = useStyles();
-  const { t } = useTranslation();
+  const { t, currentLocale } = useTranslation();
+  const { languages } = useLanguages();
   const { enqueueSnackbar } = useSnackbar();
   const { user, logout, axiosLoggedRequest, setUser, deleteAccount } = React.useContext(UserServiceContext);
   const [updatedUser, setUpdatedUser] = React.useState<UpdatedUser | null>(null);
@@ -89,6 +95,15 @@ const Account: React.FunctionComponent = () => {
     passwordConfirm: false,
   });
   const [deleteText, setDeleteText] = React.useState<string>("");
+  const [currentLanguage, setCurrentLanguage] = React.useState<string | null>(null);
+
+  const handleLanguageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setCurrentLanguage(event.target.value);
+    setCookie("app-language", event.target.value, {
+      "max-age": 24 * 60 * 60,
+    });
+    window.location.reload();
+  };
 
   const openModal = (n: number) => () => {
     if (user === null) {
@@ -204,6 +219,27 @@ const Account: React.FunctionComponent = () => {
         <Button style={{ marginTop: "0.8rem" }} className="mobile-full-width" onClick={openModal(3)} variant="contained" color="secondary" size="small">
           {t("account_password_change")}
         </Button>
+        <Divider style={{ margin: "1rem 0 1.5rem" }} />
+        <Typography variant="h2">{t("change_language")}</Typography>
+        <FormControl variant="outlined" style={{ minWidth: "15rem", marginTop: "1rem" }} className="mobile-full-width">
+          <InputLabel htmlFor="language">{t("language")}</InputLabel>
+          <Select
+            native
+            value={currentLanguage || currentLocale}
+            onChange={handleLanguageChange}
+            label={t("language")}
+            inputProps={{
+              name: "language",
+              id: "language",
+            }}
+          >
+            {languages.map((l) => (
+              <option value={l.value} key={l.value}>
+                {l.label}
+              </option>
+            ))}
+          </Select>
+        </FormControl>
         <Divider style={{ margin: "1rem 0 1.5rem" }} />
         <Typography variant="h2">{t("account_school_title")}</Typography>
         <div style={{ marginTop: "0.5rem" }}>

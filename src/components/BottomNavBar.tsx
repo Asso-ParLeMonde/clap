@@ -26,7 +26,7 @@ export const BottomNavBar: React.FunctionComponent = () => {
   const { user, isLoggedIn } = React.useContext(UserServiceContext);
   const [activeTab, setActiveTab] = React.useState(0);
 
-  const tabs = getTabs(isLoggedIn, user && user.type === 2, false);
+  const tabs = getTabs(isLoggedIn, user && user.type === 2, false).slice(0, 4);
 
   useEffect(() => {
     const navtabs = getTabs(isLoggedIn, user && user.type === 2, false);
