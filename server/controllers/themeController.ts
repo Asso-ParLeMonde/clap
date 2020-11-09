@@ -2,6 +2,8 @@ import { NextFunction, Request, Response } from "express";
 import { getRepository } from "typeorm";
 
 import { Image } from "../entities/image";
+import { Project } from "../entities/project";
+import { Scenario } from "../entities/scenario";
 import { Theme } from "../entities/theme";
 import { User, UserType } from "../entities/user";
 import { deleteImage } from "../fileUpload";
@@ -28,12 +30,15 @@ export class ThemesController extends Controller {
   @get()
   public async getThemes(req: Request, res: Response): Promise<void> {
     const { query } = req;
-    const params: Array<{ isDefault?: boolean; user?: { id: number } }> = [];
+    const params: Array<{ isArchived: false; isDefault?: boolean; user?: { id: number } }> = [];
     if (query.isDefault !== undefined) {
-      params.push({ isDefault: query.isDefault === "true" || query.isDefault === "" });
+      params.push({ isArchived: false, isDefault: query.isDefault === "true" || query.isDefault === "" });
     }
     if ((query.userId !== undefined || query.user !== undefined) && req.user !== undefined) {
-      params.push({ user: { id: req.user.id } });
+      params.push({ isArchived: false, user: { id: req.user.id } });
+    }
+    if (params.length === 0) {
+      params.push({ isArchived: false });
     }
     const themes: Theme[] = await getRepository(Theme).find({ where: params, order: { isDefault: "DESC", order: "ASC" }, relations: ["image"] });
     res.sendJSON(themes);
@@ -111,7 +116,25 @@ export class ThemesController extends Controller {
   @del({ path: "/:id", userType: UserType.PLMO_ADMIN })
   public async deleteTheme(req: Request, res: Response): Promise<void> {
     const id: number = parseInt(req.params.id, 10) || 0;
-    await getRepository(Theme).delete(id);
+
+    // 1- delete image
+    const theme: Theme | undefined = await getRepository(Theme).findOne(id, { relations: ["image"] });
+    if (theme !== undefined && theme.image) {
+      await deleteImage(theme.image);
+      await getRepository(Image).delete(theme.image.id);
+    }
+
+    // 2- delete theme
+    const scenarioCount = await getRepository(Scenario).count({ theme: { id } });
+    const projectCount = await getRepository(Project).count({ theme: { id } });
+    if (scenarioCount > 0 || projectCount > 0) {
+      const theme = new Theme();
+      theme.id = id;
+      theme.isArchived = true;
+      await getRepository(Theme).save(theme);
+    } else {
+      await getRepository(Theme).delete(id);
+    }
     res.status(204).send();
   }
 

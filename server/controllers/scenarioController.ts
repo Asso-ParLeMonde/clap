@@ -42,6 +42,7 @@ export class ScenariosController extends Controller {
     }
 
     // ADMIN QUERY
+    const archivedThemeIDs: number[] = (await getRepository(Theme).find({ isArchived: true })).map((theme: Theme) => theme.id);
     const params: Array<{ isDefault?: boolean; user?: { id: number }; languageCode?: string; theme?: { id: number } }> = [];
     if (query.isDefault !== undefined) {
       params.push({ isDefault: query.isDefault === "true" || query.isDefault === "" });
@@ -69,7 +70,8 @@ export class ScenariosController extends Controller {
       }
     }
 
-    const scenarios = await getRepository(Scenario).find({ where: params });
+    let scenarios = await getRepository(Scenario).find({ where: params });
+    scenarios = scenarios.filter((s) => !archivedThemeIDs.includes(s.themeId));
     res.sendJSON(scenarios);
   }
 
