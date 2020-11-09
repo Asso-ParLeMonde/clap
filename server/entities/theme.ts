@@ -17,6 +17,9 @@ export class Theme implements ThemeInterface {
   @Column({ default: false })
   public isDefault: boolean;
 
+  @Column({ default: false })
+  public isArchived: boolean;
+
   @OneToOne(() => Image, { onDelete: "SET NULL" })
   @JoinColumn()
   public image: Image;
