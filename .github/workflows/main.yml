@@ -36,6 +36,12 @@ jobs:
           SSH_KNOWN_HOSTS: ${{secrets.SSH_KNOWN_HOSTS}}
           SSH_KEY_PATH: ${{ github.workspace }}/../private.key
 
+      # Add env file
+      - name: Create env file
+        run: echo "NEXT_PUBLIC_BASE_APP=/api\nNEXT_PUBLIC_HOST_URL=$HOST" > ./.env
+        env:
+          HOST: ${{secrets.HOST}}
+
       # Build and deploy the docker image on the server
       - name: Build and deploy the docker image on the server
         run: bash ./build.sh
