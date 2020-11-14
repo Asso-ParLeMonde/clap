@@ -102,7 +102,7 @@ export const PlanEditButtons: React.FunctionComponent<PlanEditButtonsProps> = ({
   } else {
     content = (
       <React.Fragment>
-        <Hidden smDown>
+        <Hidden smDown implementation="css">
           <Typography color="inherit" variant="h2">
             {t("part3_plan_edit_title_desktop")}
           </Typography>
@@ -136,7 +136,7 @@ export const PlanEditButtons: React.FunctionComponent<PlanEditButtonsProps> = ({
             </Button>
           </div>
         </Hidden>
-        <Hidden mdUp>
+        <Hidden mdUp implementation="css">
           <Typography color="inherit" variant="h2">
             {t("part3_plan_edit_title_mobile")}
           </Typography>

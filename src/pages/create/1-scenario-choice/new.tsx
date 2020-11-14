@@ -184,7 +184,7 @@ const NewScenario: React.FunctionComponent = () => {
             </div>
           </Typography>
           <Typography color="inherit" variant="h2" style={{ marginTop: "1rem" }}>
-            <Hidden smDown>
+            <Hidden smDown implementation="css">
               <div style={{ width: "100%", textAlign: "right" }}>
                 <Button component="a" variant="outlined" color="secondary" style={{ marginRight: "1rem" }} href={`/create/1-scenario-choice?themeId=${themeId}`} onClick={handleBack}>
                   {t("cancel")}
@@ -194,7 +194,7 @@ const NewScenario: React.FunctionComponent = () => {
                 </Button>
               </div>
             </Hidden>
-            <Hidden mdUp>
+            <Hidden mdUp implementation="css">
               <Button variant="contained" color="secondary" style={{ width: "100%", marginTop: "2rem" }} onClick={handleSubmit}>
                 {t("next")}
               </Button>

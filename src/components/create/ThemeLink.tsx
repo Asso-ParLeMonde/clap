@@ -23,7 +23,7 @@ export const ThemeLink: React.FunctionComponent = () => {
   const themeName = project.theme?.names[currentLocale] || project.theme?.names["fr"] || "";
 
   return (
-    <Hidden smDown>
+    <Hidden smDown implementation="css">
       <Breadcrumbs separator={<NavigateNextIcon fontSize="small" />} aria-label="breadcrumb">
         <Link color="inherit" href="/create" onClick={handleHome}>
           {t("all_themes")}

@@ -95,7 +95,7 @@ export const Steps: React.FunctionComponent<StepsProps> = ({ activeStep }: Steps
 
   return (
     <div>
-      <Hidden smDown>
+      <Hidden smDown implementation="css">
         {activeStep > 0 && <ProjectTitle onClick={handleProjectTitleClick} />}
         <Stepper activeStep={activeStep} alternativeLabel>
           {steps.map((step, index) => (
@@ -105,7 +105,7 @@ export const Steps: React.FunctionComponent<StepsProps> = ({ activeStep }: Steps
           ))}
         </Stepper>
       </Hidden>
-      <Hidden mdUp>
+      <Hidden mdUp implementation="css">
         <StyleMobileStepper
           variant="dots"
           steps={steps.length}

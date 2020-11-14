@@ -549,7 +549,60 @@ button:focus > .wip-container {
 .video-carousel__mask {
   overflow: hidden;
   width: 100%;
-  margin: 0.5rem 0;
+  margin: -4px 0 1.5rem 0;
+  position: relative;
+}
+.video-carousel__indicator {
+  text-align: right;
+  visibility: hidden;
+}
+.video-carousel__mask:hover > .video-carousel__indicator {
+  visibility: visible;
+}
+.video-carousel__page-indicator {
+  display: inline-block;
+  margin: 0 0.1rem;
+  width: 12px;
+  height: 4px;
+  border-radius: 2px;
+  background-color: #888888;
+}
+.video-carousel__page-indicator--selected {
+  background-color: #6065fc;
+}
+.video-carousel__page-indicator--not-visible {
+  visibility: hidden;
+}
+.video-carousel__button {
+  height: 100%;
+  top: 0;
+  left: 0;
+  background: linear-gradient(to right, #ffffff, #ffffff00);
+  position: absolute;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 50px;
+  transition: font-size ease-in 100ms;
+}
+.video-carousel__button > svg {
+  display: none;
+}
+.video-carousel__mask:hover > .video-carousel__button > svg {
+  display: inline-block;
+}
+.video-carousel__button--right {
+  left: unset;
+  right: 0;
+  background: linear-gradient(to left, #ffffff, #ffffff00);
+}
+.video-carousel__button:hover {
+  font-size: 65px;
+  background: linear-gradient(to right, #ffffff, #ffffff55);
+}
+.video-carousel__button--right:hover {
+  background: linear-gradient(to left, #ffffff, #ffffff55);
 }
 .video-carousel__container {
   white-space: nowrap;
@@ -567,15 +620,76 @@ button:focus > .wip-container {
 }
 .video-card {
   position: relative;
-  padding-top: 56.25%; /* 720 / 1280 = 0.5625 */
+  padding-top: 56.25%; /* 16/9 */
   width: 100%;
+  border: 1px solid #646464;
+  border-radius: 8px;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: contain;
 }
-.video-card > div {
+.video-card > button {
   position: absolute;
   height: 100%;
   width: 100%;
   top: 0;
   left: 0;
-  border-radius: 0.5rem;
-  background-color: #646464;
+  border-radius: 8px;
+}
+.video-card_play-icon {
+  color: white;
+  background-color: #6065fc55;
+  backdrop-filter: blur(5px);
+  padding: 0;
+  margin: 0;
+  width: 25%;
+  height: 25%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  border: 1px solid #ffffff88;
+  transition: width ease-in 100ms, height ease-in 100ms;
+}
+.video-card > button:hover .video-card_play-icon {
+  width: 30%;
+  height: 30%;
+}
+.video-card_play-icon > svg {
+  width: 80% !important;
+  height: 80% !important;
+}
+.video-card_time {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  padding: 2px 5px;
+  border-radius: 4px;
+  background-color: #ffffff99;
+}
+.player_wrapper_1 {
+  display: block;
+  background-color: black;
+}
+.player_wrapper_2 {
+  display: block;
+  max-width: 700px;
+  margin: auto;
+}
+.player_wrapper_3 {
+  display: block;
+  position: relative;
+  width: 100%;
+  padding-top: 56.25%; /* 16/9 */
+}
+.player_container {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  background-color: black;
+  top: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }

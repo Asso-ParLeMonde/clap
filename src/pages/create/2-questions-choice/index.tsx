@@ -196,7 +196,7 @@ const QuestionChoice: React.FunctionComponent = () => {
             </Button>
           </div>
         </Hidden>
-        <Hidden mdUp>
+        <Hidden mdUp implementation="css">
           <Button component="a" href={`/create/3-storyboard-and-filming-schedule`} color="secondary" onClick={handleNext} variant="contained" style={{ width: "100%", marginTop: "2rem" }}>
             {t("next")}
           </Button>

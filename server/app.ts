@@ -47,8 +47,8 @@ async function startApp() {
   /* --- Middlewares --- */
   const directives = getDefaultDirectives();
   if (dev) {
-    directives["default-src"] = ["'self'", "'unsafe-eval'", "'unsafe-inline'"];
-    directives["script-src"] = ["'self'", "'unsafe-eval'", "'unsafe-inline'"];
+    directives["default-src"] = ["'self'", "http:", "https:", "'unsafe-eval'", "'unsafe-inline'"];
+    directives["script-src"] = ["'self'", "http:", "https:", "'unsafe-eval'", "'unsafe-inline'"];
   }
   app.use(
     helmet({
