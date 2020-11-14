@@ -8,53 +8,21 @@ import Typography from "@material-ui/core/Typography";
 import { VideoCarousel } from "src/components/inspiration/VideoCarousel";
 import { VideoSlider } from "src/components/inspiration/VideoSlider";
 import { useVideoSizes } from "src/hooks/useVideoSizes";
+import { useThemes } from "src/services/useThemes";
+import type { Theme } from "types/models/theme.type";
 import type { Video } from "types/models/video.type";
-
-const videos: any = [
-  {
-    id: 0,
-    title: "My first video!",
-    videoUrl: "https://www.youtube.com/watch?v=d46Azg3Pm4c",
-    thumbnailUrl: "https://i.vimeocdn.com/video/726047953_640.jpg",
-    duration: 76,
-  },
-  {
-    id: 1,
-    title: "Video 2",
-    videoUrl: "https://www.youtube.com/watch?v=tRFOjLIl7G0",
-    thumbnailUrl: "",
-    duration: 7600,
-  },
-  {
-    id: 2,
-    title: "Video 4",
-    videoUrl: "https://vimeo.com/90509568",
-    thumbnailUrl: null,
-    duration: 6,
-  },
-  {
-    id: 0,
-    title: "My first video!",
-    videoUrl: "https://vimeo.com/169599296",
-    thumbnailUrl: "https://i.vimeocdn.com/video/726047953_640.jpg",
-    duration: 76,
-  },
-  {
-    id: 1,
-    title: "My first video!",
-    videoUrl: "hoho",
-    thumbnailUrl: "",
-    duration: 76,
-  },
-];
 
 interface InspirationProps {
   selectedVideo: Video;
   setSelectedVideo(video: Video): void;
 }
 
+type ThemeWithVideos = Theme & { videos: Video[] };
+
 export const InspirationNoSSR: React.FC<InspirationProps> = ({ selectedVideo, setSelectedVideo }: InspirationProps) => {
   const { enqueueSnackbar } = useSnackbar();
+  const { themes } = useThemes({ user: false, isDefault: true });
+  const videos: Video[] = []; // TODO
   const { width, tilesCount, tileWidth, sideSize } = useVideoSizes();
 
   const onError = () => {
@@ -63,6 +31,27 @@ export const InspirationNoSSR: React.FC<InspirationProps> = ({ selectedVideo, se
       variant: "error",
     });
   };
+
+  const videosPerTheme: ThemeWithVideos[] = React.useMemo(() => {
+    const videosBuck: { [videoIndex: number]: boolean } = {};
+    const themesWithVideos = themes.map((theme) => {
+      const videosOfTheme = videos.filter((v) => v.themeId === theme.id);
+      videosOfTheme.forEach((v) => {
+        videosBuck[v.id] = true;
+      });
+      return { ...theme, videos: videosOfTheme };
+    });
+    const otherVideos = videos.filter((v) => !videosBuck[v.id]);
+    themesWithVideos.push({
+      id: -1,
+      order: 0,
+      isDefault: true,
+      names: { fr: "Autre vidéos" },
+      image: null,
+      videos: otherVideos,
+    });
+    return themesWithVideos.filter((t) => t.videos.length > 0);
+  }, [themes, videos]);
 
   return (
     <div style={{ paddingBottom: "2rem" }}>
@@ -82,12 +71,16 @@ export const InspirationNoSSR: React.FC<InspirationProps> = ({ selectedVideo, se
           </Typography>
         </>
       )}
-      <BrowserView>
-        <VideoCarousel themeName="Ma classe" videos={videos} width={width} tilesCount={tilesCount} tileWidth={tileWidth} sideSize={sideSize} setSelectedVideo={setSelectedVideo} />
-      </BrowserView>
-      <MobileView>
-        <VideoSlider themeName="Jeux vidéos" videos={videos} width={width} setSelectedVideo={setSelectedVideo} />
-      </MobileView>
+      {videosPerTheme.map((t) => (
+        <>
+          <BrowserView key={t.id}>
+            <VideoCarousel themeName={t.names.fr} videos={t.videos} width={width} tilesCount={tilesCount} tileWidth={tileWidth} sideSize={sideSize} setSelectedVideo={setSelectedVideo} />
+          </BrowserView>
+          <MobileView key={`mobile_${t.id}`}>
+            <VideoSlider themeName={t.names.fr} videos={t.videos} width={width} setSelectedVideo={setSelectedVideo} />
+          </MobileView>
+        </>
+      ))}
     </div>
   );
 };
