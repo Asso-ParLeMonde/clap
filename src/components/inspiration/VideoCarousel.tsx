@@ -11,14 +11,13 @@ import type { Video } from "types/models/video.type";
 interface VideoCarouselProps {
   themeName: string;
   videos: Video[];
-  width: number;
   tilesCount: number;
   tileWidth: number;
   sideSize: number;
   setSelectedVideo(video: Video): void;
 }
 
-export const VideoCarousel: React.FC<VideoCarouselProps> = ({ themeName, videos, width, tilesCount, tileWidth, sideSize, setSelectedVideo }: VideoCarouselProps) => {
+export const VideoCarousel: React.FC<VideoCarouselProps> = ({ themeName, videos, tilesCount, tileWidth, sideSize, setSelectedVideo }: VideoCarouselProps) => {
   const [carousel, setCarousel] = React.useState<{ page: number; position: number; animate: boolean }>({
     page: 0,
     position: sideSize,

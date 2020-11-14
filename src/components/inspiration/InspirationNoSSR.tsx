@@ -74,7 +74,7 @@ export const InspirationNoSSR: React.FC<InspirationProps> = ({ selectedVideo, se
       {videosPerTheme.map((t) => (
         <>
           <BrowserView key={t.id}>
-            <VideoCarousel themeName={t.names.fr} videos={t.videos} width={width} tilesCount={tilesCount} tileWidth={tileWidth} sideSize={sideSize} setSelectedVideo={setSelectedVideo} />
+            <VideoCarousel themeName={t.names.fr} videos={t.videos} tilesCount={tilesCount} tileWidth={tileWidth} sideSize={sideSize} setSelectedVideo={setSelectedVideo} />
           </BrowserView>
           <MobileView key={`mobile_${t.id}`}>
             <VideoSlider themeName={t.names.fr} videos={t.videos} width={width} setSelectedVideo={setSelectedVideo} />
