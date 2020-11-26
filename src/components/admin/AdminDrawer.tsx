@@ -24,6 +24,10 @@ const adminTabs: Tab[] = [
     path: "/admin/questions",
   },
   {
+    label: "Inspiration",
+    path: "/admin/inspiration",
+  },
+  {
     label: "Langues",
     path: "/admin/languages",
   },
