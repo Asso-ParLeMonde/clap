@@ -271,7 +271,7 @@ const AdminQuestions: React.FunctionComponent = () => {
           languageCode={selectedArgs.languageCode}
           open={createModalOpen}
           setQuestions={setQuestionsFunction}
-          order={Math.max(...questions.map((q) => q.index)) + 1}
+          order={Math.max(0, ...questions.map((q) => q.index)) + 1}
         />
         <EditQuestionModal
           question={editQuestionIndex !== -1 ? questions[editQuestionIndex] || null : null}

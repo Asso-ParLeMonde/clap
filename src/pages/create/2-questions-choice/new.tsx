@@ -59,7 +59,7 @@ const QuestionNew: React.FunctionComponent = () => {
         return;
       }
     } else {
-      newQ.id = Math.max(...questions.map((q) => q.id)) + 1;
+      newQ.id = Math.max(0, ...questions.map((q) => q.id)) + 1;
     }
     newQ.plans = [
       {
