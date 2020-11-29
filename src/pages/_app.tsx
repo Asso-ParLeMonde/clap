@@ -5,8 +5,8 @@ import "react-html5-camera-photo/build/css/index.css";
 import "src/styles/globals.css";
 import "src/styles/user.css";
 
-import type { AppProps, AppInitialProps, AppContext } from "next/app";
 import App from "next/app";
+import type { AppProps, AppInitialProps, AppContext } from "next/app";
 import Head from "next/head";
 import { SnackbarProvider } from "notistack";
 import NProgress from "nprogress";
@@ -20,6 +20,7 @@ import Hidden from "@material-ui/core/Hidden";
 import { ThemeProvider } from "@material-ui/core/styles";
 
 import { BottomNavBar } from "src/components/BottomNavBar";
+import { ScrollTopButton } from "src/components/ScrollTopButton";
 import { AdminDrawer } from "src/components/admin/AdminDrawer";
 import { TopNavBar } from "src/components/topNavBar";
 import { useTranslationContext } from "src/i18n/useTranslation";
@@ -150,6 +151,7 @@ const MyApp: React.FunctionComponent<AppProps> & {
             <ReactQueryDevtools />
           </ReactQueryCacheProvider>
         </SnackbarProvider>
+        <ScrollTopButton />
       </ThemeProvider>
     </>
   );
