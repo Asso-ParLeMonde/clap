@@ -2,10 +2,10 @@
 
 ![Build](https://github.com/Asso-ParLeMonde/clap/workflows/Build/badge.svg) [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
-Clap! is web application to create videos written in Typescript.
+Clap! is a web application to create videos written in Typescript.
 
 - Server: NodeJS
-- Client: Next
+- Client: NextJS
 
 ## Installation
 
