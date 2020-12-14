@@ -20,6 +20,7 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles, createStyles, withStyles, Theme as MaterialTheme } from "@material-ui/core/styles";
 import { Link } from "@material-ui/core";
 import AddCircleIcon from "@material-ui/icons/AddCircle";
+import CheckIcon from "@material-ui/icons/Check";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 import HelpIcon from "@material-ui/icons/Help";
@@ -86,6 +87,7 @@ const AdminScenarios: React.FunctionComponent = () => {
   const { themeNames } = useThemeNames();
   const { axiosLoggedRequest } = React.useContext(UserServiceContext);
   const { scenarios } = useScenarios({ isDefault: true });
+  const { scenarios: userScenarios } = useScenarios({ isDefault: false });
   const [deleteId, setDeleteId] = React.useState<number | null>(null);
   const [selectedLanguage, setSelectedLanguage] = React.useState<string>("fr");
 
@@ -101,6 +103,25 @@ const AdminScenarios: React.FunctionComponent = () => {
     }
     return data;
   }, [themeNames, scenarios]);
+
+  // get scenario per themes for users
+  const userScenariosData: ScenarioData[] = React.useMemo(() => {
+    const themeIds = Object.keys(themeNames);
+    const data = themeIds.map((id) => ({
+      id: parseInt(id, 10),
+      startIndex: 0,
+      scenarios: groupScenarios(userScenarios).filter((scenario) => scenario.themeId === parseInt(id, 10)),
+    }));
+    data.push({
+      id: -1,
+      startIndex: 0,
+      scenarios: groupScenarios(userScenarios).filter((scenario) => !themeIds.includes(`${scenario.themeId}`)),
+    });
+    for (let i = 1, n = data.length; i < n; i++) {
+      data[i].startIndex = data[i - 1].startIndex + data[i - 1].scenarios.length;
+    }
+    return data.filter((d) => d.scenarios.length > 0);
+  }, [themeNames, userScenarios]);
 
   const goToPath = (path: string) => (event: React.MouseEvent) => {
     event.preventDefault();
@@ -157,6 +178,20 @@ const AdminScenarios: React.FunctionComponent = () => {
       variant: "success",
     });
     setDeleteId(null);
+    queryCache.invalidateQueries("scenarios");
+  };
+
+  const validateScenario = async (scenarioId: number | string, languageCode: string) => {
+    const response = await axiosLoggedRequest({
+      method: "PUT",
+      url: `/scenarios/${scenarioId}_${languageCode}`,
+      data: {
+        isDefault: true,
+      },
+    });
+    if (response.error) {
+      return;
+    }
     queryCache.invalidateQueries("scenarios");
   };
 
@@ -276,6 +311,58 @@ const AdminScenarios: React.FunctionComponent = () => {
             Voulez-vous vraiment supprimer le scénario <strong>{toDeleteScenarioName}</strong> ?
           </DialogContentText>
         </Modal>
+
+        {userScenarios.length > 0 && (
+          <AdminTile title="Scénarios des utilisateurs" selectLanguage={selectLanguage} style={{ marginTop: "2rem" }}>
+            <TableContainer>
+              <Table aria-labelledby="themetabletitle" size="medium" aria-label="Scénarios des utilisateurs">
+                <TableHead style={{ borderBottom: "none" }} className={classes.toolbar}>
+                  <TableRow>
+                    <TableCell style={{ color: "white", fontWeight: "bold", border: "none" }}>#</TableCell>
+                    <TableCell style={{ color: "white", fontWeight: "bold", border: "none" }}>Nom</TableCell>
+                    <TableCell style={{ color: "white", fontWeight: "bold", border: "none" }}>Description</TableCell>
+                    <TableCell style={{ color: "white", fontWeight: "bold", border: "none" }} align="right">
+                      Actions
+                    </TableCell>
+                  </TableRow>
+                </TableHead>
+
+                <TableBody>
+                  {userScenariosData.map((theme) => (
+                    <React.Fragment key={`user_top_${theme.id}`}>
+                      <TableRow key={theme.id}>
+                        <TableCell colSpan={4} className={classes.themeRow}>
+                          {theme.id === -1 ? "Autres thèmes (créés par les utilisateurs)" : `Thème : ${themeNames[theme.id] ? themeNames[theme.id][selectedLanguage] || themeNames[theme.id].fr || "" : `numéro ${theme.id}`}`}
+                        </TableCell>
+                      </TableRow>
+                      {theme.scenarios.map((s, index) => (
+                        <TableRow key={`${theme.id}_${s.id}`} className={index % 2 === 0 ? classes.normalRow : classes.evenRow}>
+                          <TableCell style={{ width: "3rem" }}>{index + theme.startIndex + 1}</TableCell>
+                          <TableCell style={{ color: s.names[selectedLanguage] ? "inherit" : "grey" }}>{s.names[selectedLanguage] || `${s.names.default} (non traduit)`}</TableCell>
+                          <TableCell style={{ color: s.descriptions[selectedLanguage] ? "inherit" : "grey" }}>{s.descriptions[selectedLanguage] || s.descriptions.default}</TableCell>
+                          <TableCell align="right" padding="none" style={{ minWidth: "96px" }}>
+                            {theme.id !== -1 && (
+                              <Tooltip title="Valider le scénario">
+                                <IconButton
+                                  aria-label="valider"
+                                  onClick={() => {
+                                    validateScenario(s.id, Object.keys(s.names).filter((id) => id !== "default")[0]).catch();
+                                  }}
+                                >
+                                  <CheckIcon />
+                                </IconButton>
+                              </Tooltip>
+                            )}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </React.Fragment>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </AdminTile>
+        )}
       </NoSsr>
     </div>
   );

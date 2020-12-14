@@ -117,7 +117,7 @@ export class ScenariosController extends Controller {
     res.sendJSON(scenario);
   }
 
-  @put({ path: "/:id", userType: UserType.CLASS })
+  @put({ path: "/:id", userType: UserType.PLMO_ADMIN })
   public async updateScenario(req: Request, res: Response, next: NextFunction): Promise<void> {
     const { id, languageCode } = getIDs(req.params.id);
     const scenario = await getRepository(Scenario).findOne({ where: { id, languageCode: languageCode || "fr" } });
