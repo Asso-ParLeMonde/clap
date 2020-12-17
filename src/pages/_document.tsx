@@ -3,7 +3,7 @@ import React from "react";
 
 import { ServerStyleSheets } from "@material-ui/core/styles";
 
-const APP_URL = process.env.NEXT_PUBLIC_HOST_URL || "https://clap.parlemonde.com";
+const APP_URL = process.env.NEXT_PUBLIC_HOST_URL || "https://clap.parlemonde.org";
 const APP_NAME = "Clap!";
 const APP_DESCRIPTION = "Clap! Une application pour créer de super vidéos.";
 
