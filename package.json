@@ -64,7 +64,7 @@
     "sortablejs": "1.10.2",
     "swagger-jsdoc": "^4.2.3",
     "swagger-ui-express": "^4.1.4",
-    "typeorm": "^0.2.25",
+    "typeorm": "^0.2.29",
     "uuid": "^8.3.0",
     "winston": "^3.3.3"
   },
