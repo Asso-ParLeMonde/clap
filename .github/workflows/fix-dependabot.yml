@@ -1,10 +1,13 @@
 name: FixDependabot
 
-on: workflow_dispatch
+on:
+  push:
+    branches: [dependabot/npm_and_yarn/**]
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    if: github.actor == 'dependabot[bot]'
 
     steps:
       - uses: actions/checkout@v2
