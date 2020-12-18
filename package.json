@@ -22,7 +22,7 @@
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.56",
     "argon2": "^0.27.0",
-    "aws-sdk": "^2.734.0",
+    "aws-sdk": "^2.813.0",
     "axios": "^0.20.0",
     "body-parser": "^1.19.0",
     "caniuse-lite": "^1.0.30001114",
