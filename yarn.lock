@@ -10052,10 +10052,10 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
-"nodemailer@npm:^6.4.13":
-  version: 6.4.13
-  resolution: "nodemailer@npm:6.4.13"
-  checksum: c5eeba3805bf94a3030b6ace5da62989d3d0cc170712d60700970e69d002a36a575bc9df339e8a336c3092a7ea777cae71b65135eeec146c3a568cd2f93a5b61
+"nodemailer@npm:^6.4.17":
+  version: 6.4.17
+  resolution: "nodemailer@npm:6.4.17"
+  checksum: 2031aa60ea495f4e014d7236a9dd91dd7189b7b014c3edec63f1483bb975f1eb92730de495fa23317ec61c21eded62d310ac058eb20401188467cc11396386e9
   languageName: node
   linkType: hard
 
@@ -10648,7 +10648,7 @@ fsevents@~2.1.2:
     mysql: ^2.18.1
     next: ">=9.5.4"
     next-pwa: ^3.1.5
-    nodemailer: ^6.4.13
+    nodemailer: ^6.4.17
     nodemon: ^2.0.4
     notistack: ^1.0.0
     nprogress: ^0.2.0
