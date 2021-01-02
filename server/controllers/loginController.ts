@@ -39,12 +39,12 @@ export class LoginController extends Controller {
 
     let isPasswordCorrect: boolean = false;
     try {
-      isPasswordCorrect = await argon2.verify(user.passwordHash, password);
+      isPasswordCorrect = await argon2.verify(user.passwordHash || "", password);
     } catch (e) {
       logger.error(JSON.stringify(e));
     }
 
-    if (user.accountRegistration >= 3) {
+    if (user.accountRegistration === undefined || user.accountRegistration >= 3) {
       throw new AppError("Account blocked. Please reset password", ErrorCode.ACCOUNT_BLOCKED);
     }
 
@@ -112,7 +112,7 @@ export class LoginController extends Controller {
     const verifyToken = req.body.verifyToken || "";
     let isverifyTokenCorrect: boolean = false;
     try {
-      isverifyTokenCorrect = await argon2.verify(user.verificationHash, verifyToken);
+      isverifyTokenCorrect = await argon2.verify(user.verificationHash || "", verifyToken);
     } catch (e) {
       logger.error(JSON.stringify(e));
     }
@@ -155,7 +155,7 @@ export class LoginController extends Controller {
     const verifyToken = req.body.verifyToken || "";
     let isverifyTokenCorrect: boolean = false;
     try {
-      isverifyTokenCorrect = await argon2.verify(user.verificationHash, verifyToken);
+      isverifyTokenCorrect = await argon2.verify(user.verificationHash || "", verifyToken);
     } catch (e) {
       logger.error(JSON.stringify(e));
     }

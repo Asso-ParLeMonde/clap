@@ -4,7 +4,7 @@ const optionsRegex = /{{(.+?)}}/gm;
 
 interface translateOptions {
   count?: number;
-  [key: string]: string | number;
+  [key: string]: string | number | undefined;
 }
 
 export type tFunction = (key: string, options?: translateOptions) => string;

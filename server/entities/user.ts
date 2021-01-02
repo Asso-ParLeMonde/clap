@@ -31,13 +31,13 @@ export class User implements UserInterface {
   public school: string;
 
   @Column({ default: 0 })
-  public accountRegistration: number;
+  public accountRegistration?: number;
 
   @Column({ type: "varchar", length: 95 })
-  public passwordHash: string;
+  public passwordHash?: string;
 
   @Column({ type: "varchar", length: 95, default: "" })
-  public verificationHash: string;
+  public verificationHash?: string;
 
   @Column({
     type: "enum",

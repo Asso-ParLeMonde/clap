@@ -23,7 +23,7 @@ COPY .prettierrc.js ./
 COPY next-env.d.ts ./
 COPY next.config.js ./
 COPY tsconfig.json ./
-COPY tsconfig.server.json ./
+COPY server/tsconfig.json ./server/
 
 # Build sources
 ENV NODE_ENV production

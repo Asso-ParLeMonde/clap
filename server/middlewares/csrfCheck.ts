@@ -21,7 +21,7 @@ export function crsfProtection(): RequestHandler {
 
     // return either the not null token or a new token based on the secret.
     req.getCsrfToken = () => {
-      return token !== null ? token : tokens.create(secret);
+      return token !== null ? token : tokens.create(secret || "");
     };
 
     // check csrf

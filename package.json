@@ -8,13 +8,17 @@
     "copy:swagger": "yarn cpx \"server/**/*.yaml\" dist/server",
     "copy:pwa": "yarn cpx dist/next/workbox-*.js public && yarn cpx dist/next/sw.js public",
     "build:next": "next build && yarn copy:pwa",
-    "build:server": "tsc --project tsconfig.server.json && yarn copy:templates && yarn copy:swagger",
+    "build:server": "tsc --project server/tsconfig.json && yarn copy:templates && yarn copy:swagger",
     "start-dev": "yarn build:server && node dist/server/app.js",
     "build": "rm -rf dist && NODE_ENV=production yarn build:next && yarn build:server",
     "lint": "yarn eslint src && yarn eslint server",
     "test-type": "yarn tsc -p .",
     "start": "NODE_ENV=production node dist/server/app.js",
     "test": "yarn test-type && yarn lint"
+  },
+  "resolutions": {
+    "chokidar": "^3.4.3",
+    "css": "^3.0.0"
   },
   "dependencies": {
     "@google-cloud/storage": "^5.2.0",
@@ -23,7 +27,7 @@
     "@material-ui/lab": "^4.0.0-alpha.56",
     "argon2": "^0.27.0",
     "aws-sdk": "^2.813.0",
-    "axios": "^0.20.0",
+    "axios": "^0.21.1",
     "body-parser": "^1.19.0",
     "caniuse-lite": "^1.0.30001114",
     "classnames": "^2.2.6",
@@ -41,7 +45,7 @@
     "morgan": "^1.10.0",
     "multer": "^1.4.2",
     "mysql": "^2.18.1",
-    "next": ">=9.5.4",
+    "next": "^10.0.4",
     "next-pwa": "^3.1.5",
     "nodemailer": "^6.4.17",
     "notistack": "^1.0.0",
@@ -93,7 +97,6 @@
     "@types/pug": "^2.0.4",
     "@types/puppeteer": "^3.0.2",
     "@types/qrcode": "^1",
-    "@types/query-string": "^6",
     "@types/react": "^17.0.0",
     "@types/sharp": "^0",
     "@types/sortablejs": "^1.10.6",
@@ -118,7 +121,7 @@
     "nodemon": "^2.0.4",
     "prettier": "^2.0.5",
     "ts-node": "^8.10.2",
-    "typescript": "^3.9.7",
+    "typescript": "^4.1.3",
     "webpack": "^4.44.1"
   }
 }

@@ -73,7 +73,7 @@ export async function translationsToFile(language: string): Promise<string> {
       if (err) {
         reject(err);
       } else {
-        resolve();
+        resolve(undefined);
       }
     });
   });

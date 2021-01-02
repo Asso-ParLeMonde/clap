@@ -102,7 +102,10 @@ export class ScenariosController extends Controller {
     scenario.languageCode = req.body.languageCode || "fr";
     scenario.name = req.body.name || "";
     scenario.isDefault = req.body.isDefault || false;
-    scenario.id = parseInt(req.body.id, 10) || undefined;
+    const scenarioId = parseInt(req.body.id, 10);
+    if (!isNaN(scenarioId)) {
+      scenario.id = scenarioId;
+    }
 
     if (req.body.userId !== undefined && req.user) {
       scenario.user = new User();

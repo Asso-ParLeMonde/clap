@@ -161,7 +161,7 @@ export class UserController extends Controller {
     }
     updateUser(user, req);
     if (req.body.password && req.body.oldPassword) {
-      if (isPasswordValid(req.body.password) && (await argon2.verify(user.passwordHash, req.body.oldPassword))) {
+      if (isPasswordValid(req.body.password) && (await argon2.verify(user.passwordHash || "", req.body.oldPassword))) {
         user.passwordHash = await argon2.hash(req.body.password);
       } else {
         throw new AppError("Invalid password or old password", ErrorCode.INVALID_PASSWORD);

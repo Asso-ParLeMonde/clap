@@ -25,7 +25,7 @@ export class AwsS3 extends Provider {
   private addPublicReadPolicy(folderName: string): void {
     this.s3.putBucketPolicy(
       {
-        Bucket: process.env.S3_BUCKET_NAME,
+        Bucket: process.env.S3_BUCKET_NAME || "",
         Policy: JSON.stringify(publicPolicy(folderName)),
       },
       (err2) => {
@@ -43,7 +43,7 @@ export class AwsS3 extends Provider {
       this.s3.upload(
         {
           Body: file,
-          Bucket: process.env.S3_BUCKET_NAME,
+          Bucket: process.env.S3_BUCKET_NAME || "",
           Key: filepath,
         },
         function (err, data) {
@@ -62,7 +62,7 @@ export class AwsS3 extends Provider {
     return new Promise((resolve, reject) => {
       this.s3.deleteObject(
         {
-          Bucket: process.env.S3_BUCKET_NAME,
+          Bucket: process.env.S3_BUCKET_NAME || "",
           Key: filepath,
         },
         function (err, data) {
@@ -81,7 +81,7 @@ export class AwsS3 extends Provider {
     return new Promise((resolve, reject) => {
       this.s3.getObject(
         {
-          Bucket: process.env.S3_BUCKET_NAME,
+          Bucket: process.env.S3_BUCKET_NAME || "",
           Key: filepath,
         },
         function (err, data) {

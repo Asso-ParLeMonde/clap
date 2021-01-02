@@ -25,7 +25,7 @@ export class Theme implements ThemeInterface {
   public image: Image;
 
   @ManyToOne(() => User)
-  public user: User;
+  public user: User | null;
 
   @Column({ type: "json" })
   public names: { [key: string]: string };

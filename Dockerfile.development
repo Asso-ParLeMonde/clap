@@ -52,7 +52,7 @@ COPY nodemon.json ./
 COPY next-env.d.ts ./
 COPY next.config.js ./
 COPY tsconfig.json ./
-COPY tsconfig.server.json ./
+COPY server/tsconfig.json ./server/
 RUN mkdir dist
 
 # Add user so we don't need --no-sandbox.
