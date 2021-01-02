@@ -12,7 +12,7 @@
     "start-dev": "yarn build:server && node dist/server/app.js",
     "build": "rm -rf dist && NODE_ENV=production yarn build:next && yarn build:server",
     "lint": "yarn eslint src && yarn eslint server",
-    "test-type": "yarn tsc -p .",
+    "test-type": "yarn tsc --noEmit -p .&& yarn tsc --noEmit -p server/tsconfig.json",
     "start": "NODE_ENV=production node dist/server/app.js",
     "test": "yarn test-type && yarn lint"
   },
