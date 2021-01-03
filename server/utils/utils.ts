@@ -53,3 +53,12 @@ export async function getQRCodeURL(url: string): Promise<string> {
     return "";
   }
 }
+
+export function updateFromBody<T>(bodyValue: T | null | undefined, defaultValue: T | null): T | null;
+export function updateFromBody<T>(bodyValue: T | null | undefined, defaultValue: T, nullable: false): T;
+export function updateFromBody<T>(bodyValue: T | null | undefined, defaultValue: T | null, nullable: boolean = true): T | null {
+  if (bodyValue !== undefined && (bodyValue !== null || nullable)) {
+    return bodyValue;
+  }
+  return defaultValue;
+}

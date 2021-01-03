@@ -90,7 +90,7 @@ export const Steps: React.FunctionComponent<StepsProps> = ({ activeStep }: Steps
   };
 
   const handleProjectTitleClick = () => {
-    router.push(`/my-videos/edit/${project.id}`);
+    router.push(`/my-videos/${project.id}`);
   };
 
   return (

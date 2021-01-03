@@ -10,35 +10,28 @@ import { User, UserType } from "../entities/user";
 import { logger } from "./logger";
 import { sleep } from "./utils";
 
-const dbType = "postgres" as const;
+const DEFAULT_TYPE = "mysql" as const;
+const DEFAULT_PORT = "3306";
+const DEFAULT_NAME = "plmo";
 
-const getDBConfig = (): ConnectionOptions => {
-  let connectionOptions:
-    | {
-        database: string;
-        host: string;
-        password: string;
-        port: number;
-        type: "mariadb" | "postgres" | "mysql";
-        username: string;
-        extra: {
-          ssl: boolean;
-        };
-      }
-    | { type: "mariadb" | "postgres" | "mysql"; url: string };
+const getDBConfig = (): ConnectionOptions | null => {
+  if (!process.env.DB_TYPE || (process.env.DB_TYPE !== "mysql" && process.env.DB_TYPE !== "mariadb" && process.env.DB_TYPE !== "postgres")) {
+    return null;
+  }
 
+  let connectionOptions: ConnectionOptions;
   if (process.env.DATABASE_URL) {
     connectionOptions = {
-      type: (process.env.DB_TYPE || dbType) as "mariadb" | "postgres" | "mysql",
+      type: (process.env.DB_TYPE || DEFAULT_TYPE) as "mariadb" | "postgres" | "mysql",
       url: process.env.DATABASE_URL,
     };
   } else {
     connectionOptions = {
-      database: process.env.DB_DB || process.env.DB_NAME || "plmo",
+      database: process.env.DB_DB || process.env.DB_NAME || DEFAULT_NAME,
       host: process.env.DB_HOST,
       password: process.env.DB_PASS,
-      port: parseInt(process.env.DB_PORT || "5432", 10),
-      type: (process.env.DB_TYPE || dbType) as "mariadb" | "postgres" | "mysql",
+      port: parseInt(process.env.DB_PORT || DEFAULT_PORT, 10),
+      type: (process.env.DB_TYPE || DEFAULT_TYPE) as "mariadb" | "postgres" | "mysql",
       username: process.env.DB_USER,
       extra: process.env.DB_SSL
         ? {
@@ -48,16 +41,18 @@ const getDBConfig = (): ConnectionOptions => {
     };
   }
 
-  return {
-    charset: "utf8mb4_unicode_ci",
+  const options = {
     logging: process.env.NODE_ENV !== "production",
     entities: [path.join(__dirname, "../entities/*.js")],
     migrations: [path.join(__dirname, "../migration/**/*.js")],
-    subscribers: [],
     synchronize: true,
     timezone: "utc",
     ...connectionOptions,
   };
+  if (options.type === "mysql" || options.type === "mariadb") {
+    options.charset = "utf8mb4_unicode_ci";
+  }
+  return options;
 };
 
 function query(q: string, connection: mysql.Connection): Promise<void> {
@@ -81,7 +76,7 @@ async function createMySQLDB(): Promise<void> {
       timezone: "utc",
       user: process.env.DB_USER,
     });
-    const dbName: string = process.env.DB_NAME || "plmo";
+    const dbName: string = process.env.DB_NAME || DEFAULT_NAME;
     await query(`CREATE DATABASE IF NOT EXISTS ${dbName} CHARACTER SET = 'utf8mb4' COLLATE = 'utf8mb4_unicode_ci';`, connection);
     logger.info("Database PLMO created!");
   } catch (e) {
@@ -103,17 +98,17 @@ async function createPostgresDB(): Promise<void> {
   let dbName: string;
   if (process.env.DATABASE_URL) {
     const url_parts = process.env.DATABASE_URL.split("/");
-    dbName = url_parts.pop();
+    dbName = url_parts.pop() || DEFAULT_NAME;
     url_parts.push("postgres");
     connectionData = {
       connectionString: url_parts.join("/"),
     };
   } else {
-    dbName = process.env.DB_DB || process.env.DB_NAME || "plmo";
+    dbName = process.env.DB_DB || process.env.DB_NAME || DEFAULT_NAME;
     connectionData = {
-      host: process.env.DB_HOST,
-      password: process.env.DB_PASS,
-      user: process.env.DB_USER,
+      host: process.env.DB_HOST || "",
+      password: process.env.DB_PASS || "",
+      user: process.env.DB_USER || "",
       database: "postgres",
     };
   }
@@ -170,7 +165,11 @@ export async function connectToDatabase(tries: number = 10): Promise<Connection 
     return null;
   }
   try {
-    const connection = await createConnection(getDBConfig());
+    const config = getDBConfig();
+    if (config === null) {
+      return null;
+    }
+    const connection = await createConnection(config);
     try {
       await createSequences(connection);
     } catch (e) {

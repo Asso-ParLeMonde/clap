@@ -7,12 +7,7 @@ import { AppError } from "../middlewares/handleErrors";
 
 import { Controller, del, get, post, put } from "./controller";
 
-function updateFromBody<T>(bodyValue: T | null | undefined, defaultValue: T, nullable: boolean = true): T | null {
-  if (bodyValue !== undefined && (bodyValue !== null || nullable)) {
-    return bodyValue;
-  }
-  return defaultValue;
-}
+import { updateFromBody } from "../utils/utils"
 
 export class VideosController extends Controller {
   constructor() {
@@ -63,7 +58,7 @@ export class VideosController extends Controller {
 
     video.videoUrl = updateFromBody<string>(req.body.videoUrl, video.videoUrl, false);
     video.thumbnailUrl = updateFromBody<string>(req.body.thumbnailUrl, video.thumbnailUrl);
-    video.title = updateFromBody<string>(req.body.thumbnailUrl, video.thumbnailUrl, false);
+    video.title = updateFromBody<string>(req.body.title, video.title, false);
     video.duration = updateFromBody<number>(req.body.duration, video.duration, false); // TODO GET FROM URL HERE
     video.themeId = updateFromBody<number>(req.body.themeId, video.themeId);
     if (!video.videoUrl || !video.title) {

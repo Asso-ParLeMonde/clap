@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { getRepository, getManager } from "typeorm";
 
+import { Image } from "../entities/image";
 import { PDFDownload } from "../entities/pdfDownload";
 import { Plan } from "../entities/plan";
 import { Project } from "../entities/project";
@@ -8,8 +9,10 @@ import { Question } from "../entities/question";
 import { Scenario } from "../entities/scenario";
 import { Theme } from "../entities/theme";
 import { UserType } from "../entities/user";
+import { deleteImage } from "../fileUpload";
 import { AppError, ErrorCode } from "../middlewares/handleErrors";
 import { htmlToPDF, PDF } from "../pdf";
+import { logger } from "../utils/logger";
 
 import { Controller, post, put, get, del } from "./controller";
 
@@ -204,8 +207,37 @@ export class ProjectController extends Controller {
       next();
       return;
     }
-
     const id = parseInt(req.params.id || "", 10) || 0;
+
+    // Delete all plan images
+    const project = await getRepository(Project).findOne({ id, user: { id: req.user.id } }, { relations: ["theme", "scenario", "questions"] });
+    if (project !== undefined) {
+      const getQuestionWithPlansPromises: Array<Promise<Question>> = [];
+      for (const question of project.questions) {
+        getQuestionWithPlansPromises.push(question.getPlans());
+      }
+      project.questions = await Promise.all(getQuestionWithPlansPromises);
+      const deleteImagePromises: Array<Promise<void>> = [];
+      project.questions.forEach((question) => {
+        question.plans.forEach((plan) => {
+          if (plan.image !== null) {
+            const image = plan.image;
+            deleteImagePromises.push(
+              (async () => {
+                await deleteImage(image);
+                await getRepository(Image).delete({ id: image.id });
+              })(),
+            );
+          }
+        });
+      });
+      try {
+        await Promise.all(deleteImagePromises);
+      } catch (e) {
+        logger.error(e);
+      }
+    }
+
     await getRepository(Project).delete({ id, user: { id: req.user.id } });
     res.status(204).send();
   }

@@ -1,5 +1,3 @@
-const { off } = require("process");
-
 module.exports = {
   root: true,
   parser: "@typescript-eslint/parser",
@@ -54,6 +52,9 @@ module.exports = {
         extensions: [".js", ".jsx", ".ts", ".tsx", ".svg"],
       },
       typescript: {}, // this loads <rootdir>/tsconfig.json to eslint
+    },
+    react: {
+      version: "detect",
     },
   },
 };

@@ -23,7 +23,7 @@ export class ScenarioRepository extends Repository<Scenario> {
   }
 
   public async getNextID(): Promise<number> {
-    let sequenceResult: Array<{ id: string }>;
+    let sequenceResult: Array<{ id: string }> = [];
     if (process.env.DB_TYPE && process.env.DB_TYPE === "postgres") {
       sequenceResult = await this.manager.query("SELECT nextval('scenario_sequence') as id");
     } else {

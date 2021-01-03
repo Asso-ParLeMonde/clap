@@ -498,6 +498,23 @@ button:focus > .wip-container {
   -webkit-box-shadow: 0 3px 5px -1px rgba(0, 0, 0, 0.18), 0 5px 6px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12);
   box-shadow: 0 3px 5px -1px rgba(0, 0, 0, 0.18), 0 5px 6px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12);
 }
+.wip-container > .edit {
+  display: none;
+  position: absolute;
+  top: 14%;
+  right: 2%;
+}
+.wip-container:hover > .edit {
+  display: block;
+}
+@media only screen and (max-width: 800px) {
+  .wip-container > .edit {
+    display: block;
+  }
+  .wip-container > .edit button {
+    font-size: 0.8rem;
+  }
+}
 
 .theme-name {
   position: absolute;
@@ -692,4 +709,21 @@ button:focus > .wip-container {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+.navigate-top-button {
+  position: fixed !important;
+  right: 1rem;
+  bottom: 1rem;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity ease-in 250ms !important;
+}
+.navigate-top-button--visible {
+  visibility: visible;
+  opacity: 1;
+}
+@media only screen and (max-width: 960px) {
+  .navigate-top-button {
+    bottom: 4.5rem;
+  }
 }

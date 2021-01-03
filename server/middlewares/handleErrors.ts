@@ -21,9 +21,13 @@ export class AppError extends Error {
   }
 }
 
+interface PromiseRequestHandler extends RequestHandler {
+  (req: Request, res: Response, next: NextFunction): Promise<void> | void;
+}
+
 export function handleErrors(fn: RequestHandler): RequestHandler {
   return (req: Request, res: Response, next: NextFunction): void => {
-    fn(req, res, next).catch((err: Error | AppError) => {
+    const sendError = (err: Error | AppError): void => {
       logger.error(err.message);
       logger.error(JSON.stringify(err.stack));
       res.setHeader("Content-Type", "application/json");
@@ -33,6 +37,12 @@ export function handleErrors(fn: RequestHandler): RequestHandler {
           message: err.message,
         }),
       );
-    });
+    };
+
+    try {
+      Promise.resolve((fn as PromiseRequestHandler)(req, res, next)).catch(sendError);
+    } catch (err) {
+      sendError(err);
+    }
   };
 }

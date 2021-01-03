@@ -11,7 +11,7 @@ const secret: string = process.env.APP_SECRET || "";
 
 export function authenticate(userType: UserType | undefined): RequestHandler {
   return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    let token: string;
+    let token: string = "";
     if (req.cookies && req.cookies["access-token"]) {
       if (!req.isCsrfValid && req.method !== "GET") {
         // check cookie was not stolen
@@ -36,12 +36,13 @@ export function authenticate(userType: UserType | undefined): RequestHandler {
         },
       });
       if (refreshToken === undefined || !(await argon2.verify(refreshToken.token, refreshTokenToken))) {
-        res.status(401).send("invalid refresh token");
-        return;
+        res.cookie("access-token", "", { maxAge: 0, expires: new Date(0), httpOnly: true });
+        res.cookie("refresh-token", "", { maxAge: 0, expires: new Date(0), httpOnly: true });
+      } else {
+        token = jwt.sign({ userId: refreshToken.userId }, secret, { expiresIn: "1h" });
+        // send new token
+        res.cookie("access-token", token, { maxAge: 60 * 60000, expires: new Date(Date.now() + 60 * 60000), httpOnly: true });
       }
-      token = jwt.sign({ userId: refreshToken.userId }, secret, { expiresIn: "1h" });
-      // send new token
-      res.cookie("access-token", token, { maxAge: 60 * 60000, expires: new Date(Date.now() + 60 * 60000), httpOnly: true });
     } else {
       token = getHeader(req, "x-access-token") || getHeader(req, "authorization") || "";
     }

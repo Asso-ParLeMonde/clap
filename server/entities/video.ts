@@ -13,10 +13,10 @@ export class Video implements VideoInterface {
   public videoUrl: string;
 
   @Column({ type: "varchar", length: 150, nullable: true })
-  public localPath: string;
+  public localPath: string | null;
 
   @Column({ type: "varchar", length: 250, nullable: true })
-  public thumbnailUrl: string;
+  public thumbnailUrl: string | null;
 
   @Column({ type: "varchar", length: 200 })
   public title: string;
@@ -29,5 +29,5 @@ export class Video implements VideoInterface {
   public theme: Theme;
 
   @Column({ nullable: true })
-  public themeId: number;
+  public themeId: number | null;
 }

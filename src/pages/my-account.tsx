@@ -471,7 +471,7 @@ const Account: React.FunctionComponent = () => {
           open={showModal === 5 && updatedUser !== null}
           onClose={() => setShowModal(-1)}
           onConfirm={onDeleteAccount}
-          confirmLabel={t("edit")}
+          confirmLabel={t("delete")}
           cancelLabel={t("cancel")}
           title={t("account_delete_button")}
           ariaLabelledBy="delete-dialog-title"

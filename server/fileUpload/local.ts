@@ -62,7 +62,7 @@ export class LocalUtils extends Provider {
           if (err) {
             reject(err);
           } else {
-            resolve();
+            resolve(undefined);
           }
         });
       });

@@ -14,14 +14,9 @@ export class LogoutController extends Controller {
   public async logout(req: Request, res: Response): Promise<void> {
     if (req.cookies && req.cookies["refresh-token"]) {
       const refreshTokenID: string = req.cookies["refresh-token"].split("-")[0];
-      const refreshToken = await getRepository(Token).findOne({
-        where: {
-          id: refreshTokenID,
-        },
+      await getRepository(Token).delete({
+        id: parseInt(refreshTokenID, 10) || 0,
       });
-      if (refreshToken === undefined) {
-        await getRepository(Token).delete(refreshToken.id);
-      }
     }
 
     // send empty expired cookies to delete them

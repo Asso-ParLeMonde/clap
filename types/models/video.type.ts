@@ -4,6 +4,6 @@ export interface Video {
   videoUrl: string;
   thumbnailUrl: string | null;
   duration: number;
-  themeId?: number;
+  themeId?: number | null;
   projectId?: number;
 }
