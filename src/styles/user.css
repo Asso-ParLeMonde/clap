@@ -498,6 +498,23 @@ button:focus > .wip-container {
   -webkit-box-shadow: 0 3px 5px -1px rgba(0, 0, 0, 0.18), 0 5px 6px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12);
   box-shadow: 0 3px 5px -1px rgba(0, 0, 0, 0.18), 0 5px 6px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12);
 }
+.wip-container > .edit {
+  display: none;
+  position: absolute;
+  top: 14%;
+  right: 2%;
+}
+.wip-container:hover > .edit {
+  display: block;
+}
+@media only screen and (max-width: 800px) {
+  .wip-container > .edit {
+    display: block;
+  }
+  .wip-container > .edit button {
+    font-size: 0.8rem;
+  }
+}
 
 .theme-name {
   position: absolute;

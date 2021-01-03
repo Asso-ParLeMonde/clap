@@ -56,7 +56,7 @@ export class LanguageController extends Controller {
   @del({ path: "/:id", userType: UserType.PLMO_ADMIN })
   public async deleteLanguage(req: Request, res: Response): Promise<void> {
     const id: string = req.params.id || "";
-    await getRepository(Language).delete(id);
+    await getRepository(Language).delete({ value: id });
     res.status(204).send();
   }
 

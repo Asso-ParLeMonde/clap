@@ -1,6 +1,8 @@
 import React from "react";
 
+import IconButton from "@material-ui/core/IconButton";
 import { Typography, ButtonBase } from "@material-ui/core";
+import EditIcon from "@material-ui/icons/Edit";
 
 import { useTranslation } from "src/i18n/useTranslation";
 
@@ -10,9 +12,10 @@ interface ProjectCardProps {
   title?: string;
   themeName?: string;
   onClick?(event: React.MouseEvent): void;
+  onClickEdit?(event: React.MouseEvent): void;
 }
 
-export const ProjectCard: React.FunctionComponent<ProjectCardProps> = ({ title = "", themeName = "", onClick = () => {} }: ProjectCardProps) => {
+export const ProjectCard: React.FunctionComponent<ProjectCardProps> = ({ title = "", themeName = "", onClick = () => {}, onClickEdit = () => {} }: ProjectCardProps) => {
   const { t } = useTranslation();
 
   return (
@@ -26,6 +29,20 @@ export const ProjectCard: React.FunctionComponent<ProjectCardProps> = ({ title =
             <label>{t("my_videos_themes")}</label> {themeName}
           </div>
         )}
+        <div className="edit">
+          <IconButton
+            color="primary"
+            aria-label={t("delete")}
+            size="small"
+            onClick={(event) => {
+              event.stopPropagation();
+              onClickEdit(event);
+            }}
+            style={{ border: "1px solid #6065fc" }}
+          >
+            <EditIcon />
+          </IconButton>
+        </div>
       </div>
     </ButtonBase>
   );

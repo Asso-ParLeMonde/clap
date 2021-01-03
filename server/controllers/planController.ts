@@ -41,7 +41,7 @@ export class PlanController extends Controller {
     // remove previous image
     if (plan.image) {
       await deleteImage(plan.image);
-      await getRepository(Image).delete(plan.image.id);
+      await getRepository(Image).delete({ id: plan.image.id });
     }
 
     plan.image = req.image;
@@ -117,10 +117,10 @@ export class PlanController extends Controller {
     const plan: Plan | undefined = await getRepository(Plan).findOne(id, { relations: ["image"] });
     if (plan !== undefined && plan.image) {
       await deleteImage(plan.image);
-      await getRepository(Image).delete(plan.image.id);
+      await getRepository(Image).delete({ id: plan.image.id });
     }
 
-    await getRepository(Plan).delete(id);
+    await getRepository(Plan).delete({ id });
     res.status(204).send();
   }
 }

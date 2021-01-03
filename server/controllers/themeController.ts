@@ -121,7 +121,7 @@ export class ThemesController extends Controller {
     const theme: Theme | undefined = await getRepository(Theme).findOne(id, { relations: ["image"] });
     if (theme !== undefined && theme.image) {
       await deleteImage(theme.image);
-      await getRepository(Image).delete(theme.image.id);
+      await getRepository(Image).delete({ id: theme.image.id });
     }
 
     // 2- delete theme
@@ -133,7 +133,7 @@ export class ThemesController extends Controller {
       theme.isArchived = true;
       await getRepository(Theme).save(theme);
     } else {
-      await getRepository(Theme).delete(id);
+      await getRepository(Theme).delete({ id });
     }
     res.status(204).send();
   }
@@ -148,7 +148,7 @@ export class ThemesController extends Controller {
     const id: number = parseInt(req.params.id, 10) || 0;
     const theme: Theme | undefined = await getRepository(Theme).findOne(id, { relations: ["image"] });
     if (theme === undefined) {
-      await getRepository(Image).delete(req.imageID);
+      await getRepository(Image).delete({ id: req.imageID });
       await deleteImage(req.image);
       next();
       return;
@@ -157,7 +157,7 @@ export class ThemesController extends Controller {
     // delete previous image
     if (theme.image) {
       await deleteImage(theme.image);
-      await getRepository(Image).delete(theme.image.id);
+      await getRepository(Image).delete({ id: theme.image.id });
     }
 
     theme.image = req.image;
@@ -171,7 +171,7 @@ export class ThemesController extends Controller {
     const theme: Theme | undefined = await getRepository(Theme).findOne(id, { relations: ["image"] });
     if (theme !== undefined && theme.image) {
       await deleteImage(theme.image);
-      await getRepository(Image).delete(theme.image.id);
+      await getRepository(Image).delete({ id: theme.image.id });
     }
     res.status(204).send();
   }

@@ -19,6 +19,10 @@ const MyVideos: React.FunctionComponent = () => {
     router.push(`/create/3-storyboard-and-filming-schedule?project=${projectId}`);
   };
 
+  const handleWipProjectClickEdit = (projectId: number) => () => {
+    router.push(`/my-videos/${projectId}`);
+  };
+
   const handleNewProjectClick = (event: React.MouseEvent) => {
     event.preventDefault();
     router.push("/create");
@@ -38,7 +42,7 @@ const MyVideos: React.FunctionComponent = () => {
         {projects.length > 0 ? (
           <React.Fragment>
             {projects.map((p) => (
-              <ProjectCard key={p.id} title={p.title || ""} themeName={p.theme?.names?.[currentLocale] || p.theme?.names?.fr || ""} onClick={handleWipProjectClick(p.id)} />
+              <ProjectCard key={p.id} title={p.title || ""} themeName={p.theme?.names?.[currentLocale] || p.theme?.names?.fr || ""} onClick={handleWipProjectClick(p.id)} onClickEdit={handleWipProjectClickEdit(p.id)} />
             ))}
           </React.Fragment>
         ) : (

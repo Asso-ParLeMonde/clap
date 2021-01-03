@@ -220,7 +220,7 @@ export class LoginController extends Controller {
       return;
     }
 
-    await getRepository(Token).delete(refreshToken.id);
+    await getRepository(Token).delete({ id: refreshToken.id });
     res.status(204).send();
   }
 }

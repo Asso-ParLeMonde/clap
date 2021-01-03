@@ -182,7 +182,7 @@ export class UserController extends Controller {
     await getRepository(Project).delete({ user: { id } });
     await getRepository(Scenario).delete({ user: { id }, isDefault: false });
     await getRepository(Theme).delete({ user: { id }, isDefault: false });
-    await getRepository(User).delete(id);
+    await getRepository(User).delete({ id: id });
     if (id === req.user.id) {
       // logout
       res.cookie("access-token", "", { maxAge: 0, expires: new Date(0), httpOnly: true });
