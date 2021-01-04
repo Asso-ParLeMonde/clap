@@ -205,7 +205,7 @@ export const locales = {
   pdf_scenario: "Scénario :",
   email_welcome: "Bienvenue !",
   email_welcome2: "Bonjour,",
-  email_greetings: "Bonjour {{firstname}} {{lastname}},",
+  email_greetings: "Bonjour {{pseudo}},",
   email_verify_subject: "Bienvenue ! - Vérifiez votre adresse email",
   email_verify_text: "Pour nous assurer que cette adresse e-mail est bien valide veuillez la vérifier en utilisant le bouton ci-dessous :",
   email_verify_button: "VÉRIFIER MON ADRESSE EMAIL",
@@ -220,7 +220,7 @@ export const locales = {
   email_invite_button: "CRÉER MON MOT DE PASSE",
   email_invite_text2: "La création d'un mot de passe est nécessaire pour finaliser l'inscription et pouvoir accéder à la création de vos vidéos.",
   email_reset_password_subject: "Réinitialisez votre mot de passe",
-  email_reset_password_text: "Pas la peine de vous inquiéter. Vous pouvez réinitialiser votre mot de passe en cliquant sur le lien ci-dessous :",
+  email_reset_password_text: "Vous pouvez réinitialiser votre mot de passe en cliquant sur le lien ci-dessous :",
   email_reset_password_button: "RÉINITIALISER MON MOT DE PASSE",
-  email_reset_password_test2: "Si vous n'avez pas demandé la réinitialisation de votre mot de passe, vous pouvez ignorer cet email.",
+  email_reset_password_text_2: "Si vous n'avez pas demandé la réinitialisation de votre mot de passe, vous pouvez ignorer cet email.",
 };

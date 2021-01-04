@@ -121,25 +121,11 @@ export class UserController extends Controller {
     user.passwordHash = await argon2.hash(password || generateTemporaryPassword(12));
     user.type = 0; // type class per default
 
-    if (fromAdmin) {
-      if (req.body.type !== undefined) {
-        user.type = req.body.type;
-      }
-      const initEmailPassword = generateTemporaryPassword(12);
-      user.verificationHash = await argon2.hash(initEmailPassword);
-      // Uncomment next line to block account on registration before email is not verified
-      // user.accountRegistration = 3;
-      // await sendMail(Email.INVITATION_EMAIL, user.email, { initCode: initEmailPassword, firstname: user.managerFirstName, lastname: user.managerLastName }, user.languageCode);
-    }
-
-    // new user and not admin
-    // if (req.user === undefined && user.email !== undefined && user.email.length > 0) {
-    //   const verifyEmailPassword = generateTemporaryPassword(12);
-    //   user.verificationHash = await argon2.hash(verifyEmailPassword);
-    //   // Uncomment next line to block account on registration before email is not verified
-    //   // user.accountRegistration = 3;
-    //   await sendMail(Email.VERIFY_EMAIL, user.email, { verifyCode: verifyEmailPassword, firstname: user.managerFirstName, lastname: user.managerLastName }, user.languageCode);
-    // }
+    const verifyEmailPassword = generateTemporaryPassword(12);
+    user.verificationHash = await argon2.hash(verifyEmailPassword);
+    // Uncomment next line to block account on registration before email is not verified
+    // user.accountRegistration = 3;
+    // await sendMail(Email.VERIFY_EMAIL, user.email, { verifyCode: verifyEmailPassword, pseudo: user.pseudo }, user.languageCode);
 
     // save user
     await getRepository(User).save(user);

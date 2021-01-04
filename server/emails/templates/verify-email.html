@@ -705,7 +705,7 @@
         width="100%"
         cellspacing="0"
         cellpadding="0"
-        style="mso-table-lspace: 0pt;mso-table-rspace: 0pt;border-collapse: collapse;border-spacing: 0px;padding: 0;margin: 0;width: 100%;height: 100%;background-image: ;background-repeat: repeat;background-position: center top;"
+        style="mso-table-lspace: 0pt;mso-table-rspace: 0pt;border-collapse: collapse;border-spacing: 0px;padding: 0;margin: 0;width: 100%;height: 100%;background-repeat: repeat;background-position: center top;"
       >
         <tbody>
           <tr style="border-collapse: collapse;">
@@ -715,12 +715,12 @@
                 cellspacing="0"
                 class="es-header esd-header-popover"
                 align="center"
-                style="mso-table-lspace: 0pt;mso-table-rspace: 0pt;border-collapse: collapse;border-spacing: 0px;width: 100%;background-color: transparent;background-image: ;background-repeat: repeat;background-position: center top;table-layout: fixed !important;"
+                style="mso-table-lspace: 0pt;mso-table-rspace: 0pt;border-collapse: collapse;border-spacing: 0px;width: 100%;background-color: transparent;background-repeat: repeat;background-position: center top;table-layout: fixed !important;"
               >
                 <tbody>
                   <tr style="border-collapse: collapse;">
                     <td class="esd-stripe esd-checked" align="center" style="background-color: transparent;padding: 0;margin: 0;" bgcolor="transparent">
-                      <!--[if gte mso 9]> <v:rect xmlns:v="urn:schemas-microsoft-com:vml" fill="true" stroke="false" style="mso-width-percent:1000;height:204px;"> <v:fill type="tile" src="cid:logo.png" color="#343434" origin="0.5, 0" position="0.5,0" ></v:fill> <v:textbox inset="0,0,0,0"> <![endif]-->
+                      <!--[if gte mso 9]> <v:rect xmlns:v="urn:schemas-microsoft-com:vml" fill="true" stroke="false" style="mso-width-percent:1000;height:204px;"> <v:fill type="tile" src="{{frontUrl}}/email_header_logo.png" color="#343434" origin="0.5, 0" position="0.5,0" ></v:fill> <v:textbox inset="0,0,0,0"> <![endif]-->
                       <div>
                         <table
                           bgcolor="#6065fc"
@@ -744,9 +744,9 @@
                                               <td align="left" class="esd-block-image" style="font-size: 0px;padding: 0;margin: 0;">
                                                 <a
                                                   target="_blank"
-                                                  href="https://par-le-monde-1.herokuapp.com/"
+                                                  href="{{frontUrl}}"
                                                   style='-webkit-text-size-adjust: none;-ms-text-size-adjust: none;mso-line-height-rule: exactly;font-family: roboto, "helvetica neue", helvetica, arial, sans-serif;font-size: 14px;text-decoration: underline;color: #1376c8;'
-                                                  ><img src="cid:logo.png" alt style="display: block;width: 300px;height: auto;border: 0;outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;" width="300"
+                                                  ><img src="{{frontUrl}}/email_header_logo.png" alt style="display: block;width: 300px;height: auto;border: 0;outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;" width="300"
                                                 /></a>
                                               </td>
                                             </tr>
@@ -795,7 +795,7 @@
                                         <tbody>
                                           <tr style="border-collapse: collapse;">
                                             <td align="center" class="esd-block-text" style="padding: 0;margin: 0;">
-                                              <h1 style="margin: 0;line-height: 120%;mso-line-height-rule: exactly;font-family: tahoma, verdana, segoe, sans-serif;font-size: 24px;font-style: normal;font-weight: bold;color: #212121;">Bienvenue !</h1>
+                                              <h1 style="margin: 0;line-height: 120%;mso-line-height-rule: exactly;font-family: tahoma, verdana, segoe, sans-serif;font-size: 24px;font-style: normal;font-weight: bold;color: #212121;">{{translate_email_welcome}}</h1>
                                             </td>
                                           </tr>
                                           <tr style="border-collapse: collapse;">
@@ -803,9 +803,9 @@
                                               <p
                                                 style='margin: 0;-webkit-text-size-adjust: none;-ms-text-size-adjust: none;mso-line-height-rule: exactly;font-size: 16px;font-family: roboto, "helvetica neue", helvetica, arial, sans-serif;line-height: 150%;color: #131313;'
                                               >
-                                                Bonjour firstname lastname,
+                                                {{translate_email_greetings}}
                                                 <br />
-                                                Pour nous assurer que cette adresse e-mail est bien valide veuillez la vérifier en utilisant le bouton ci-dessous.
+                                                {{translate_email_verify_text}}
                                               </p>
                                             </td>
                                           </tr>
@@ -815,11 +815,11 @@
                                                 class="es-button-border es-button-border-1584957593702"
                                                 style="background: #79c3a5;border-radius: 5px;border-style: solid solid solid solid;border-color: #2cb543 #2cb543 #2cb543 #2cb543;border-width: 0px 0px 0px 0px;display: inline-block;width: auto;"
                                                 ><a
-                                                  href="https://par-le-monde-1.herokuapp.com/"
+                                                  href="{{verifyUrl}}"
                                                   class="es-button es-button-1584957593689"
                                                   target="_blank"
                                                   style='background: #79c3a5;border-color: #79c3a5;font-size: 14px;border-radius: 5px;-webkit-text-size-adjust: none;-ms-text-size-adjust: none;mso-line-height-rule: exactly;font-family: roboto, "helvetica neue", helvetica, arial, sans-serif;text-decoration: none !important;color: #ffffff;border-style: solid;border-width: 10px 20px 10px 20px;display: inline-block;font-weight: normal;font-style: normal;line-height: 120%;width: auto;text-align: center;mso-style-priority: 100 !important;'
-                                                  >VÉRIFIER MON ADRESSE EMAIL
+                                                  >{{translate_email_verify_button}}
                                                 </a></span
                                               >
                                             </td>
@@ -829,8 +829,7 @@
                                               <p
                                                 style='margin: 0;-webkit-text-size-adjust: none;-ms-text-size-adjust: none;mso-line-height-rule: exactly;font-size: 16px;font-family: roboto, "helvetica neue", helvetica, arial, sans-serif;line-height: 150%;color: #131313;'
                                               >
-                                                La confirmation de votre adresse e-mail permet de protéger vos informations personnelles et de garantir que seul vous pouvez accéder à votre compte.<br /><br />Cordialement,<br />L'équipe Par Le
-                                                Monde.<br />
+                                                {{translate_email_verify_text2}}<br /><br />{{translate_email_end}}<br />{{translate_email_signature}}<br />
                                               </p>
                                             </td>
                                           </tr>
@@ -852,23 +851,11 @@
                                         <tbody>
                                           <tr style="border-collapse: collapse;">
                                             <td align="center" class="esd-block-text" style="padding: 0;margin: 0;">
-                                              <p
-                                                style='font-size: 14px;margin: 0;-webkit-text-size-adjust: none;-ms-text-size-adjust: none;mso-line-height-rule: exactly;font-family: roboto, "helvetica neue", helvetica, arial, sans-serif;line-height: 150%;color: #131313;'
-                                              >
-                                                Ce message a été envoyé à
-                                                <a
-                                                  target="_blank"
-                                                  href="mailto:plmo@example.com"
-                                                  style='font-size: 14px;color: rgb(19, 19, 19);-webkit-text-size-adjust: none;-ms-text-size-adjust: none;mso-line-height-rule: exactly;font-family: roboto, "helvetica neue", helvetica, arial, sans-serif;text-decoration: underline;'
-                                                  >plmo@example.com</a
-                                                >. Si vous avez des questions ou ne souhaitez plus recevoir d'emails,
-                                                <a
-                                                  target="_blank"
-                                                  href="mailto:plmo@example.com"
-                                                  style='font-size: 14px;color: rgb(19, 19, 19);font-weight: 600;text-decoration: none;-webkit-text-size-adjust: none;-ms-text-size-adjust: none;mso-line-height-rule: exactly;font-family: roboto, "helvetica neue", helvetica, arial, sans-serif;'
-                                                  >contactez-nous</a
-                                                >.
-                                              </p>
+                                              <p style="font-size: 14px;margin: 0;-webkit-text-size-adjust: none;-ms-text-size-adjust: none;mso-line-height-rule: exactly;font-family: roboto, 'helvetica neue', helvetica, arial, sans-serif;line-height: 150%;color: #131313;">
+                                                {{translate_email_end_text}}
+                                                <a target="_blank" href="mailto:{{receiverEmail}}" style="font-size: 14px;color: rgb(19, 19, 19);-webkit-text-size-adjust: none;-ms-text-size-adjust: none;mso-line-height-rule: exactly;font-family: roboto, 'helvetica neue', helvetica, arial, sans-serif;text-decoration: underline;">{{receiverEmail}}</a>.
+                                                {{translate_email_end_text2}} <a target="_blank" href="mailto:{{plmoEmail}}" style="font-size: 14px;color: rgb(19, 19, 19);font-weight: 600;text-decoration: none;-webkit-text-size-adjust: none;-ms-text-size-adjust: none;mso-line-height-rule: exactly;font-family: roboto, 'helvetica neue', helvetica, arial, sans-serif;">{{translate_email_contact_link}}</a>.
+                                             </p>
                                             </td>
                                           </tr>
                                         </tbody>

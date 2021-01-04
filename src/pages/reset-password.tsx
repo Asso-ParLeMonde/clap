@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import React from "react";
 
-import { Button, Link, TextField, Typography } from "@material-ui/core";
+import { Button, Link, TextField, Typography, makeStyles, Backdrop, CircularProgress, Theme as MaterialTheme } from "@material-ui/core";
 
 import { useTranslation } from "src/i18n/useTranslation";
 import { axiosRequest } from "src/util/axiosRequest";
@@ -11,12 +11,21 @@ const errorMessages = {
   1: "login_email_error",
 };
 
+const useStyles = makeStyles((theme: MaterialTheme) => ({
+  backdrop: {
+    zIndex: theme.zIndex.drawer + 1,
+    color: "#fff",
+  },
+}));
+
 const ResetPassword: React.FunctionComponent = () => {
   const router = useRouter();
+  const classes = useStyles();
   const { t, currentLocale } = useTranslation();
   const [email, setEmail] = React.useState<string>("");
   const [errorCode, setErrorCode] = React.useState<number>(-1);
   const [successMsg, setSuccessMsg] = React.useState<string>("");
+  const [loading, setLoading] = React.useState<boolean>(false);
 
   const handleUserNameInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(event.target.value);
@@ -26,6 +35,7 @@ const ResetPassword: React.FunctionComponent = () => {
   const submit = async () => {
     setErrorCode(-1);
     setSuccessMsg("");
+    setLoading(true);
     const response = await axiosRequest({
       method: "POST",
       url: "/login/reset-password",
@@ -34,6 +44,7 @@ const ResetPassword: React.FunctionComponent = () => {
         languageCode: currentLocale,
       },
     });
+    setLoading(false);
     if (response.error) {
       setErrorCode(response.data.errorCode);
     } else {
@@ -88,6 +99,9 @@ const ResetPassword: React.FunctionComponent = () => {
           </Link>
         </div>
       </form>
+      <Backdrop className={classes.backdrop} open={loading}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
     </div>
   );
 };

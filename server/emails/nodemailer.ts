@@ -26,7 +26,7 @@ export function getNodeMailer(): Promise<Mail | null> {
       );
     } else {
       nodemailer.createTestAccount((err, account) => {
-        if (err === null) {
+        if (err !== null) {
           logger.error("Error while creating ethereal fake smtp account.");
           logger.error(JSON.stringify(err));
           resolve(null);
