@@ -1,6 +1,6 @@
 # Clap!
 
-![Build](https://github.com/Asso-ParLeMonde/clap/workflows/Build/badge.svg) [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+![Build](https://github.com/parlemonde/clap/workflows/Build/badge.svg) [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
 Clap! is a web application to create videos written in Typescript.
 
@@ -21,7 +21,7 @@ Pull requests are welcome. For major changes, please open an issue first to disc
 
 Please make sure to update tests as appropriate.
 
-**[Checkout the wiki here!](https://github.com/Asso-ParLeMonde/clap/wiki)**
+**[Checkout the wiki here!](https://github.com/parlemonde/clap/wiki)**
 
 ## License
 
