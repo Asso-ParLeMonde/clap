@@ -10221,7 +10221,7 @@ fsevents@~2.1.2:
     notistack: ^1.0.0
     nprogress: ^0.2.0
     performance-now: ^2.1.0
-    pg: ^8.3.2
+    pg: ^8.5.1
     prettier: ^2.0.5
     pug: ^3.0.0
     puppeteer: ^5.3.1
@@ -10452,10 +10452,10 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
-"pg-connection-string@npm:^2.3.0":
-  version: 2.3.0
-  resolution: "pg-connection-string@npm:2.3.0"
-  checksum: 610d03707d0544af81900facd4b7ef2d7527ea9c016c091c292966d77b53ca56327a3e1fc9a527b94094df356cba1be3bc8de72903ef9c1cd9622d4469d91196
+"pg-connection-string@npm:^2.4.0":
+  version: 2.4.0
+  resolution: "pg-connection-string@npm:2.4.0"
+  checksum: fdb3ec1c3daa8356381b1de3ed5fe03269e69d88644c4eb83a30aec1d1e320e0a8450d7ff8c04666dd06a4798c996c9dd006497f038d338790667965ec940d1d
   languageName: node
   linkType: hard
 
@@ -10466,19 +10466,19 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
-"pg-pool@npm:^3.2.1":
-  version: 3.2.1
-  resolution: "pg-pool@npm:3.2.1"
+"pg-pool@npm:^3.2.2":
+  version: 3.2.2
+  resolution: "pg-pool@npm:3.2.2"
   peerDependencies:
     pg: ">=8.0"
-  checksum: 626e876971c7ef6d4f2b9e7cf858bda3ec30fd18761cc31e576d62451b7ad08ba5ea04916b49c13366a1fe11e652cabb01027e9504b68fe11b0113b8207d564e
+  checksum: d25d4d075701079433333fcca3fbf5f4fd8d0ae21bf37b11c8528849e41338daf6e335aba25a0a4f5beff133cba63bd6bf2d534dea7f811119d175e575b25446
   languageName: node
   linkType: hard
 
-"pg-protocol@npm:^1.2.5":
-  version: 1.2.5
-  resolution: "pg-protocol@npm:1.2.5"
-  checksum: d61b446eebf2ed4a6c9f46f6b6e882ebb4dcfd2cd0d6b2b16954233cb41985f6cb0e61d18e816125d52734ceff5ab5ec1541e9402e07bea0131686742be97e5a
+"pg-protocol@npm:^1.4.0":
+  version: 1.4.0
+  resolution: "pg-protocol@npm:1.4.0"
+  checksum: 2b5ebfccd014a4a9127a04e34a423a9e7fe6f6b96c32698929e0860e32c453e64438c935068405ee923ab99788345b9591a6dbaa30bba70e724d7fc4d5f5d21e
   languageName: node
   linkType: hard
 
@@ -10495,19 +10495,23 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
-"pg@npm:8.3.2, pg@npm:^8.3.2":
-  version: 8.3.2
-  resolution: "pg@npm:8.3.2"
+"pg@npm:^8.3.2, pg@npm:^8.5.1":
+  version: 8.5.1
+  resolution: "pg@npm:8.5.1"
   dependencies:
     buffer-writer: 2.0.0
     packet-reader: 1.0.0
-    pg-connection-string: ^2.3.0
-    pg-pool: ^3.2.1
-    pg-protocol: ^1.2.5
+    pg-connection-string: ^2.4.0
+    pg-pool: ^3.2.2
+    pg-protocol: ^1.4.0
     pg-types: ^2.1.0
     pgpass: 1.x
-    semver: 4.3.2
-  checksum: a5694baaf3db0f70ff3cd6a3949a4adcf5296735a367993bc96e9ec7a25d1353c16768301dbd41e00bf4c7e220eec7783c13ab18ba53c83e4452cd86c5712a7c
+  peerDependencies:
+    pg-native: ">=2.0.0"
+  peerDependenciesMeta:
+    pg-native:
+      optional: true
+  checksum: b8eed3cd3831ea8cce051fcc58a56f39e7c24545c18466c89e64e4f90c8c2d386e3c51c33e22b0d2e39bf51156bdd4d5ade16c6e0edad1fbff97bd89f2bd86f2
   languageName: node
   linkType: hard
 
@@ -12070,15 +12074,6 @@ fsevents@~2.1.2:
   bin:
     semver: ./bin/semver
   checksum: 06ff0ed753ebf741b7602be8faad620d6e160a2cb3f61019d00d919c8bca141638aa23c34da779b8595afdc9faa3678bfbb5f60366b6a4f65f98cf86605bbcdb
-  languageName: node
-  linkType: hard
-
-"semver@npm:4.3.2":
-  version: 4.3.2
-  resolution: "semver@npm:4.3.2"
-  bin:
-    semver: ./bin/semver
-  checksum: 325999b7241266b130324d54edba4432413de2afe358c7c482ccf104d3b870eabb655db2178ee966473f4dfcbdcf5f5808d1fb26a670908ba3cca2568ea5f95b
   languageName: node
   linkType: hard
 
