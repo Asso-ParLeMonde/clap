@@ -52,7 +52,7 @@ const UpdatePassword: React.FunctionComponent = () => {
       setErrors((e) => ({ ...e, global: true }));
       return;
     }
-    const response = await updatePassword(user);
+    const response = await updatePassword(user, user.verifyToken);
     if (response.success) {
       // todo success msg
       router.push("/create");

@@ -1,17 +1,16 @@
-import * as argon2 from "argon2";
 import { NextFunction, Request, RequestHandler, Response } from "express";
 import jwt from "jsonwebtoken";
-import { getRepository, MoreThan } from "typeorm";
+import { getRepository } from "typeorm";
 
-import { Token } from "../entities/token";
+import { getNewAccessToken } from "../authentication/lib/tokens";
 import { UserType, User } from "../entities/user";
 import { getHeader } from "../utils/utils";
 
 const secret: string = process.env.APP_SECRET || "";
 
-export function authenticate(userType: UserType | undefined): RequestHandler {
+export function authenticate(userType: UserType | undefined = undefined): RequestHandler {
   return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    let token: string = "";
+    let token: string;
     if (req.cookies && req.cookies["access-token"]) {
       if (!req.isCsrfValid && req.method !== "GET") {
         // check cookie was not stolen
@@ -25,24 +24,14 @@ export function authenticate(userType: UserType | undefined): RequestHandler {
         res.status(401).send("bad csrf token");
         return;
       }
-      const rToken = req.cookies["refresh-token"];
-      const refreshTokenID: string = rToken.split("-")[0];
-      const refreshTokenToken: string = rToken.slice(refreshTokenID.length + 1);
-      const expiredDate = new Date(new Date().getTime() - 31536000000); // now minus 1year
-      const refreshToken = await getRepository(Token).findOne({
-        where: {
-          id: parseInt(refreshTokenID, 10) || 0,
-          date: MoreThan(expiredDate),
-        },
-      });
-      if (refreshToken === undefined || !(await argon2.verify(refreshToken.token, refreshTokenToken))) {
-        res.cookie("access-token", "", { maxAge: 0, expires: new Date(0), httpOnly: true });
-        res.cookie("refresh-token", "", { maxAge: 0, expires: new Date(0), httpOnly: true });
-      } else {
-        token = jwt.sign({ userId: refreshToken.userId }, secret, { expiresIn: "1h" });
-        // send new token
-        res.cookie("access-token", token, { maxAge: 60 * 60000, expires: new Date(Date.now() + 60 * 60000), httpOnly: true });
+      const newTokens = await getNewAccessToken(req.cookies["refresh-token"]);
+      if (newTokens === null) {
+        res.status(401).send("invalid refresh token");
+        return;
       }
+      // send new token
+      token = newTokens.accessToken;
+      res.cookie("access-token", newTokens.accessToken, { maxAge: 4 * 60 * 60000, expires: new Date(Date.now() + 4 * 60 * 60000), httpOnly: true });
     } else {
       token = getHeader(req, "x-access-token") || getHeader(req, "authorization") || "";
     }
@@ -70,13 +59,20 @@ export function authenticate(userType: UserType | undefined): RequestHandler {
         try {
           data = JSON.parse(decoded);
         } catch (e) {
-          res.status(401).send("invalid access token");
+          if (req.method === "GET" && userType === undefined) {
+            req.user = undefined;
+            res.cookie("access-token", "", { maxAge: 0, expires: new Date(0), httpOnly: true });
+            res.cookie("refresh-token", "", { maxAge: 0, expires: new Date(0), httpOnly: true });
+            next();
+          } else {
+            res.status(401).send("invalid access token");
+          }
           return;
         }
       } else {
         data = decoded;
       }
-      const user = await getRepository(User).findOne(data.userId);
+      const user = await getRepository(User).findOne({ where: { id: data.userId } });
       if (user === undefined && userType !== undefined) {
         res.status(401).send("invalid access token");
         return;
@@ -87,7 +83,14 @@ export function authenticate(userType: UserType | undefined): RequestHandler {
       }
       req.user = user !== undefined ? user.userWithoutPassword() : undefined;
     } catch (_e) {
-      res.status(401).send("invalid access token");
+      if (req.method === "GET" && userType === undefined) {
+        req.user = undefined;
+        res.cookie("access-token", "", { maxAge: 0, expires: new Date(0), httpOnly: true });
+        res.cookie("refresh-token", "", { maxAge: 0, expires: new Date(0), httpOnly: true });
+        next();
+      } else {
+        res.status(401).send("invalid access token");
+      }
       return;
     }
     next();

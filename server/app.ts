@@ -12,6 +12,7 @@ import path from "path";
 import swaggerUi from "swagger-ui-express";
 import { Connection } from "typeorm";
 
+import { authRouter } from "./authentication";
 import { UserType } from "./entities/user";
 import { authenticate } from "./middlewares/authenticate";
 import { crsfProtection } from "./middlewares/csrfCheck";
@@ -69,6 +70,9 @@ async function startApp() {
   backRouter.get("/", (_, res: Response) => {
     res.status(200).send("Hello World PLMO1 !");
   });
+  // --- Add authentication router ---
+  backRouter.use("/", authRouter);
+
   backRouter.use(routes);
   backRouter.use((_, res: Response) => {
     res.status(404).send("Error 404 - Not found.");

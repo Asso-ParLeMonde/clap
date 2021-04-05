@@ -13,7 +13,7 @@ interface UserServiceContextValue {
   login(username: string, password: string, remember: boolean): UserServiceFunc;
   axiosLoggedRequest(req: AxiosRequestConfig): Promise<AxiosReturnType>;
   signup(user: User, inviteCode?: string): UserServiceFunc;
-  updatePassword(user: Partial<User>): UserServiceFunc;
+  updatePassword(user: Partial<User>, verifyToken: string): UserServiceFunc;
   verifyEmail(user: Partial<User>): UserServiceFunc;
   logout(): Promise<void>;
   deleteAccount(): Promise<boolean>;
@@ -132,13 +132,15 @@ export const UserServiceProvider: React.FunctionComponent<UserServiceProviderPro
    * @param user
    * @returns {Promise<{success: boolean, errorCode: number}>}
    */
-  const updatePassword = async (user: Partial<User>): Promise<{ success: boolean; errorCode: number }> => {
+  const updatePassword = async (user: Partial<User>, verifyToken: string): Promise<{ success: boolean; errorCode: number }> => {
     const response = await axiosRequest({
       method: "POST",
       headers,
       url: "/login/update-password",
       data: {
-        ...user,
+        email: user.email,
+        verifyToken,
+        password: user.password,
       },
     });
     if (response.error) {

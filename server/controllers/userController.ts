@@ -1,8 +1,8 @@
 import * as argon2 from "argon2";
 import { NextFunction, Request, Response } from "express";
-import jwt from "jsonwebtoken";
 import { getRepository, Like, FindManyOptions } from "typeorm";
 
+import { getAccessToken } from "../authentication/lib/tokens";
 // import { sendMail, Email } from "../emails";
 import { Invite } from "../entities/invite";
 import { Project } from "../entities/project";
@@ -10,11 +10,9 @@ import { Scenario } from "../entities/scenario";
 import { Theme } from "../entities/theme";
 import { User, UserType } from "../entities/user";
 import { AppError, ErrorCode } from "../middlewares/handleErrors";
-import { isPasswordValid, generateTemporaryPassword } from "../utils/utils";
+import { isPasswordValid, generateTemporaryToken } from "../utils/utils";
 
 import { Controller, del, get, post, put } from "./controller";
-
-const secret: string = process.env.APP_SECRET || "";
 
 function updateUser(user: User, req: Request): void {
   // if (req.body.managerFirstName) user.managerFirstName = req.body.managerFirstName;
@@ -118,10 +116,10 @@ export class UserController extends Controller {
 
     const user: User = new User();
     updateUser(user, req);
-    user.passwordHash = await argon2.hash(password || generateTemporaryPassword(12));
+    user.passwordHash = await argon2.hash(password || generateTemporaryToken(12));
     user.type = 0; // type class per default
 
-    const verifyEmailPassword = generateTemporaryPassword(12);
+    const verifyEmailPassword = generateTemporaryToken(12);
     user.verificationHash = await argon2.hash(verifyEmailPassword);
     // Uncomment next line to block account on registration before email is not verified
     // user.accountRegistration = 3;
@@ -130,9 +128,10 @@ export class UserController extends Controller {
     // save user
     await getRepository(User).save(user);
 
-    const accessToken = jwt.sign({ userId: user.id }, secret, { expiresIn: "1h" });
-    res.cookie("access-token", accessToken, { expires: new Date(Date.now() + 60 * 60000), httpOnly: true });
-    res.sendJSON({ user: user.userWithoutPassword(), accessToken }); // send user
+    // login user
+    const { accessToken } = await getAccessToken(user.id, false);
+    res.cookie("access-token", accessToken, { maxAge: 4 * 60 * 60000, expires: new Date(Date.now() + 4 * 60 * 60000), httpOnly: true });
+    res.sendJSON({ user: user.userWithoutPassword(), accessToken });
   }
 
   @put({ path: "/:id" })
@@ -180,7 +179,7 @@ export class UserController extends Controller {
   @get({ path: "/invite", userType: UserType.PLMO_ADMIN })
   public async getInviteCode(_: Request, res: Response): Promise<void> {
     const invite = new Invite();
-    invite.token = generateTemporaryPassword(20);
+    invite.token = generateTemporaryToken(20);
     await getRepository(Invite).save(invite);
     res.sendJSON({ inviteCode: invite.token });
   }

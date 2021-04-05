@@ -1,3 +1,5 @@
+import base64url from "base64url";
+import crypto from "crypto";
 import { Request } from "express";
 import fs from "fs";
 import QRCode from "qrcode";
@@ -30,14 +32,8 @@ export function isPasswordValid(password: string): boolean {
   return password !== undefined && password !== null && password.length >= 8 && /\d+/.test(password) && /[a-z]+/.test(password) && /[A-Z]+/.test(password);
 }
 
-export function generateTemporaryPassword(length: number): string {
-  const pwdChars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-  return Array(length)
-    .fill(pwdChars)
-    .map(function (x) {
-      return x[Math.floor(Math.random() * x.length)];
-    })
-    .join("");
+export function generateTemporaryToken(length: number): string {
+  return base64url(crypto.randomBytes(length)).slice(0, length);
 }
 
 export function getBase64File(path: string): string {

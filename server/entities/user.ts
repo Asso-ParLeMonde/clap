@@ -31,7 +31,7 @@ export class User implements UserInterface {
   public school: string;
 
   @Column({ default: 0 })
-  public accountRegistration?: number;
+  public accountRegistration: number;
 
   @Column({ type: "varchar", length: 95 })
   public passwordHash?: string;
@@ -49,7 +49,6 @@ export class User implements UserInterface {
   public userWithoutPassword(): User {
     delete this.passwordHash;
     delete this.verificationHash;
-    delete this.accountRegistration;
     return this;
   }
 }

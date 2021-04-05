@@ -143,21 +143,30 @@ async function createFrenchLanguage(): Promise<void> {
 }
 
 async function createSuperAdminUser(): Promise<void> {
-  const count = await getRepository(User).count();
-  if (count > 0) {
+  if (!process.env.ADMIN_PSEUDO || !process.env.ADMIN_PASSWORD) {
     return;
   }
-  const user = new User();
-  user.email = "plmo.admin@parlemonde.com";
-  user.pseudo = "PLMO1_admin";
-  user.level = "";
-  user.school = "Asso Par Le Monde";
-  user.languageCode = "fr";
-  user.type = UserType.PLMO_ADMIN;
-  user.passwordHash = await argon2.hash("Admin1234");
-  user.accountRegistration = 0;
-  await getRepository(User).save(user);
-  logger.info("Super user Admin created!");
+  try {
+    const adminPseudo = process.env.ADMIN_PSEUDO;
+    const adminPassword = process.env.ADMIN_PASSWORD;
+    const count = await getRepository(User).count({ where: { pseudo: adminPseudo } });
+    if (count > 0) {
+      return;
+    }
+    const user = new User();
+    user.email = process.env.ADMIN_EMAIL || "admin.1village@parlemonde.org";
+    user.pseudo = adminPseudo;
+    user.level = "";
+    user.school = "Asso Par Le Monde";
+    user.type = UserType.PLMO_ADMIN;
+    user.languageCode = "fr";
+    user.passwordHash = await argon2.hash(adminPassword);
+    user.accountRegistration = 0;
+    await getRepository(User).save(user);
+    logger.info("Super user Admin created!");
+  } catch {
+    return;
+  }
 }
 
 export async function connectToDatabase(tries: number = 10): Promise<Connection | null> {
