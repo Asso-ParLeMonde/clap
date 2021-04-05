@@ -7,7 +7,7 @@ import { jsonify } from "../middlewares/jsonify";
 import { login } from "./login";
 import { logout } from "./logout";
 import { resetPassword, updatePassword, verifyEmail } from "./password";
-// import { loginWithPlmSSO } from "./plm_sso";
+import { loginWithPlmSSO } from "./plmSSO";
 import { refreshToken, rejectAccessToken } from "./refreshToken";
 
 const authRouter = Router();
@@ -17,7 +17,7 @@ authRouter.post("/login", morgan("dev") as RequestHandler, jsonify, handleErrors
 authRouter.post("/login/reset-password", morgan("dev") as RequestHandler, jsonify, handleErrors(resetPassword));
 authRouter.post("/login/update-password", morgan("dev") as RequestHandler, jsonify, handleErrors(updatePassword));
 authRouter.post("/login/verify-email", morgan("dev") as RequestHandler, jsonify, handleErrors(verifyEmail));
-// authRouter.post("/login-sso-plm", morgan("dev") as RequestHandler, jsonify, handleErrors(loginWithPlmSSO));
+authRouter.post("/login-sso-plm", morgan("dev") as RequestHandler, jsonify, handleErrors(loginWithPlmSSO));
 authRouter.post("/logout", morgan("dev") as RequestHandler, jsonify, handleErrors(logout));
 
 export { authRouter };

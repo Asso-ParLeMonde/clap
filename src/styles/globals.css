@@ -150,3 +150,19 @@ p {
     height: 1px;
   }
 }
+
+.login__divider {
+  margin: 2rem 0;
+  width: 100%;
+  position: relative;
+  height: 1px;
+  background-color: #6065fc;
+}
+
+.login__divider .login__or {
+  position: absolute;
+  width: 100%;
+  text-align: center;
+  top: -0.8rem;
+  left: 0;
+}

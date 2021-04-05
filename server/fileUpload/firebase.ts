@@ -27,6 +27,8 @@ export class FirebaseUtils extends Provider {
       databaseURL: "https://cs-par-le-monde-1.firebaseio.com",
     });
 
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     this.bucket = storage().bucket("gs://cs-par-le-monde-1.appspot.com");
   }
 

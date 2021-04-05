@@ -10,23 +10,43 @@ import InputAdornment from "@material-ui/core/InputAdornment";
 import Link from "@material-ui/core/Link";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
+import { NoSsr } from "@material-ui/core";
+import { Backdrop, CircularProgress } from "@material-ui/core";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
 import Visibility from "@material-ui/icons/Visibility";
 
 import { useTranslation } from "src/i18n/useTranslation";
 import { UserServiceContext } from "src/services/UserService";
+import { ssoHost, ssoHostName, clientId, generateTemporaryToken } from "src/util";
 
 const errorMessages = {
   0: "login_unknown_error",
   1: "login_username_error",
   2: "login_password_error",
   3: "login_account_error",
+  5: `Veuillez utiliser le login avec ${ssoHostName} pour votre compte`,
+  6: "Veuillez utiliser le login par email/mot de passe pour votre compte",
+};
+
+const isRedirectValid = (redirect: string): boolean => {
+  // inner redirection.
+  if (redirect.startsWith("/")) {
+    return true;
+  }
+  // external, allow only same domain.
+  try {
+    const url = new URL(redirect);
+    return url.hostname.slice(-15) === ".parlemonde.org";
+  } catch {
+    return false;
+  }
 };
 
 const Login: React.FunctionComponent = () => {
   const { t } = useTranslation();
-  const { login } = React.useContext(UserServiceContext);
+  const { login, loginWithSso } = React.useContext(UserServiceContext);
   const router = useRouter();
+  const [isLoading, setIsLoading] = React.useState(false);
 
   const [showPassword, setShowPassword] = React.useState(false);
   const [user, setUser] = React.useState({
@@ -35,15 +55,42 @@ const Login: React.FunctionComponent = () => {
     remember: false,
   });
   const [errorCode, setErrorCode] = React.useState(-1);
-  const [redirect, setRedirect] = React.useState("/create");
+  const redirect = React.useRef<string>("/create");
+
+  const firstCall = React.useRef(false);
+  const loginSSO = React.useCallback(
+    async (code: string) => {
+      if (firstCall.current === false) {
+        firstCall.current = true;
+        setIsLoading(true);
+        const response = await loginWithSso(code);
+        if (response.success) {
+          router.push(isRedirectValid(redirect.current) ? redirect.current : "/");
+        } else {
+          setErrorCode(response.errorCode || 0);
+        }
+        setIsLoading(false);
+      }
+    },
+    [loginWithSso, router],
+  );
 
   React.useEffect(() => {
+    const urlQueryParams = qs.parse(window.location.search);
     try {
-      setRedirect(decodeURI((qs.parse(window.location.search).redirect as string) || "/create"));
+      redirect.current = decodeURI((urlQueryParams.redirect as string) || "/create");
     } catch (e) {
-      setRedirect("/create");
+      redirect.current = "/create";
     }
-  }, []);
+    if (urlQueryParams.state && urlQueryParams.code) {
+      const state = window.sessionStorage.getItem("oauth-state") || "";
+      if (state === decodeURI(urlQueryParams.state as string)) {
+        loginSSO(decodeURI(urlQueryParams.code as string)).catch();
+      } else {
+        setErrorCode(0);
+      }
+    }
+  }, [loginSSO]);
 
   const handleUserNameInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setUser({ ...user, username: event.target.value });
@@ -72,10 +119,21 @@ const Login: React.FunctionComponent = () => {
     setErrorCode(-1);
     const response = await login(user.username, user.password, user.remember);
     if (response.success) {
-      router.push(redirect);
+      router.push(isRedirectValid(redirect.current) ? redirect.current : "/create");
     } else {
       setErrorCode(response.errorCode || 0);
     }
+  };
+
+  const loginSso = () => {
+    if (!clientId || !ssoHost) {
+      return;
+    }
+    setIsLoading(true);
+    const state = generateTemporaryToken();
+    window.sessionStorage.setItem("oauth-state", state);
+    const url = `${ssoHost}/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${window.location.href.split("?")[0]}&state=${state}`;
+    window.location.replace(url);
   };
 
   const handleLinkClick = (path: string) => (event: React.MouseEvent) => {
@@ -86,14 +144,28 @@ const Login: React.FunctionComponent = () => {
   return (
     <div className="text-center">
       <Typography color="primary" variant="h1" style={{ marginTop: "2rem" }}>
-        {redirect.slice(0, 6) === "/admin" ? t("login_title_admin") : t("login_title")}
+        {t("login_title")}
       </Typography>
       <form className="login-form" noValidate>
-        {(errorCode === 0 || errorCode === 3) && (
+        {(errorCode === 0 || errorCode >= 3) && (
           <Typography variant="caption" color="error">
-            {t(errorMessages[errorCode])}
+            {t(errorMessages[errorCode as 0] || errorMessages[0])}
           </Typography>
         )}
+        <NoSsr>
+          {ssoHost.length && clientId ? (
+            <>
+              <Button variant="contained" color="secondary" onClick={loginSso} style={{ margin: "1.5rem 0" }}>
+                Se connecter avec {ssoHostName}
+              </Button>
+              <div className="login__divider">
+                <div className="login__or">
+                  <span style={{ fontSize: "1.2rem", padding: "0.25rem", backgroundColor: "white" }}>OU</span>
+                </div>
+              </div>
+            </>
+          ) : null}
+        </NoSsr>
         <TextField
           id="username"
           name="username"
@@ -147,6 +219,9 @@ const Login: React.FunctionComponent = () => {
           </Link>
         </div>
       </form>
+      <Backdrop style={{ zIndex: 2000, color: "white" }} open={isLoading}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
     </div>
   );
 };

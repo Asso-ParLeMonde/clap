@@ -69,6 +69,7 @@ const Signup: React.FunctionComponent = () => {
     pseudo: "",
     school: "",
     type: 0,
+    accountRegistration: 0,
     password: "",
     passwordConfirm: "",
   });

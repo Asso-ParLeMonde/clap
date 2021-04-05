@@ -182,29 +182,33 @@ const Account: React.FunctionComponent = () => {
         </Typography>
       </div>
       <div style={{ maxWidth: "800px", margin: "auto", paddingBottom: "2rem" }}>
-        <Typography variant="h2">{t("account_connexion_title")}</Typography>
-        <div style={{ marginTop: "0.5rem" }}>
-          <label>
-            <strong>{t("signup_pseudo")} : </strong>
-          </label>
-          {user.pseudo} -{" "}
-          <Link style={{ cursor: "pointer" }} onClick={openModal(1)}>
-            {t("account_change_button")}
-          </Link>
-        </div>
-        <div>
-          <label>
-            <strong>{t("signup_email")} : </strong>
-          </label>
-          {user.email} -{" "}
-          <Link style={{ cursor: "pointer" }} onClick={openModal(2)}>
-            {t("account_change_button")}
-          </Link>
-        </div>
-        <Button style={{ marginTop: "0.8rem" }} className="mobile-full-width" onClick={openModal(3)} variant="contained" color="secondary" size="small">
-          {t("account_password_change")}
-        </Button>
-        <Divider style={{ margin: "1rem 0 1.5rem" }} />
+        {user.accountRegistration < 10 && (
+          <>
+            <Typography variant="h2">{t("account_connexion_title")}</Typography>
+            <div style={{ marginTop: "0.5rem" }}>
+              <label>
+                <strong>{t("signup_pseudo")} : </strong>
+              </label>
+              {user.pseudo} -{" "}
+              <Link style={{ cursor: "pointer" }} onClick={openModal(1)}>
+                {t("account_change_button")}
+              </Link>
+            </div>
+            <div>
+              <label>
+                <strong>{t("signup_email")} : </strong>
+              </label>
+              {user.email} -{" "}
+              <Link style={{ cursor: "pointer" }} onClick={openModal(2)}>
+                {t("account_change_button")}
+              </Link>
+            </div>
+            <Button style={{ marginTop: "0.8rem" }} className="mobile-full-width" onClick={openModal(3)} variant="contained" color="secondary" size="small">
+              {t("account_password_change")}
+            </Button>
+            <Divider style={{ margin: "1rem 0 1.5rem" }} />
+          </>
+        )}
         <Typography variant="h2">{t("account_school_title")}</Typography>
         <div style={{ marginTop: "0.5rem" }}>
           <label>
