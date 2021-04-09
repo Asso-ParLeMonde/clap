@@ -98,9 +98,6 @@ async function startApp() {
   );
 
   /* --- FRONTEND --- */
-  app.get("/", (_req, res) => {
-    res.redirect("/create");
-  });
   app.get("/creer", (_req, res) => {
     res.redirect("/create");
   });
