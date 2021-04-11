@@ -49,10 +49,16 @@ export async function createPLMUserToDB(plmUser: PLM_User): Promise<User> {
     }
   }
 
+  // Check pseudo availability:
+  const isPseudoAvailable =
+    (await getRepository(User).count({
+      where: { pseudo: plmUser.user_login },
+    })) === 0;
+
   // Add user
   const user = new User();
   user.email = plmUser.user_email;
-  user.pseudo = plmUser.user_login;
+  user.pseudo = isPseudoAvailable ? plmUser.user_login : `user_${plmUser.user_login}`;
   user.level = "";
   user.school = getMetaValue(plmUser, "Nom de votre école");
   user.languageCode = "fr";
